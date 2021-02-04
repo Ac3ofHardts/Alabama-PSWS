@@ -1,0 +1,45 @@
+After cloning the repository, there are a few steps that need to be taken before it can be used.
+
+The first step is creating a virtual environment with python3
+
+	If python3 is not installed, install now with the appropriate package manager
+	
+	python3 -m venv venv 	//This creates a virtual environment in the folder venv
+	. venv/bin/activate 	//To activate the venv
+	pip install --upgrade pip 	//Update pip 
+	pip install django 	
+
+
+The second step is to create a mariadb database
+	
+	If mariadb and mariadb-server are not installed, install with the package manager
+		If they were not installed do these setup steps
+		sudo systemctl start mariadb
+		sudo systemctl enable mariadb
+		sudo mysql_secure_installation
+
+	If it has already been installed then you will need to login to mariadb
+		mysql -u username -p  //This will prompt for the password.
+
+	Inside of mysql run the following commands to set up the database
+		create database {DB_NAME} character set utf8;
+		create user {DB_USER}@localhost identified by '{DB_PASSWORD}';
+		grant all privileges on {DB_NAME}.* to {DB_USER}@localhost;
+		flush privileges;
+		exit;
+	
+
+Modify PSWS/settings.py 
+	Now that the database has been created, you need to provide the credentials to Django
+
+	under "DATABASES = {'default'}, remove all fields and add the following:
+		ENGINE: django.db.backends.mysql
+		NAME: {DB_NAME} //name of our database
+		USER: {DB_USER} //name of our user
+		PASSWORD: {DB_PASSWORD} //user password
+		HOST: localhost
+		PORT: 
+
+You should now be able to make migrations with 
+	./manage.py makemigrations
+	from within the virtual environment

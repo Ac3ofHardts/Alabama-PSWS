@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<h1  class="text-center">Home</h1>
+
+{% if user.is_authenticated %}
+
+
+	<table>
+		<tr>
+			<td>Welcome {{ request.user.profile.role }} :</td>
+			<td><a href="{% url 'profile' %}">{{ request.user.username }}</a></td>
+                </tr>
+		<tr>
+			<td><a href="{% url 'logout' %}">logout</a></td>
+		</tr>
+        </table>
+	{% else %}
+	<p>Welcome to Personal Space Weather Station</p>
+	<a href="{% url 'login' %}">Please login</a>
+	<p>Or, if you don't have an account:</p>
+	<a href="{% url 'signup' %}">Sign up for an account</a>
+{% endif %}
+
+{% endblock %}
+

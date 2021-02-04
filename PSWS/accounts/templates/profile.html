@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+
+<div class="main">
+	<table>
+		<tr>
+			<td>Username</td>
+			<td>{{ request.user.username }}</td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td>{{ request.user.profile.email }}</td>
+		</tr>
+		<tr>
+			<td>
+				<form method='POST' enctype="multipart/form-data">
+					{% csrf_token %}
+					{{ p_form|crispy }}
+					<button type='submit'>Update</button>
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+
+{% endblock %}
