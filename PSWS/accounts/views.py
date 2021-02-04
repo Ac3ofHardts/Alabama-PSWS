@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_text, force_bytes
 from django.db import IntegrityError
@@ -11,6 +12,8 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
+
+
 
 from .forms import SignUpForm, EditProfileForm
 from .tokens import account_activation_token
@@ -24,61 +27,26 @@ logger = logging.getLogger(__name__)
 def home(request):
     return render(request, 'home.html')
 
-#@login_required
-#def profile(request):
-#    return render(request, 'profile.html')
-#
-#class ProfileUpdate(UpdateView):
-#    model = Profile
-#    fields = ['email']
-#    template_name_suffix = '_update_form'
-
 @login_required
 def profile(request):
     if request.method == 'POST':
         logger.error("POST request received")
         p_form = EditProfileForm(request.POST, instance=request.user.profile)
         if p_form.is_valid():
-            logger.error("Valid form")
             logger.error(request.user.profile.email)
-            request.user.profile.email = "a@a.a"
+            request.user.profile.email = p_form.cleaned_data.get('email')
             request.user.profile.save()
-            #messages.success(request, 'Your Profile has been updated!')
+            messages.success(request, 'Your Profile has been updated!')
             return redirect('profile')
         else:
-            logger.error("Invalid form")
             p_form = EditProfileForm(instance=request.user)
-            request.user.profile.email = "b@b.b"
-            request.user.save()
+            messages.error(request, 'Issue updating information.')
 
         context={'p_form': p_form}
         return render(request, 'profile.html',context )
     else:
         p_form = EditProfileForm()
         return render(request, 'profile.html', {'p_form': p_form})
-
-#@login_required
-#def edit_profile(request):
-#    if request.method == "POST":
-#        form = EditProfileForm(request.POST, instance=request.user)
-#        profile_form = ProfileForm(request.POST, instance=request.user.profile)
-#
-#        if form.is_valid() and profile_form.is_valid():
-#            user_form = form.save()
-#            custom_form = profile_form.save(False)
-#            custom_form.user = user_form
-#            custom_form.save()
-#            return redirect('profile')
-#    else:
-#        form = EditProfileForm(instance=request.user)
-#        profile_form = ProfileForm(instance=request.user.profile)
-#        args = {}
-#        args['form'] = form
-#        args['profile_form'] = profile_form
-#        return render(request, 'edit_profile.html', args)
-#
-
-
 
 def activation_sent_view(request):
     return render(request, 'activation_sent.html')
