@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'PSWS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'psws',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'PSWS_database',
+        'USER': 'nmuscolino',
+        'PASSWORD': '#enoch8Jot!!',
         'HOST': 'localhost',
         'PORT': '',
         }
