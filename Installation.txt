@@ -7,11 +7,7 @@ The first step is creating a virtual environment with python3
 	python3 -m venv venv 	//This creates a virtual environment in the folder venv
 	. venv/bin/activate 	//To activate the venv
 	pip install --upgrade pip 	//Update pip 
-	pip install django 
-	pip install django-crispy-forms
-	pip install six
-	pip install mysqlclient	
-
+	pip install -r pip-requirements.txt //Install required pip packages
 
 The second step is to create a mariadb database
 	
