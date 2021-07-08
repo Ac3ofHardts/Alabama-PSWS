@@ -18,6 +18,7 @@ from django.views.generic.edit import UpdateView
 from .forms import SignUpForm, EditProfileForm
 from .tokens import account_activation_token
 from .models import Profile
+from stations.models import Station
 
 import logging
 logger = logging.getLogger(__name__)
@@ -25,7 +26,15 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 
 def home(request):
-    return render(request, 'home.html')
+    mapbox_access_token = 'pk.eyJ1IjoiYWI0ZWotMSIsImEiOiJjazB1MTRmMTAwamVlM2Jwb2pheWx2cWpmIn0.cGZbctIFT5jSgBi0jBPk3w'
+    online_stations = Station.objects.filter(station_status="Online")
+    possiblyonline_stations = Station.objects.filter(station_status="Possiblyonline")
+    offline_stations = Station.objects.filter(station_status="Offline")
+    return render(request, 'home.html',
+      { 'mapbox_access_token' : mapbox_access_token,
+          'online_stations' : online_stations,
+          'possbilyonline_stations' : possiblyonline_stations,
+          'offline_stations' : offline_stations, } )
 
 @login_required
 def profile(request):

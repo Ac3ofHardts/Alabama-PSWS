@@ -16,12 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
+from api import views as apiviews
 
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('stations/', apiviews.StationList.as_view(), name='stationList'),
+    path('heartbeat/', apiviews.StationHeartbeat.as_view(), name='heartbeat'),
     path('accounts/', include('accounts.urls')),
     path('', include('accounts.urls')),
+    path('stations/', include('stations.urls')),
     path('favicon.ico', favicon_view),
 ]

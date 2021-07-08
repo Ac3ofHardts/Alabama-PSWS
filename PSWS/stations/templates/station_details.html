@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<h1 class="text-center">{{station.nickname}}</h1>
+<a href="{% url 'stations' %}">Back</a>
+<br>
+
+<div>
+	<li>ID: {{station.station_id}}</li>
+	<li>User: {{station.user.username}}</li>
+	<li>Latitude: {{station.latitude}}</li>
+	<li>Longitude: {{station.longitude}}</li>
+	<li>Grid: {{station.grid}}</li>
+	<li>Elevation: {{station.elevation}}</li>
+	<li>Antenna 1: {{station.antenna_1}}</li>
+	<li>Antenna 2: {{station.antenna_2}}</li>
+	<li>Street Address: {{station.street_address}}</li>
+	<li>City: {{station.city}}</li>
+	<li>State: {{station.state}}</li>
+	<li>Postal Code: {{station.postal_code}}</li>
+	<li>Date Created: {{station.create_date}}</li>
+</div>
+
+{% endblock %}
