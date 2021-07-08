@@ -1,4 +1,28 @@
-<form method="post">{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="Update">
-</form>
+{% load crispy_forms_tags %}
+{% block main %}
+
+{% if messages %}
+<ul class="messages">
+	{% for message in messages %}
+	<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+<div class="main">
+	<h2>Station Update Form</h2>
+	<table>
+		<tr>
+			<td>
+				<form method='POST' enctype="multipart/form-data">
+					{% csrf_token %}
+					{{ form|crispy }}
+					<button type='submit'>Update</button>
+				</form>
+			</td>
+		</tr>
+	</table>
+</div>
+
+{% endblock %}
+

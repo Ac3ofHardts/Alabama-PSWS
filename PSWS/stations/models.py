@@ -8,9 +8,11 @@ from datetime import datetime
 
 class Station(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-    latitude = models.FloatField(blank=True)
-    longitude = models.FloatField(blank=True)
+    station_id = models.CharField(max_length=10, default='N000000')
+    station_pass = models.CharField(max_length=32, default='temp_password')
+    nickname = models.CharField(max_length=50)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
     grid = models.CharField(max_length=6, null=True)
     elevation = models.FloatField(blank=True, null=True) 
     antenna_1 = models.CharField(max_length=64, null=True) 
@@ -20,8 +22,11 @@ class Station(models.Model):
     state = models.CharField(max_length=15, blank=True)
     postal_code = models.CharField(max_length=15, blank=True) #must support international values
     phone_number = models.CharField(max_length=20, blank=True)
+    create_date = models.DateTimeField(auto_now_add=True)
 
-    create_date = datetime.now()
+    #last_alive
+    #last_RID
+
     class StationStatus(models.TextChoices):
            ONLINE =  "Online",
            POSSIBLYONLINE =  "PossiblyOnline",
@@ -34,10 +39,10 @@ class Station(models.Model):
      )
 
     def __str__(self):
-        return self.user.username
+        return self.nickname
 
-@receiver(post_save, sender=User)
-def update_station_signal(sender, instance, created, **kwargs):
-    if created:
-        Station.objects.get_or_create(user=instance, latitude=0, longitude=0) 
-    instance.station.save()
+#@receiver(post_save, sender=User)
+#def update_station_signal(sender, instance, created, **kwargs):
+#    if created:
+#        Station.objects.get_or_create(user=instance)
+#    instance.profile.save()
