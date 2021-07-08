@@ -26,5 +26,6 @@ urlpatterns = [
     path('heartbeat/', apiviews.StationHeartbeat.as_view(), name='heartbeat'),
     path('accounts/', include('accounts.urls')),
     path('', include('accounts.urls')),
+    path('stations/', include('stations.urls')),
     path('favicon.ico', favicon_view),
 ]

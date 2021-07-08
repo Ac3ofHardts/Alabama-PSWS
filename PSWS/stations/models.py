@@ -8,31 +8,31 @@ from datetime import datetime
 
 class Station(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    nickname = models.CharField(default="", max_length=50)
+    station_id = models.CharField(max_length=10, default='N000000')
+    station_pass = models.CharField(max_length=32, null=True, blank=True)
+    nickname = models.CharField(max_length=50)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     grid = models.CharField(max_length=6, null=True)
-    elevation = models.FloatField(blank=True, null=True)
-    
-    create_date = datetime.now()
+    elevation = models.FloatField(blank=True, null=True) 
+    antenna_1 = models.CharField(max_length=64, null=True) 
+    antenna_2 = models.CharField(max_length=64, blank=True)
+    street_address = models.CharField(max_length=75, blank=True)
+    city = models.CharField(max_length=75, blank=True)
+    state = models.CharField(max_length=15, blank=True)
+    postal_code = models.CharField(max_length=15, blank=True) #must support international values
+    phone_number = models.CharField(max_length=20, blank=True)
+    create_date = models.DateTimeField(auto_now_add=True)
 
-    station_id = models.CharField(max_length=10, null=True, blank=True)
-    station_pass = models.CharField(max_length=20, null=True, blank=True)
-    
     last_rID = models.IntegerField(default=0)
-
     last_alive = models.DateTimeField(null=True)
 
 
-    def get_username(self):
-        return self.username
-    User.add_to_class("__str__", get_username)
-
     class StationStatus(models.TextChoices):
-            ONLINE = "Online",
-            POSSIBLYONLINE = "Possiblyonline",
-            OFFLINE = "Offline"
-
+           ONLINE =  "Online",
+           POSSIBLYONLINE =  "PossiblyOnline",
+           OFFLINE =  "Offline"
+    
     station_status = models.CharField(
             max_length=20,
             choices=StationStatus.choices,
@@ -42,8 +42,9 @@ class Station(models.Model):
     def __str__(self):
         return self.nickname
 
-@receiver(post_save, sender=User)
-def update_station_signal(sender, instance, created, **kwargs):
-    if created:
-        Station.objects.get_or_create(user=instance)
-    instance.profile.save()
+#@receiver(post_save, sender=User)
+#def update_station_signal(sender, instance, created, **kwargs):
+#    if created:
+#        Station.objects.get_or_create(user=instance)
+#    instance.profile.save()
+
