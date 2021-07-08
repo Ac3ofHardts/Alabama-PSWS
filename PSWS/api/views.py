@@ -80,7 +80,7 @@ class StationHeartbeat(generics.UpdateAPIView):
             if(dataReqInst.requestID > instance.last_rID):
                 instance.last_rID = dataReqInst.requestID
                 instance.save()
-                return Response({'timestart': dataReqInst.timestart, 'timestop': dataReqInst.timestop})
+                return Response({'requestID': dataReqInst.requestID, 'timestart': dataReqInst.timestart, 'timestop': dataReqInst.timestop})
             else:
                 return Response(status=200)  
         #Password did not match, return unauthorized

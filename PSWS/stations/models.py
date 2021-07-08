@@ -9,6 +9,11 @@ from datetime import datetime
 class Station(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     nickname = models.CharField(default="", max_length=50)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    grid = models.CharField(max_length=6, null=True)
+    elevation = models.FloatField(blank=True, null=True)
+    
     create_date = datetime.now()
 
     station_id = models.CharField(max_length=10, null=True, blank=True)
@@ -25,7 +30,7 @@ class Station(models.Model):
 
     class StationStatus(models.TextChoices):
             ONLINE = "Online",
-            POSSIBLYONLINE = "PossiblyOnline",
+            POSSIBLYONLINE = "Possiblyonline",
             OFFLINE = "Offline"
 
     station_status = models.CharField(
