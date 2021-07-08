@@ -9,7 +9,7 @@ from datetime import datetime
 class Station(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     station_id = models.CharField(max_length=10, default='N000000')
-    station_pass = models.CharField(max_length=32, default='temp_password')
+    station_pass = models.CharField(max_length=32, null=True, blank=True)
     nickname = models.CharField(max_length=50)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
@@ -24,8 +24,9 @@ class Station(models.Model):
     phone_number = models.CharField(max_length=20, blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
 
-    #last_alive
-    #last_RID
+    last_rID = models.IntegerField(default=0)
+    last_alive = models.DateTimeField(null=True)
+
 
     class StationStatus(models.TextChoices):
            ONLINE =  "Online",
@@ -36,7 +37,7 @@ class Station(models.Model):
             max_length=20,
             choices=StationStatus.choices,
             default=StationStatus.OFFLINE,
-     )
+    )
 
     def __str__(self):
         return self.nickname
@@ -46,3 +47,4 @@ class Station(models.Model):
 #    if created:
 #        Station.objects.get_or_create(user=instance)
 #    instance.profile.save()
+

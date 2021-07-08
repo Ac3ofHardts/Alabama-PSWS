@@ -1,7 +1,18 @@
 {% extends  'base.html' %}
+
 {% load crispy_forms_tags %}
 
 {% block main %}
+
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="#stationss">Stations</a></li>
+  <li><a href="#observations">Observations</a></li>
+  <li><a class="active" href="/login/">Log In</a></li>
+  <li><a href="/signup/">Register your station</a></li>
+  <li style="float:right"><a href="#about">About</a></li>
+</ul>
+
 <div class="card">
 <div class="card-body">
 <h4 class="card-title">Log in to your account</h4>

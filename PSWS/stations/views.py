@@ -109,3 +109,4 @@ def update_station_view(request, id=None):
     else:
         form = EditStationForm(instance=station)
         return render(request, 'station_update.html', {'form': form, 'station': station})
+

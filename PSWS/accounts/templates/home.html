@@ -1,10 +1,16 @@
 {% extends 'base.html' %}
 {% block main %}
 
-<h1  class="text-center">Home</h1>
+<ul>
+  <li><a class="active" href="#home">Home</a></li>
+  <li><a href="#stationss">Stations</a></li>
+  <li><a href="#observations">Observations</a></li>
+  <li><a href="/login/">Log In</a></li>
+  <li><a href="/signup/">Register your station</a></li>
+  <li style="float:right"><a href="#about">About</a></li>
+</ul>
 
 {% if user.is_authenticated %}
-
 
 	<table>
 		<tr>
@@ -16,11 +22,108 @@
 		</tr>
         </table>
 	{% else %}
-	<p>Welcome to Personal Space Weather Station</p>
-	<a href="{% url 'login' %}">Please login</a>
-	<p>Or, if you don't have an account:</p>
-	<a href="{% url 'signup' %}">Sign up for an account</a>
+	<p>Welcome to Personal Space Weather Station/Central Control!</p>
 {% endif %}
 
-{% endblock %}
+<div id='map' style='position:absolute; top: 200px; width: 1200px; height: 600px;'></div>
+<script>
+  mapboxgl.accessToken = '{{mapbox_access_token}}' ;
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-87.0, 33.0],
+    zoom: 3.25
+  });
 
+  //Online
+  var geojson_online = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in online_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+  geojson_online.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#008000" })//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .addTo(map);
+  });
+
+  //PossiblyOnline
+  var geojson_online = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in possiblyonline_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+  geojson_online.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#FFA500" })//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .addTo(map);
+  });
+
+
+  //Offline
+  var geojson_online = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in offline_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+  geojson_online.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#FF0000" })//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .addTo(map);
+  });
+
+</script>
+ 
+
+{% endblock %}
