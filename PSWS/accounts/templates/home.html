@@ -65,7 +65,7 @@
   });
 
   //PossiblyOnline
-  var geojson_online = {
+  var geojson_poss = {
 	  type: 'FeatureCollection',
 	  features: [
 		  {% for i in possiblyonline_stations %}
@@ -83,7 +83,7 @@
 	  ]
   };
   // add markers to map
-  geojson_online.features.forEach(function(marker) {
+  geojson_poss.features.forEach(function(marker) {
 	//var el = document.createElement('div');
 	//el.className = 'marker-light-red';
 	  new mapboxgl.Marker({ color: "#FFA500" })//el)
@@ -95,7 +95,7 @@
 
 
   //Offline
-  var geojson_online = {
+  var geojson_offline = {
 	  type: 'FeatureCollection',
 	  features: [
 		  {% for i in offline_stations %}
@@ -113,7 +113,7 @@
 	  ]
   };
   // add markers to map
-  geojson_online.features.forEach(function(marker) {
+  geojson_offline.features.forEach(function(marker) {
 	//var el = document.createElement('div');
 	//el.className = 'marker-light-red';
 	  new mapboxgl.Marker({ color: "#FF0000" })//el)

@@ -23,12 +23,33 @@ from stations.models import Station
 import logging
 logger = logging.getLogger(__name__)
 
-# Create your views here.
+from datetime import datetime, timedelta, timezone
+
+#Declaring time cutoffs here since will probably change in the future
+onlineCutoffHours = 24
+possiblyOnlineCutoffHours = 120 #5 days
+
+
+
+def updateStatus():
+    #Update Station status of all stations before displaying
+    AliveCutoff = datetime.now(timezone.utc) - timedelta(hours=onlineCutoffHours)
+    DeadCutoff = datetime.now(timezone.utc) - timedelta(hours=possiblyOnlineCutoffHours)
+    for instance in Station.objects.all():
+        if (instance.last_alive < DeadCutoff):
+            instance.station_status = "Offline"
+        elif (instance.last_alive < AliveCutoff):
+            instance.station_status = "PossiblyOnline"
+        else:
+            instance.station_status = "Online"
+        instance.save()
+
 
 def home(request):
+    updateStatus()
     mapbox_access_token = 'pk.eyJ1IjoiYWI0ZWotMSIsImEiOiJjazB1MTRmMTAwamVlM2Jwb2pheWx2cWpmIn0.cGZbctIFT5jSgBi0jBPk3w'
     online_stations = Station.objects.filter(station_status="Online")
-    possiblyonline_stations = Station.objects.filter(station_status="Possiblyonline")
+    possiblyonline_stations = Station.objects.filter(station_status="PossiblyOnline")
     offline_stations = Station.objects.filter(station_status="Offline")
     return render(request, 'home.html',
       { 'mapbox_access_token' : mapbox_access_token,

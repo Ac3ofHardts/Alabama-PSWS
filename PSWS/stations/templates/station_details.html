@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
 {% block main %}
 
 <h1 class="text-center">{{station.nickname}}</h1>
-<a href="{% url 'stations' %}">Back</a>
+<a href="{% url 'my_stations_list' %}">Back to your stations</a>
 <br>
 
-<div>
+<ul>
 	<li>ID: {{station.station_id}}</li>
+	<li>Token: {{station.station_pass}}</li>
 	<li>User: {{station.user.username}}</li>
 	<li>Latitude: {{station.latitude}}</li>
 	<li>Longitude: {{station.longitude}}</li>
@@ -19,6 +19,10 @@
 	<li>State: {{station.state}}</li>
 	<li>Postal Code: {{station.postal_code}}</li>
 	<li>Date Created: {{station.create_date}}</li>
+</ul>
+
+<div>
+	<a href="{% url 'station_update' id=station.id %}">Update</a>
 </div>
 
 {% endblock %}

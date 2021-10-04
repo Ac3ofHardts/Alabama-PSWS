@@ -15,7 +15,12 @@ tr, td {
 }
 </style>
 <h1 class="text-center">Stations</h1>
-<a href="{% url 'my_stations_list' %}">View your stations</a>
+<div>
+	<a href="{% url 'my_stations_list' %}">View your stations</a>
+</div>
+<div>
+	<a href="{% url 'add_station' %}">Add new station</a>
+</div>
 <br>
 
 <table>
@@ -30,7 +35,7 @@ tr, td {
 	</tr>
 	{% for station in all_stations %}
 	<tr>
-		<td><a href="{% url 'station_details' id=station.id %}">{{station.station_id}}</a></td>
+		<td>{{station.station_id}}</td>
 		<td>{{station.user.username}}</td>
 		<td>{{station.nickname}}</td>
 		<td>{{station.grid}}</td>
@@ -41,7 +46,12 @@ tr, td {
 	{% endfor %}
 </table>
 
-<a href="{% url 'add_station' %}">Add new station</a>
+<div>
+	<a href="{% url 'my_stations_list' %}">View your stations</a>
+</div>
+<div>
+	<a href="{% url 'add_station' %}">Add new station</a>
+</div>
 
 {% endblock %}
 

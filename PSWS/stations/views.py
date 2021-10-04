@@ -5,6 +5,7 @@ from datetime import datetime
 from stations.models import Station
 from stations.forms import StationCreationForm
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 
 from stations.calculate_latitude import CalculateLatitude
 from stations.calculate_longitude import CalculateLongitude
@@ -48,13 +49,18 @@ def add_station_view(request):
             station.user_id = request.user.id
             
             # Determine new station's ID number
-            if Station.objects.latest('create_date') == None:
-                new_id_number = 1
-            else:
+            try:
                 new_id_number = Station.objects.latest('create_date').id + 1
+            except ObjectDoesNotExist:
+                new_id_number = 1
+            #if Station.objects.latest('create_date').id == None 
+            #    new_id_number = 1
+            #else:
+            #    new_id_number = Station.objects.latest('create_date').id + 1
             
             station.station_id = 'N' + str(new_id_number).zfill(6)
-            station.station_pass = station_activation_token.make_token(request.user).replace('-', station.station_pass[0])[4:36]
+            station.station_pass = station_activation_token.make_token(request.user)
+            station.station_pass = station.station_pass.replace('-', station.station_pass[0])[4:36]
             station.nickname = form.cleaned_data.get('nickname')
             station.grid = form.cleaned_data.get('grid')
             station.latitude = CalculateLatitude.calculate_latitude(station.grid)
@@ -101,7 +107,7 @@ def update_station_view(request, id=None):
             station.phone_number = form.cleaned_data.get('phone_number')
             station.save()
             messages.success(request, 'Your station has been updated!')
-            return redirect('stations')
+            return redirect('station_details', station.id)
         else:
             form = EditStationForm(instance=station)
             messages.error(request, 'Issue updating information.')

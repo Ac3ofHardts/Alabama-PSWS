@@ -15,7 +15,12 @@ tr, td {
 }
 </style>
 <h1 class="text-center">Your Stations</h1>
-<a href="{% url 'stations' %}">View all registered stations</a>
+<div>
+	<a href="{% url 'stations' %}">View all registered stations</a>
+</div>
+<div>
+	<a href="{% url 'add_station' %}">Add new station</a>
+</div>
 <br>
 
 <table>
@@ -27,23 +32,26 @@ tr, td {
 		<th>Elevation</th>
 		<th>Antenna 1</th>
 		<th>Antenna 2</th>
-		<th></th>
 	</tr>
 	{% for station in request.user.station_set.all %}
 	<tr>
 		<td><a href="{% url 'station_details' id=station.id %}">{{station.station_id}}</a></td>
-<td>{{station.user.username}}</td>
+		<td>{{station.user.username}}</td>
 		<td>{{station.nickname}}</td>
 		<td>{{station.grid}}</td>
 		<td>{{station.elevation}}</td>
 		<td>{{station.antenna_1}}</td>
 		<td>{{station.antenna_2}}</td>
-		<td><a href="{% url 'station_update' id=station.id %}">Update</a></td>
 	</tr>
 	{% endfor %}
 </table>
 
-<a href="{% url 'add_station' %}">Add new station</a>
+<div>
+	<a href="{% url 'stations' %}">View all registered stations</a>
+</div>
+<div>
+	<a href="{% url 'add_station' %}">Add new station</a>
+</div>
 
 {% endblock %}
 
