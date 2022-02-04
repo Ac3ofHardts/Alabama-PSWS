@@ -1,4 +1,10 @@
-<h2>Add Station Form</h2>
+{% extends "base_stations.html" %}
+
+{% block title %}
+<h2 class="text-center">Add Station Form</h2>
+{% endblock title %}
+
+{% block main %}
 <form method="post">
 	{% csrf_token %}
 	{% for field in form %}
@@ -15,3 +21,4 @@
 	{% endfor %}
 	<button type="submit">Add Station</button>
 </form>
+{% endblock main %}

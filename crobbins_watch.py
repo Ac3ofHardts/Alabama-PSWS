@@ -10,8 +10,10 @@ import h5py
 
 from sqlalchemy import create_engine
 
+from urllib.parse import quote_plus
+
 #connect the database
-engine = create_engine('mysql://')
+engine = create_engine('mysql://root:' + quote_plus('1Step@ATime!') + '@localhost/PSWS_database')
 
 class UploadEvent(PatternMatchingEventHandler):
     def __init__(self, patterns=None):
@@ -57,6 +59,8 @@ class UploadEvent(PatternMatchingEventHandler):
         fileName = tar_file
         path = event.src_path
         station_id = event.src_path.rsplit('/')[2]
+        ### Patch for demo
+        station_id = station_id[-1]
 
         #Finally, we can insert into the db
         conn = engine.connect()
@@ -70,8 +74,8 @@ class UploadEvent(PatternMatchingEventHandler):
         conn.close()
 
 if __name__ == "__main__":
-    path = sys.argv[1] if len(sys.argv) > 1 else '.'
-    event_handler = UploadEvent(patterns=["N*/d*"])
+    path = sys.argv[1] if len(sys.argv) > 1 else '/home'
+    event_handler = UploadEvent(patterns=["N*/d*", "N*/TangerineFHData/temp/drf_properties.h5", "N*/TangerineFHData/temp/aux_drf_properties.h5"])
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()

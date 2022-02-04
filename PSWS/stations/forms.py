@@ -6,7 +6,7 @@ from stations.models import Station
 # Form used to register new stations
 class StationCreationForm(forms.ModelForm):
     nickname = forms.CharField(max_length=30)
-    grid = forms.CharField(max_length=6)
+    grid = forms.CharField(label='Maidenhead Grid Square', max_length=6, widget=forms.TextInput(attrs={'placeholder': 'Ex: AA11aa'}))
     elevation = forms.FloatField()
     antenna_1 = forms.CharField(max_length=64)
     antenna_2 = forms.CharField(max_length=64)

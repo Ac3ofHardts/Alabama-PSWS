@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class QuickstartConfig(AppConfig):
-    name = 'quickstart'
+class ApiConfig(AppConfig):
+    name = 'api'

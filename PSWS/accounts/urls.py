@@ -2,6 +2,7 @@ from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from . import views
+from .views import UserListView
 
 urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
@@ -12,4 +13,5 @@ urlpatterns = [
     path('signup/', views.signup_view, name="signup"),
     path('sent/', views.activation_sent_view, name="activation_sent"),
     path('activate/<slug:uidb64>/<slug:token>/', views.activate, name='activate'),
+    path('user_list/', UserListView.as_view(), name="user_list"),
 ]
