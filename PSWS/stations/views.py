@@ -1,14 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic.edit import UpdateView
 from datetime import datetime
 from stations.models import Station
 from stations.forms import StationCreationForm
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django_tables2 import SingleTableView
 
 from stations.calculate_latitude import CalculateLatitude
 from stations.calculate_longitude import CalculateLongitude
+from .tables import StationTable, FilteredStationTable
 from .forms import EditStationForm
 from .tokens import station_activation_token
 
@@ -18,17 +21,40 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-@login_required
-# Display a list of the logged in user's stations
-def my_stations_list_view(request):
-    return render(request, 'my_stations_list.html')
+@method_decorator(login_required, name='dispatch')
+# Display a list of the currently logged in user's stations
+class MyStationsListView(SingleTableView):
+    #To filter the queryset by user, must use a method to access the request object
+    def get_queryset(self):
+        return Station.objects.filter(user=self.request.user)
 
-@login_required
+    table_class = FilteredStationTable
+    template_name = 'my_stations_list.html'
+
+#@login_required
+# Display a list of the logged in user's stations
+#def my_stations_list_view(request):
+#    table = FilteredStationTable(Station.objects.filter(user=request.user))
+#    
+#    return render(request, 'my_stations_list.html', {
+#        "table": table
+#    })
+
+@method_decorator(login_required, name='dispatch')
 # Display the list of all registered stations
-def station_list_view(request):
-    all_stations = Station.objects.all()
-    context = {'all_stations': all_stations}
-    return render(request, 'stations.html', context)
+class StationListView(SingleTableView):
+    table_class = StationTable
+    queryset = Station.objects.all()
+    template_name = 'stations.html'
+
+#@login_required
+#Display the list of all registered stations
+#def station_list_view(request):
+#    table = StationTable(Station.objects.all())
+
+#    return render(request, 'stations.html', {
+#        "table": table
+#    })
 
 @login_required
 # Display more detailed information about a station

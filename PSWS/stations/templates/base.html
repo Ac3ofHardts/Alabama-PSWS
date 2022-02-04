@@ -40,19 +40,27 @@ li a:hover:not(.active) {
 .active {
   background-color: #04AA6D;
 }
-</style> 
-</head>
+
 <body>
   <div  class="container">
     <div  class="row justify-content-center">
      <div class="col-10">
       <h1  class="text-center">Personal Space Weather Station</h1>
        <h2 class="text-center">Central Control System</h2>
+      {% block title %}
+      {% endblock title %}
+      	<ul>
+		<li><a class="active" href="#home">Home</a></li>
+		<li><a href="#stations">Stations</a></li>
+		<li><a href="#observations">Observations</a></li>
+		<li><a href="/login/">Log In</a></li>
+		<li><a href="/signup/">Register your station</a></li>
+		<li style="float:right"><a href="#about">About</a></li>
+	</ul>
       {% block main %}
-      {% endblock %}
+      {% endblock main %}
      </div>
     </div>
   </div>
 </body>
 </html>
-

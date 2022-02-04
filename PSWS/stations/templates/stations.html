@@ -1,10 +1,17 @@
-{% extends 'base.html' %}
+{% extends "base_stations.html" %}
+
+{% block title %}<h1 class="text-center">Stations</h1>{% endblock title %}
+
 {% block main %}
+{% load render_table from django_tables2 %}
+
 <style>
 table {
 	width: 1000px;
 	border: 5px solid black;
 }
+</style>
+<!--
 th {
 	border: 5px solid black;
 	text-align: center;
@@ -13,8 +20,8 @@ tr, td {
 	border: 3px solid #dddddd;
 	text-align: center;
 }
-</style>
-<h1 class="text-center">Stations</h1>
+-->
+<!--<h1 class="text-center">Stations</h1>-->
 <div>
 	<a href="{% url 'my_stations_list' %}">View your stations</a>
 </div>
@@ -23,6 +30,11 @@ tr, td {
 </div>
 <br>
 
+<div>
+	{% render_table table %}
+</div>
+
+<!--
 <table>
 	<tr>
 		<th>ID</th>
@@ -45,6 +57,7 @@ tr, td {
 	</tr>
 	{% endfor %}
 </table>
+-->
 
 <div>
 	<a href="{% url 'my_stations_list' %}">View your stations</a>
@@ -53,5 +66,5 @@ tr, td {
 	<a href="{% url 'add_station' %}">Add new station</a>
 </div>
 
-{% endblock %}
+{% endblock main %}
 

@@ -19,6 +19,11 @@ class UploadEvent(PatternMatchingEventHandler):
     def __init__(self, patterns=None):
         super(UploadEvent, self).__init__(patterns=patterns)
 
+    def on_modified(slf, event):
+        print(event.src_path)
+        stationID = int(event.src_path[7:13])
+        print(stationID)
+
     def on_created(self, event):
         #Begin by locating the path of the event
         path = event.src_path
@@ -75,7 +80,7 @@ class UploadEvent(PatternMatchingEventHandler):
 
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else '/home'
-    event_handler = UploadEvent(patterns=["N*/d*"])
+    event_handler = UploadEvent(patterns=["N*/d*", "N*/TangerineFHData/temp/drf_properties.h5", "N*/TangerineFHData/temp/aux_drf_properties.h5"])
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()

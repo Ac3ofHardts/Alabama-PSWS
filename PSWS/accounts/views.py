@@ -12,12 +12,15 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.views.generic.edit import UpdateView
+from django.utils.decorators import method_decorator
+from django_tables2 import SingleTableView
 
 
 
 from .forms import SignUpForm, EditProfileForm
 from .tokens import account_activation_token
 from .models import Profile
+from .tables import UserTable
 from stations.models import Station
 
 import logging
@@ -36,6 +39,8 @@ def updateStatus():
     AliveCutoff = datetime.now(timezone.utc) - timedelta(hours=onlineCutoffHours)
     DeadCutoff = datetime.now(timezone.utc) - timedelta(hours=possiblyOnlineCutoffHours)
     for instance in Station.objects.all():
+        if (instance.last_alive is None):
+            instance.last_alive = datetime(2000,1,1,tzinfo=timezone.utc)
         if (instance.last_alive < DeadCutoff):
             instance.station_status = "Offline"
         elif (instance.last_alive < AliveCutoff):
@@ -124,4 +129,11 @@ def signup_view(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form':form})
+
+@method_decorator(login_required, name='dispatch')
+# Display a list of all registered users
+class UserListView(SingleTableView):
+    table_class = UserTable
+    queryset = User.objects.all()
+    template_name = 'user_list.html'
 

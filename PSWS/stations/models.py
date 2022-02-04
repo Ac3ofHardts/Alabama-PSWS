@@ -8,7 +8,7 @@ from datetime import datetime
 
 class Station(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    station_id = models.CharField(max_length=10, default='N000000', primary_key=True)
+    station_id = models.CharField("ID", max_length=10, default='N000000')
     station_pass = models.CharField(max_length=32, null=True, blank=True)
     nickname = models.CharField(max_length=50)
     latitude = models.FloatField(blank=True, null=True)

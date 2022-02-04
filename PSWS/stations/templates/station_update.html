@@ -1,6 +1,13 @@
+{% extends "base_stations.html" %}
+
+{% block title %}
+<h2 class="text-center">Station Update Form</h2>
+{% endblock title %}
+
 {% load crispy_forms_tags %}
 {% block main %}
 
+<!--
 {% if messages %}
 <ul class="messages">
 	{% for message in messages %}
@@ -8,9 +15,9 @@
 	{% endfor %}
 </ul>
 {% endif %}
+-->
 
 <div class="main">
-	<h2>Station Update Form</h2>
 	<table>
 		<tr>
 			<td>

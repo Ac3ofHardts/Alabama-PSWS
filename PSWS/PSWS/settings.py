@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['pswsnetwork.caps.ua.edu', 'www.pswsnetwork.caps.ua.edu']
 
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,9 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'crispy_forms',
     'accounts',
     'six',
+    'api',
+    'datarequests',
+    'stations',
+    'observations',
+    'datatypes',
+    'bands',
+    'instruments',
+    'django_tables2',
 ]
 
 MIDDLEWARE = [
@@ -81,9 +92,9 @@ WSGI_APPLICATION = 'PSWS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'PSWS_database',
+        'USER': 'nmuscolino',
+        'PASSWORD': '#enoch8Jot!!',
 
         'HOST': 'localhost',
         'PORT': '',

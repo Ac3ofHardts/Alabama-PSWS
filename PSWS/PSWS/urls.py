@@ -28,4 +28,5 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('stations/', include('stations.urls')),
     path('favicon.ico', favicon_view),
+    path('observations/', include('observations.urls')),
 ]
