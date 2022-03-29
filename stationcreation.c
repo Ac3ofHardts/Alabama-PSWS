@@ -34,5 +34,19 @@ int main(int argc, char *argv[]) {
 	system(command1);
 	system(command2);
 
+	char command3[28];
+	char usermod[21];
+	strcpy(usermod, "usermod -g stations ");
+	strcpy(command3, usermod);
+	strncat(command3, argv[1], 8);
+	system(command3);
+
+	char command4[24];
+	char chmod[17];
+	strcpy(chmod, "chmod g+x /home/");
+	strcpy(command4, chmod);
+	strncat(command4, argv[1], 8);
+	system(command4);
+
 	exit(0);
 }
