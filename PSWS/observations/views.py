@@ -16,12 +16,12 @@ def download_file(request, id=None):
     filename = observation.fileName
     fl_path = fl_path + filename
 
-    fl = open(fl_path, 'r')
+    fl = open(fl_path, 'rb')
 
-    #mime_type, _ = mimetypes.guess_type(fl_path)
-    #potentially need to change content_type="application/x-tar"
-    #response = HttpResponse(fl, content_type=mime_type)
-    response = HttpResponse(fl, content_type="application/x-tar")
+    mime_type, _ = mimetypes.guess_type(fl_path)
+    # potentially need to change content_type="application/x-tar"
+    response = HttpResponse(fl, content_type=mime_type)
+    # response = HttpResponse(fl, content_type="application/x-tar")
     response['Content-Disposition'] = "attachment; filename=%s" % filename
     return response
 
