@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from rest_framework import permissions
 from rest_framework import generics
-from .serializers import StationSerializer, HeartbeatSerializer
+from .serializers import StationSerializer, HeartbeatSerializer, StationStopSerializer
 from stations.models import Station
+from observations.models import Observation
 from datarequests.models import DataRequest
 from rest_framework.response import Response
 from datetime import datetime, timedelta, timezone
@@ -85,3 +86,37 @@ class StationHeartbeat(generics.UpdateAPIView):
                 return Response(status=200)  
         #Password did not match, return unauthorized
         return Response(status=401)
+
+class StationStop(generics.UpdateAPIView):
+    queryset = Station.objects.all()
+    serializer_class = StationStopSerializer 
+
+    #Triggers on put request to /stop/
+    def update(self, request, *args, **kwargs):
+        #Scrape station ID and password from request
+        ID = request.data.get("station_id")
+        Pass = request.data.get("station_pass")
+
+        #Check that station exists
+        try:
+            instance = Station.objects.get(station_id = ID)
+        except Station.DoesNotExist:
+            return Response(status=404) #Not found
+
+        #Check that password works
+        if(instance.station_pass != Pass):
+            return Response(status=401) #Unauthorized
+
+        #Check that this station has an associated observation object with a blank endDate
+        #This should only be the case when the station is in progress with a continuous upload
+        try:
+            o_instance = Observation.objects.get(station=instance,endDate=None)
+        except Observation.DoesNotExist:
+            return Response(status=406) #Not acceptable
+
+        #All conditions met so we know that o_instance exists. So set time and save
+        o_instance.endDate = datetime.now(timezone.utc)
+        o_instance.save()
+
+        return Response(status=200) #Okay
+

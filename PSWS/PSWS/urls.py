@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('stations/', apiviews.StationList.as_view(), name='stationList'),
     path('heartbeat/', apiviews.StationHeartbeat.as_view(), name='heartbeat'),
+    path('stop/', apiviews.StationStop.as_view(), name='stop'),
     path('accounts/', include('accounts.urls')),
     path('', include('accounts.urls')),
     path('stations/', include('stations.urls')),
