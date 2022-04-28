@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/stations/stations">Stations</a></li>
+  <li><a href="/observations/observation_list">Observations</a></li>
+  <li><a href="/user_list">Users</a></li>
+  <li><a class="active" href="/login/">Log In</a></li>
+  <li><a href="/signup/">Register your station</a></li>
+  <li style="float:right"><a href="#about">About</a></li>
+</ul>
+
+<div class="card">
+<div class="card-body">
+<h4 class="card-title">You are logged out!</h4>
+
+<a  href="{% url 'login' %}">Log in again</a>
+<a href="{% url 'home' %}">Go home</a>
+
+</div>
+</div>
+
+{% endblock %}

@@ -8,22 +8,27 @@
   <li><a href="/user_list">Users</a></li>
   <li><a href="/login/">Log In</a></li>
   <li><a href="/signup/">Register your station</a></li>
-  <li style="float:right"><a href="#about">About</a></li>
+  <li style="float:right"><a href="/about/">About</a></li>
 </ul>
 
 {% if user.is_authenticated %}
 
-	<table>
-		<tr>
+	<table width: 100%>
+		<tr width: 100%>
 			<td>Welcome {{ request.user.profile.role }} :</td>
 			<td><a href="{% url 'profile' %}">{{ request.user.username }}</a></td>
-                </tr>
-		<tr>
-			<td><a href="{% url 'logout' %}">logout</a></td>
+			<td><a href="{% url 'logout' %}">Log out</a></td>
 		</tr>
         </table>
 	{% else %}
-	<p>Welcome to Personal Space Weather Station/Central Control!</p>
+	<table>
+		<tr>
+			<td>Welcome to Personal Space Weather Station/Central Control!</td>
+		</tr>
+		<tr>
+			<td>You are not logged in <a href="{% url 'login' %}">Log In</a></td>
+		</tr>
+	</table>
 {% endif %}
 
 <div id='map' style='position:absolute; top: 200px; width: 1200px; height: 600px;'></div>
