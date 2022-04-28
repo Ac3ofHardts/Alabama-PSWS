@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django_tables2 import SingleTableView
+from django_tables2 import SingleTableView, SingleTableMixin
+from django_filters.views import FilterView
 from django.http import HttpResponse
 
 from .models import Observation
 from .tables import ObservationTable
+from .filters import ObservationFilter
 
 
 # Create your views here.
@@ -27,9 +29,18 @@ def download_file(request, id=None):
 
 
 
+#@method_decorator(login_required, name='dispatch')
+# Display a list of all observations in the database
+#class ObservationListView(SingleTableView):
+#    table_class = ObservationTable
+#    queryset = Observation.objects.all()
+#    template_name = "observation_list.html"
+
 @method_decorator(login_required, name='dispatch')
 # Display a list of all observations in the database
-class ObservationListView(SingleTableView):
+class ObservationListView(SingleTableMixin, FilterView):
     table_class = ObservationTable
-    queryset = Observation.objects.all()
+    model = Observation
     template_name = "observation_list.html"
+
+    filterset_class = ObservationFilter
