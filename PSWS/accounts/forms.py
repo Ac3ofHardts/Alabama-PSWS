@@ -17,3 +17,4 @@ class EditProfileForm(forms.ModelForm):
         model = Profile
         fields = ('email', )
 
+#class ResetForm(forms.)

@@ -130,6 +130,11 @@ def signup_view(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form':form})
 
+
+def about_view(request):
+    return render(request, 'about.html')
+
+
 @method_decorator(login_required, name='dispatch')
 # Display a list of all registered users
 class UserListView(SingleTableView):
