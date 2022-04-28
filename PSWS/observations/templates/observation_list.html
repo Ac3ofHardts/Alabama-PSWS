@@ -16,6 +16,16 @@ table {
 
 <br>
 
+{% block content %}
+	<form action="" method="get" class="form form-inline">
+		{{ filter.form.as_p }}
+		<input type="submit" />
+	</form>
+	{% for obj in filter.qs %}
+		{{ obj.name }}
+	{% endfor %}
+{% endblock %}
+
 <div>
 	{% render_table table %}
 </div>
