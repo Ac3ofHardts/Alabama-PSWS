@@ -16,3 +16,5 @@ class Observation(models.Model):
     size = models.IntegerField()
     fileName = models.CharField(max_length=40)
     path = models.CharField(max_length=40)
+    startDate = models.DateTimeField()
+    endDate = models.DateTimeField()
