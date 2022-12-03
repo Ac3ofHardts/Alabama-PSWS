@@ -52,15 +52,17 @@ def updateStatus():
 
 def home(request):
     updateStatus()
-    mapbox_access_token = 'pk.eyJ1IjoiYWI0ZWotMSIsImEiOiJjazB1MTRmMTAwamVlM2Jwb2pheWx2cWpmIn0.cGZbctIFT5jSgBi0jBPk3w'
-    online_stations = Station.objects.filter(station_status="Online")
+ #   mapbox_access_token = 'pk.eyJ1IjoiYWI0ZWotMSIsImEiOiJjazB1MTRmMTAwamVlM2Jwb2pheWx2cWpmIn0.cGZbctIFT5jSgBi0jBPk3w'
+    mapbox_access_token = 'pk.eyJ1Ijoicm9sbHRpZGUiLCJhIjoiY2tueXFmMXhzMGt1MTJ1cDZ4YXkzOXJ3aiJ9.1HmCO6w6W-3r7Ou2HpRaMg'
+    online_stations = Station.objects.filter(station_status="Online") 
     possiblyonline_stations = Station.objects.filter(station_status="PossiblyOnline")
     offline_stations = Station.objects.filter(station_status="Offline")
     return render(request, 'home.html',
       { 'mapbox_access_token' : mapbox_access_token,
           'online_stations' : online_stations,
-          'possbilyonline_stations' : possiblyonline_stations,
-          'offline_stations' : offline_stations, } )
+          'possiblyonline_stations' : possiblyonline_stations,
+          'offline_stations' : offline_stations, 
+        } )
 
 @login_required
 def profile(request):
@@ -107,7 +109,30 @@ def activate(request, uidb64, token):
 def signup_view(request):
     if request.method == "POST":
         form = SignUpForm(request.POST)
-        if form.is_valid():
+        if request.POST.get("resend-button"):
+            userid = request.POST.get("username")
+           # userid = form.cleaned_data['username']
+            try:
+                user = get_object_or_404(User, username=userid)
+            except:
+                return render(request, 'signup.html', {'form':form})
+            if user.is_active == False:
+
+                subject = 'Please Activate Your Account'
+                message = render_to_string('activation_request.html', {
+                    'user': user,
+                    'domain': get_current_site(request).domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                })
+                from_email = 'AB4EJ1@gmail.com'
+                to = user.email
+                msg = EmailMultiAlternatives(subject, message, from_email, [to])
+                msg.send(fail_silently=False)
+                return redirect('activation_sent')
+
+
+        if form.is_valid() or request.POST.get("resend-button"):
             user = form.save()
             user.refresh_from_db()
             user.profile.email = form.cleaned_data.get('email')
@@ -121,7 +146,7 @@ def signup_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            from_email = 'colerobbinstech@gmail.com'
+            from_email = 'AB4EJ1@gmail.com'
             to = user.email
             msg = EmailMultiAlternatives(subject, message, from_email, [to])
             msg.send(fail_silently=False)
@@ -134,6 +159,8 @@ def signup_view(request):
 def about_view(request):
     return render(request, 'about.html')
 
+def about1_view(request):
+    return render(request, 'about1.html')
 
 @method_decorator(login_required, name='dispatch')
 # Display a list of all registered users
@@ -141,4 +168,4 @@ class UserListView(SingleTableView):
     table_class = UserTable
     queryset = User.objects.all()
     template_name = 'user_list.html'
-
+    paginate_by = 4

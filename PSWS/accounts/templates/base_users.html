@@ -37,6 +37,14 @@ li a:hover:not(.active) {
   background-color: #111;
 }
 
+.pagination li:not(.active) {
+  background-color: #333
+}
+
+.pagination li:hover:not(.pagination ) {
+  background-color: #111
+}
+
 .active {
   background-color: #04AA6D;
 }
@@ -58,7 +66,7 @@ li a:hover:not(.active) {
 		<li><a class="active" href="/user_list">Users</a></li>
 		<li><a href="/login/">Log In</a></li>
 		<li><a href="/signup/">Register your station</a></li>
-		<li style="float:right"><a href="#about">About</a></li>
+		<li style="float:right"><a href="/about/">About</a></li>
 	</ul>
       </div>
       {% block main %}

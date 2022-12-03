@@ -5,12 +5,22 @@
 {% endblock title %}
 
 {% block main %}
+{% load render_table from django_tables2 %}
 
 <br>
 <a href="{% url 'my_stations_list' %}">Back to your stations</a>
-
+<div>
+	<a href="{% url 'station_update' id=station.id %}">Edit Station Details (this station)</a>
+</div>
+<div>
+	<a href="{% url 'add_instrument' id=station.id %}">Add New Instrument to this station</a>
+</div>
+<div>
+Details of this station:
+</div>
 <ul>
 	<li class="details">ID: {{station.station_id}}</li>
+        <li class="details">Nickname: {{station.nickname}}</li>
 	<li class="details">Token: {{station.station_pass}}</li>
 	<li class="details">User: {{station.user.username}}</li>
 	<li class="details">Latitude: {{station.latitude|floatformat:3}}</li>
@@ -25,9 +35,33 @@
 	<li class="details">Postal Code: {{station.postal_code}}</li>
 	<li class="details">Date Created: {{station.create_date}}</li>
 </ul>
+Below is a list of instruments of this station. To edit details of an instrument, click on its ID.
+<div>
+	{% render_table table %}
+</div>
 
 <div>
-	<a href="{% url 'station_update' id=station.id %}">Update</a>
+	<a href="{% url 'station_update' id=station.id %}">Edit Station Details (this station)</a>
+	&nbsp; &nbsp;
+	<a href="{% url 'add_instrument' id=station.id %}">Add New Instrumennt</a>
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
 </div>
 
 {% endblock main %}

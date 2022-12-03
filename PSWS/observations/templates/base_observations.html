@@ -25,7 +25,7 @@ li:last-child {
   border-right: none;
 }
 
-li a {
+li a:not(.details) {
   display: block;
   color: white;
   text-align: center;
@@ -33,12 +33,31 @@ li a {
   text-decoration: none;
 }
 
-li a:hover:not(.active) {
+li a:hover:not(.active):not(.details) {
   background-color: #111;
+}
+
+.pagination li:not(.active) {
+  background-color: #333
 }
 
 .active {
   background-color: #04AA6D;
+}
+
+.details {
+  float: none;
+  border-right: none;
+}
+
+.parent {
+  text-align: left;
+}
+
+.child {
+  display: inline-block;
+  padding: 1rem 1rem;
+  vertical-align: top;
 }
 </style>
 
@@ -58,7 +77,7 @@ li a:hover:not(.active) {
 		<li><a href="/user_list">Users</a></li>
 		<li><a href="/login/">Log In</a></li>
 		<li><a href="/signup/">Register your station</a></li>
-		<li style="float:right"><a href="#about">About</a></li>
+		<li style="float:right"><a href="/about/">About</a></li>
 	</ul>
       </div>
       {% block main %}
