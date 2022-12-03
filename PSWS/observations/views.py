@@ -7,8 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django_tables2 import SingleTableView, SingleTableMixin
 from django_filters.views import FilterView
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.core.files.temp import NamedTemporaryFile
 

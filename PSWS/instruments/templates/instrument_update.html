@@ -10,15 +10,15 @@
 
 </div>
 
-	
+
 <div class="main">
-	<table>
-		<tr>
-			<td>
-				<form method='POST' enctype="multipart/form-data">
-					{% csrf_token %}
-					{{ form|crispy }}
-					<button type='submit'>Save Changes</button>
+        <table>
+                <tr>
+                        <td>
+                                <form method='POST' enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {{ form|crispy }}
+                                        <button type='submit'>Save Changes</button>
                                         <br>
 
 {% if messages %}
@@ -33,9 +33,10 @@
                                         <button type='submit' name="del-button" value="Delete Instrument" >Delete Instrument (this cannot be undone)</button>
                                         <br>
                                 </form>
-			</td>
-		</tr>
-	</table>
+                        </td>
+                </tr>
+        </table>
 </div>
 
 {% endblock %}
+

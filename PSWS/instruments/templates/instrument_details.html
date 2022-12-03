@@ -9,19 +9,19 @@
 <br>
 
 <ul>
-	<li class="details">ID: {{instrument.id}}</li>
-	<li class="details">Instrument: {{instrument.instrument}}</li>
-	<li class="details">Date Added: {{instrument.dateAdded}}</li>
-	<li class="details">Date Removed ('None' if still in service): {{instrument.dateRemoved}}</li>
-	<li class="details">Type ID: {{instrument.instrumenttype_id}}</li>
-	<li class="details">Nickname: {{instrument.nickname}}</li>
-	<li class="details">Serial No.: {{instrument.serialNo}}</li>
-	<li class="details">Status: {{instrument.status}}</li>
+        <li class="details">ID: {{instrument.id}}</li>
+        <li class="details">Instrument: {{instrument.instrument}}</li>
+        <li class="details">Date Added: {{instrument.dateAdded}}</li>
+        <li class="details">Date Removed ('None' if still in service): {{instrument.dateRemoved}}</li>
+        <li class="details">Type ID: {{instrument.instrumenttype_id}}</li>
+        <li class="details">Nickname: {{instrument.nickname}}</li>
+        <li class="details">Serial No.: {{instrument.serialNo}}</li>
+        <li class="details">Status: {{instrument.status}}</li>
         <li class="details">Type: {{instrumentType}}</li>
 </ul>
 
 <div>
-	<a href="{% url 'instrument_update' id=instrument.id %}">Edit (or delete) this instrument</a>
+        <a href="{% url 'instrument_update' id=instrument.id %}">Edit (or delete) this instrument</a>
 </div>
 
 <div>
