@@ -9,15 +9,20 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django_tables2 import SingleTableView
 
-from stations.calculate_latitude import CalculateLatitude
-from stations.calculate_longitude import CalculateLongitude
+import maidenhead as mh
 from .tables import StationTable, FilteredStationTable
 from .forms import EditStationForm
 from .tokens import station_activation_token
 
-import os
+from instruments.models import Instrument
+from instruments.tables import InstrumentTable
+from observations.models import Observation
+
+import os, sys
 import logging
 logger = logging.getLogger(__name__)
+
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -31,14 +36,6 @@ class MyStationsListView(SingleTableView):
     table_class = FilteredStationTable
     template_name = 'my_stations_list.html'
 
-#@login_required
-# Display a list of the logged in user's stations
-#def my_stations_list_view(request):
-#    table = FilteredStationTable(Station.objects.filter(user=request.user))
-#    
-#    return render(request, 'my_stations_list.html', {
-#        "table": table
-#    })
 
 @method_decorator(login_required, name='dispatch')
 # Display the list of all registered stations
@@ -61,9 +58,13 @@ class StationListView(SingleTableView):
 def station_details_view(request, id=None):
     station = get_object_or_404(Station, id=id, user=request.user)
 
-    all_stations = Station.objects.all()
     context = {'station': station}
-    return render(request, 'station_details.html', context)
+
+    table = InstrumentTable(Instrument.objects.filter(station_id=id))
+
+    return render(request, 'station_details.html', 
+          {'station': station, 'table': table}
+              )
 
 @login_required
 # Allow a user to register a new station
@@ -83,14 +84,19 @@ def add_station_view(request):
             #    new_id_number = 1
             #else:
             #    new_id_number = Station.objects.latest('create_date').id + 1
-            
-            station.station_id = 'N' + str(new_id_number).zfill(6)
+
+            # First char of new UID changed from N to S to avoid confusion with Grape Node numbers
+            station.station_id = 'S' + str(new_id_number).zfill(6)
             station.station_pass = station_activation_token.make_token(request.user)
             station.station_pass = station.station_pass.replace('-', station.station_pass[0])[4:36]
             station.nickname = form.cleaned_data.get('nickname')
             station.grid = form.cleaned_data.get('grid')
-            station.latitude = CalculateLatitude.calculate_latitude(station.grid)
-            station.longitude = CalculateLongitude.calculate_longitude(station.grid)
+            try:
+              station.latitude =  mh.to_location(station.grid,center=True)[0]
+              station.longitude = mh.to_location(station.grid,center=True)[1]
+            except Exception as e:
+              text = "You entered an invalid grid square value. For help with this see <a href='https://www.levinecentral.com/ham/grid_square.php'>here.</a>"
+              return HttpResponse(text)
             station.elevation = form.cleaned_data.get('elevation')
             station.antenna_1 = form.cleaned_data.get('antenna_1')
             station.antenna_2 = form.cleaned_data.get('antenna_2')
@@ -101,7 +107,7 @@ def add_station_view(request):
             station.phone_number = form.cleaned_data.get('phone_number')
             station.create_date = datetime.now()
             station.save()
-            os.system('/bin/stationcreation ' + station.station_id + ' ' + station.station_pass)
+            os.system('/bin/stationcreation3 ' + station.station_id + ' ' + station.station_pass)
             return redirect('stations')
     else:
         form = StationCreationForm()
@@ -115,14 +121,23 @@ def update_station_view(request, id=None):
 
     if request.method == 'POST':
         form = EditStationForm(request.POST, request.FILES, instance=station)
+
+        if request.POST.get("del-button"):
+          instrQS = Instrument.objects.filter(station_id=station.id)
+          if instrQS.count() > 0:   # this station has instrument(s), deny the deletion
+            messages.error(request, "(!) YOU CAN ONLY DELETE THIS STATION AFTER DELETING ITS INSTRUMENT(S).")
+            return render(request, 'station_update.html', {'form': form, 'station': station})
+          station.delete()
+          return redirect('my_stations_list')
+
         #logger.error("POST request received")
         #form = EditStationForm(request.POST, instance=request.Station.station)
         if form.is_valid():
             #logger.error(request.station)
             station.nickname = form.cleaned_data.get('nickname')
             station.grid = form.cleaned_data.get('grid')
-            station.latitude = CalculateLatitude.calculate_latitude(station.grid)
-            station.longitude = CalculateLongitude.calculate_longitude(station.grid)
+            station.latitude =  mh.to_location(station.grid,center=True)[0]
+            station.longitude = mh.to_location(station.grid,center=True)[1]
             station.elevation = form.cleaned_data.get('elevation')
             station.antenna_1 = form.cleaned_data.get('antenna_1')
             station.antenna_2 = form.cleaned_data.get('antenna_2')
@@ -133,12 +148,41 @@ def update_station_view(request, id=None):
             station.phone_number = form.cleaned_data.get('phone_number')
             station.save()
             messages.success(request, 'Your station has been updated!')
-            return redirect('station_details', station.id)
+            return render(request, 'station_update.html', {'form': form, 'station': station})
+            #return redirect('station_details', station.id)
         else:
             form = EditStationForm(instance=station)
             messages.error(request, 'Issue updating information.')
             return render(request, 'station_update.html', {'form': form, 'station': station})
     else:
         form = EditStationForm(instance=station)
+        instrQS = Instrument.objects.filter(station_id=station.id)
+        if instrQS.count() > 0:  # if this station has instrument(s) issue warning
+          messages.warning(request, "(!) ONE OR MORE INSTRUMENT(S) UNDER THIS STATION. You must delete them before deleting station.")
+
         return render(request, 'station_update.html', {'form': form, 'station': station})
+
+
+
+@login_required
+# Allow user to add a new instrument
+def add_instrument_view(request, id=id):
+    if request.method == "POST":
+        form = InstrumentCreationForm(request.POST)
+        if form.is_valid():
+            instrument = form.save(commit=False)
+            instrument.station_id = id
+
+            instrument.instrument = form.cleaned_data.get('instrument')
+            instrument.dateAdded  = form.cleaned_data.get('date_added')
+            instrument.nickname   = form.cleaned_data.get('nickname')
+            instrument.serialNo   = form.cleaned_data.get('serial_no')
+            instrument.status     = form.cleaned_data.get('status')
+
+            instrument.save()
+            return redirect('instruments')
+    else:
+        form = InstrumentCreationForm()
+
+    return render(request, 'add_instrument.html', {'form': form})
 

@@ -1,0 +1,27 @@
+{% extends "base_observations.html" %}
+
+{% block title %}<h1 class="text-center">Observations</h1>{% endblock title %}
+
+{% block main %}
+
+{% for message in messages %}
+	<div class="alert alert-success">
+		<a class="close" href="#" data-dismiss="alert">x</a>
+			{{ message }}
+	</div>
+{% endfor %}
+
+<p>Select desired data and time range for observation data</p>
+
+<form action="/observations/download_range/{{observation.id}}/"method="POST">
+    {% csrf_token %}
+    <p>Start Date:<input name='start_date' type='datetime-local' name='start_date' placeholder="start"></p>
+    <p>End Date:<input name='end_date' type='datetime-local' name='end_date' placeholder="end"></p>
+    <!--<a href="{% url 'download_range' id=observation.id %}">Download Observation Data</a>-->
+    <button type="submit">Download Observation Data</button>
+</form>
+
+<div>
+    <a href="{% url 'observation_list' %}">Back</a>
+</div>
+{% endblock main %}
