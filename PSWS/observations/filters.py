@@ -12,12 +12,12 @@ class ObservationFilter(django_filters.FilterSet):
 
     station = django_filters.ModelChoiceFilter(queryset=Station.objects.all(), label='Station Nickname')
 
-    band = django_filters.filters.ModelMultipleChoiceFilter(
-            field_name='band__band',
-            to_field_name='band',
-            queryset=Band.objects.all(),
-            label='Band',
-    )
+#    band = django_filters.filters.ModelMultipleChoiceFilter(
+#            field_name='band__band',
+#            to_field_name='band',
+#            queryset=Band.objects.all(),
+#            label='Band',
+#    )
 
     centerFrequency = django_filters.filters.ModelMultipleChoiceFilter(
             field_name='centerFrequency__centerFrequency',
@@ -31,4 +31,6 @@ class ObservationFilter(django_filters.FilterSet):
 
     class Meta:
         model = Observation
-        fields = ['centerFrequency', 'station', 'band']
+        fields = ['centerFrequency', 'station',
+        #'band'
+         ]
