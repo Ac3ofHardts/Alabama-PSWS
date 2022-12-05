@@ -108,7 +108,7 @@ def download_range(request, id=None):
 
     fl_path = observation.path
     filename = observation.fileName
-    full_path = fl_path + filename
+    full_path = fl_path # + filename
 
     #zip_path = "/home/ziptemp/" + fl_path.rsplit('/')[2] + \
     #        "/temp/" + filename[:3] + start + "-" + end
