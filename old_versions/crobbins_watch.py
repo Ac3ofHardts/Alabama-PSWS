@@ -15,7 +15,7 @@ from sqlalchemy import create_engine
 from urllib.parse import quote_plus
 
 #connect the database
-engine = create_engine('mysql://root:' + quote_plus('1Step@ATime!') + '@localhost/cole_testing')
+engine = create_engine('mysql://root:' + quote_plus('1Step@ATime!') + '@localhost/prod')
 
 class UploadEvent(PatternMatchingEventHandler):
     def __init__(self, patterns=None):
@@ -103,12 +103,21 @@ class UploadEvent(PatternMatchingEventHandler):
 
         #NEW Insertion
         #D insertion
+
+        
+        #if uploadType == 'd': 
+        #    statement_cols = '(dataRate, centerFrequency, size, fileName, path, station_id, startDate, endDate)'
+        #    statement_vals_tuple = dataRate, centerFrequency, size, fileName, path, station_id, startDate, endDate
+        #else:
+        #    statement_cols = '(dataRate, centerFrequency, size, fileName, path, station_id, startDate)'
+        #    statement_vals_tuple = dataRate, centerFrequency, size, fileName, path, station_id, startDate
+        
         if uploadType == 'd': 
-            statement_cols = '(dataRate, centerFrequency, size, fileName, path, station_id, startDate, endDate)'
-            statement_vals_tuple = dataRate, centerFrequency, size, fileName, path, station_id, startDate, endDate
+            statement_cols = '(dataRate, size, fileName, path, station_id, startDate, endDate)'
+            statement_vals_tuple = dataRate, size, fileName, datapath, station_id, startDate, endDate
         else:
-            statement_cols = '(dataRate, centerFrequency, size, fileName, path, station_id, startDate)'
-            statement_vals_tuple = dataRate, centerFrequency, size, fileName, path, station_id, startDate
+            statement_cols = '(dataRate, size, fileName, path, station_id, startDate)'
+            statement_vals_tuple = dataRate, size, fileName, path, station_id, startDate
             
         statement_vals = str(statement_vals_tuple)
         statement = statement_prefix + statement_cols + ' VALUES ' + statement_vals + ';'

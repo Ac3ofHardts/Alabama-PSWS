@@ -12,12 +12,14 @@ set -e
 source /var/www/Alabama-PSWS/venv/bin/activate
 
 
-PSWS/manage.py runserver 0:8080 &
+PSWS/manage.py runserver 0:8000 &
 PSWS_PID=$!
 echo $!
 python3 crobbins_watch.py /home &
 watch_PID=$!
 echo $!
+
+echo "To end this script, press [Enter]"
 
 read var
 echo 'Killing after read'
