@@ -85,7 +85,6 @@ def add_instrument_view(request, id=id):
 
     else:
         form = InstrumentCreationForm()
-   
     return render(request, 'add_instrument.html', {'form': form})
 
 @login_required

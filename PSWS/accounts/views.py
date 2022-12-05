@@ -168,4 +168,4 @@ class UserListView(SingleTableView):
     table_class = UserTable
     queryset = User.objects.all()
     template_name = 'user_list.html'
-
+    paginate_by = 4

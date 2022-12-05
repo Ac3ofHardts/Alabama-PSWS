@@ -1,0 +1,46 @@
+{% extends "base_observations.html" %}
+
+{% block title %}<h1 class="text-center">{{observation}}</h1>{% endblock title %}
+
+{% block main %}
+
+{% for message in messages %}
+    <div class="alert alert-success">
+        <a class="close" href="#" data-dismiss="alert">x</a>
+	    {{ message }}
+    </div>
+{% endfor %}
+
+<div class="parent">
+    <div class="child">
+        <ul>
+	    <li class="details">ID: {{observation.id}}</li>
+	    <li class="details">Data Type: {{observation.dataType}}</li>
+	    <li class="details">Data Rate: {{observation.dataRate}}</li>
+	    <li class="details">Center Frequency: {{observation.centerFrequency}}</li>
+	    <li class="details">Station: {{observation.station}}</li>
+	    <li class="details">Instrument: {{observation.instrument}}</li>
+	    <li class="details">Band: {{observation.band}}</li>
+	    <li class="details">Size: {{observation.size}}</li>
+	    <li class="details">File Name: {{observation.fileName}}</li>
+	    <li class="details">Path: {{observation.path}}</li>
+	    <li class="details">Start Date: {{observation.startDate}}</li>
+	    <li class="details">End Date: {{observation.endDate}}</li>
+	</ul>
+    </div>
+    <div class="child">
+	<p>Select desired date range for observation data</p>
+        <form action="/observations/download_range/{{ observation.id }}/" method="POST">
+            {% csrf_token %}
+            <p>Start Date:<input name='start_date' type='datetime-local'></p>
+            <p>End Date:<input name='end_date' type='datetime-local'></p>
+            <!--<a href="{% url 'download_range' id=observation.id %}">Download Observation Data</a>-->
+            <button type="submit">Download Observation Data</button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="{% url 'observation_list' %}">Back</a>
+</div>
+{% endblock main %}

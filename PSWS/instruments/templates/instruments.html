@@ -7,18 +7,18 @@
 
 <style>
 table {
-	width: 1000px;
-	border: 5px solid black;
+        width: 1000px;
+        border: 5px solid black;
 }
 </style>
 <!--
 th {
-	border: 5px solid black;
-	text-align: center;
+        border: 5px solid black;
+        text-align: center;
 }
 tr, td {
-	border: 3px solid #dddddd;
-	text-align: center;
+        border: 3px solid #dddddd;
+        text-align: center;
 }
 -->
 <!--<h1 class="text-center">Instruments</h1>-->
@@ -30,23 +30,23 @@ tr, td {
 <br>
 
 <div>
-	{% render_table table %}
+        {% render_table table %}
 </div>
 
 <!--
 <table>
-	<tr>
-		<th>ID</th>
-		<th>Instrument</th>
-	</tr>
-	{% for instrument in all_instruments %}
-	<tr>
-		<td>{{instrument.id}}</td>
-		<td>{{instrument.instrument}}</td>
+        <tr>
+                <th>ID</th>
+                <th>Instrument</th>
+        </tr>
+        {% for instrument in all_instruments %}
+        <tr>
+                <td>{{instrument.id}}</td>
+                <td>{{instrument.instrument}}</td>
                 <td>{{instrument.station_id}}</td>
                 <td>{{instrument.instrumenttype_id}}</td>
-      	</tr>
-	{% endfor %}
+        </tr>
+        {% endfor %}
 </table>
 -->
 

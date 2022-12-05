@@ -31,6 +31,6 @@ class ObservationFilter(django_filters.FilterSet):
 
     class Meta:
         model = Observation
-        fields = ['centerFrequency', 'station', 
+        fields = ['centerFrequency', 'station',
         #'band'
          ]

@@ -11,6 +11,10 @@
     <a href="{% url 'station_details' id=station.id %}">Back to Station Details</a>
 </div>
 
+<div>
+	<a href="{% url 'station_details' id=station.id %}">Back to Station Details</a>
+</div>
+
 <div class="main">
 	<table>
 		<tr>
@@ -19,31 +23,31 @@
 					{% csrf_token %}
 					{{ form|crispy }}
 					<button type='submit'>Save Changes</button>
-                                        <br>
+					<br>
 
-                                        {% if messages %}
-                                         <ul class="messages">
-                                          {% for message in messages %}
-                                          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                          {% endfor %}
-                                         </ul>
-                                        {% endif %}
+					{% if messages %}
+					 <ul class="messages">
+					  {% for message in messages %}
+					  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					  {% endfor %}
+					 </ul>
+					{% endif %}
 
-                                        <br>
-                                        Permanently delete this Station. &nbsp; (You must delete any instrument(s) on this station before you can do this.)
-                                        <br>
-                                        <button type='submit' name="del-button" value="Delete Instrument" >Delete Station (this cannot be undone)</button>
-                                        <br>
+					<br>
+					Permanently delete this Station. &nbsp; (You must delete any instrument(s) on this station before you can do this.)
+					<br>
+					<button type='submit' name="del-button" value="Delete Instrument" > Delete Station (this cannot be undone)</button>
+					<br>
 
-                                </form>
+				</form>
 			</td>
 		</tr>
 	</table>
 </div>
 
 <div>
-    <a href="{% url 'station_details' id=station.id %}">Back to Station Details</a>
+	<a href="{% url 'station_details' id=station.id %}">Back to Station Details</a>
 </div>
 
-{% endblock main %}
+{% endblock %}
 

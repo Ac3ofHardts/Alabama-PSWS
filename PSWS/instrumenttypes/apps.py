@@ -1,4 +1,6 @@
 from django.apps import AppConfig
 
+
 class InstrumenttypesConfig(AppConfig):
-    name = 'instrumentypes'
+    #default_auto_field = 'django.db.models.BigAutoField'
+    name = 'instrumenttypes'
