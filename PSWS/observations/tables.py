@@ -17,5 +17,6 @@ class ObservationTable(tables.Table):
     class Meta:
         model = Observation
         template_name = "django_tables2/bootstrap.html"
-        #fields = ("dataType", "dataRate", "centerFrequency", "station", "instrument", "band", "size", "fileName", "startDate", "endDate")
-        fields = ("dataRate", "centerFrequency", "station", "instrument", "size", "fileName", "startDate", "endDate")
+       # fields = ("dataType", "dataRate", "centerFrequency", "station", "instrument", "band", "size", "fileName", "startDate", "endDate")
+        fields = ("dataRate", "centerFrequency", "station", "instrument.instrument", "size", "fileName", "startDate", "endDate")
+        

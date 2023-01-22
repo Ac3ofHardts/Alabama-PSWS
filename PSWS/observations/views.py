@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.core.files.temp import NamedTemporaryFile
 
 from .models import Observation
+from .models import Instrument
 from .tables import ObservationTable
 from .filters import ObservationFilter
 from .forms import DateTimeForm
@@ -36,6 +37,7 @@ def download_file(request, id=None):
 
     try:  # does the requested tar file exist?
         fl = open(fl_path, 'rb')
+        os.remove(fl_path)
     except IOError:  # file is not there, see if this is request for download of  DRF dataset
         obs = get_object_or_404(Observation, id=id)
         fl_path =  obs.fileName
@@ -63,6 +65,7 @@ def download_file(request, id=None):
         # The following replaces the original tar/gzip code as it produces a
         # zip file without the internal directory structure
         fl = open(zip_path + '.zip', 'rb')
+        os.remove(zip_path)
         mime_type, _ = mimetypes.guess_type(zip_path+'.zip')
         response = HttpResponse(fl, content_type=mime_type)
         response['Content-Disposition'] = "attachment; filename=%s" % fl_path+'.zip'
@@ -76,7 +79,7 @@ def download_file(request, id=None):
     response['Content-Disposition'] = "attachment; filename=%s" % filename
     return response
 
-def download_range(request, id=None, start=None, end=None):
+def download_range(request, id=None):
     observation = get_object_or_404(Observation, id=id)
 
     start = str(request.POST.get('start_date'))
@@ -88,7 +91,7 @@ def download_range(request, id=None, start=None, end=None):
 
     start = start[:10]
     end = end[:10]
-
+    
     # TODO: Add try catch here to replace blank if statement above
     start_converted = datetime.strptime(start, '%Y-%m-%d').date()
     end_converted = datetime.strptime(end, '%Y-%m-%d').date()
@@ -96,17 +99,29 @@ def download_range(request, id=None, start=None, end=None):
     if (end < start):
         messages.error(request, "Error: End date before start date")
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
+ 
     if (end_converted - start_converted).days > 7:
         messages.error(request, "You've selected " + str((end_converted - start_converted).days) + " days. Please limit to at most 7 days")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/')) 
 
     print(start)
     print(end)
 
     fl_path = observation.path
     filename = observation.fileName
-    full_path = fl_path + filename
+    full_path = fl_path # + filename
+
+    instrument = get_object_or_404(Instrument, id=observation.instrument.id)
+    print(instrument.instrumenttype)
+    print(instrument.id)
+    
+    if instrument.instrumenttype_id == 3:
+        full_path = fl_path + filename
+        fl = open(full_path, "rb")
+        mime_type, _ = mimetypes.guess_type(fl_path)
+        response = HttpResponse(fl, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        return response
 
     #zip_path = "/home/ziptemp/" + fl_path.rsplit('/')[2] + \
     #        "/temp/" + filename[:3] + start + "-" + end

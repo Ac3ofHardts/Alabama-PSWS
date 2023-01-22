@@ -39,14 +39,6 @@ class MyStationsListView(SingleTableView):
     template_name = 'my_stations_list.html'
     paginate_by = 4
 
-#@login_required
-# Display a list of the logged in user's stations
-#def my_stations_list_view(request):
-#    table = FilteredStationTable(Station.objects.filter(user=request.user))
-#    
-#    return render(request, 'my_stations_list.html', {
-#        "table": table
-#    })
 
 @method_decorator(login_required, name='dispatch')
 # Display the list of all registered stations
@@ -134,6 +126,15 @@ def update_station_view(request, id=None):
 
     if request.method == 'POST':
         form = EditStationForm(request.POST, request.FILES, instance=station)
+
+        if request.POST.get("del-button"):
+          instrQS = Instrument.objects.filter(station_id=station.id)
+          if instrQS.count() > 0:   # this station has instrument(s), deny the deletion
+            messages.error(request, "(!) YOU CAN ONLY DELETE THIS STATION AFTER DELETING ITS INSTRUMENT(S).")
+            return render(request, 'station_update.html', {'form': form, 'station': station})
+          station.delete()
+          return redirect('my_stations_list')
+
         #logger.error("POST request received")
         #form = EditStationForm(request.POST, instance=request.Station.station)
 
@@ -163,7 +164,8 @@ def update_station_view(request, id=None):
             station.phone_number = form.cleaned_data.get('phone_number')
             station.save()
             messages.success(request, 'Your station has been updated!')
-            return redirect('station_details', station.id)
+            return render(request, 'station_update.html', {'form': form, 'station': station})
+            #return redirect('station_details', station.id)
         else:
             form = EditStationForm(instance=station)
             messages.error(request, 'Issue updating information.')

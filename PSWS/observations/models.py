@@ -6,7 +6,6 @@ from bands.models import Band
 from datatypes.models import DataType
 from centerfrequencies.models import CenterFrequency
 
-
 class Observation(models.Model):
     dataType = models.ManyToManyField(DataType, verbose_name="Data type", blank=True)
     dataRate = models.IntegerField("Data rate")
@@ -14,9 +13,9 @@ class Observation(models.Model):
     centerFrequency = models.ManyToManyField(CenterFrequency, verbose_name="Center Frequency", blank=True)
     station = models.ForeignKey(Station, on_delete=models.CASCADE, null=True)
     #instrument = models.ManyToManyField(Instrument, blank=True)
-    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
+    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE, default=1)
     band = models.ManyToManyField(Band, verbose_name="Band", blank=True)
-    size = models.IntegerField("Size (MB)")
+    size = models.BigIntegerField()
     fileName = models.CharField("File", max_length=40)
     path = models.CharField(max_length=40)
     startDate = models.DateTimeField("Start Date")

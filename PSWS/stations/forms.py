@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from stations.models import Station
 
+from instruments.models import Instrument
+from instrumenttypes.models import InstrumentType
+
+instr_type_set = InstrumentType.objects.all()
+
 # Form used to register new stations
 class StationCreationForm(forms.ModelForm):
     nickname = forms.CharField(max_length=30)
@@ -36,3 +41,31 @@ class EditStationForm(forms.ModelForm):
     class Meta:
         model = Station
         fields = ('nickname', 'grid', 'elevation', 'antenna_1', 'antenna_2', 'street_address', 'city', 'state', 'postal_code', 'phone_number', )
+
+
+# This is redundant with form in instruments area; may be possible to unify.
+
+# Form used to register new instrument
+#class InstrumentCreationForm(forms.ModelForm):
+#    instrument = forms.CharField(max_length=40)
+#    date_added = forms.DateTimeField(label="Date instrument added")
+#    date_removed = forms.DateTimeField(label="Date instrument removed")
+#    instrument_type = forms.ModelChoiceField(queryset=InstrumentType.objects.all())
+# the above may need to be  widget=forms.Select, queryset=instr_type_set
+
+#    nickname    = forms.CharField(max_length=40)
+#    serial_no   = forms.CharField(max_length=60)
+#    status      = forms.CharField(max_length=10)
+
+ #   class Meta:
+ #       model = Instrument
+ #       fields = ('instrument', 'dateAdded', 'dateRemoved',  'nickname', 'serialNo' )
+
+# need to add instrument type (via foreign key) to both Meta classes
+
+# Form used to edit the data pertaining to a specific instrument
+#class EditInstrumentForm(forms.ModelForm):
+#    class Meta:
+#        model =  Instrument
+#        fields = ('instrument', 'dateAdded', 'dateRemoved', 'nickname', 'serialNo')
+

@@ -34,7 +34,7 @@ class ObservationFilter(django_filters.FilterSet):
             queryset=CenterFrequency.objects.all(),
             label='Center Frequency',
     )
-    
+   
     startDate__gte = django_filters.DateFilter(field_name='startDate', lookup_expr='date__gte', label='Start Date')
     endDate__lte   = django_filters.DateFilter(field_name='endDate',   lookup_expr='date__lte', label='End Date')
 

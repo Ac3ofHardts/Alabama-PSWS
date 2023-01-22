@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 from api import views as apiviews
+from django.conf import settings # WDE
+from django.conf.urls.static import static # WDE
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
@@ -32,4 +35,4 @@ urlpatterns = [
     path('observations/', include('observations.urls')),
     path('instruments/', include('instruments.urls')),
     path('analysis/', include('analysis.urls')),
-]
+] +  staticfiles_urlpatterns()
