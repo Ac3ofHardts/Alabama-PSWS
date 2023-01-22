@@ -4,6 +4,8 @@ from .models import Observation
 from stations.models import Station
 from bands.models import Band
 from centerfrequencies.models import CenterFrequency
+from instruments.models import Instrument
+from instrumenttypes.models import InstrumentType
 
 class ObservationFilter(django_filters.FilterSet):
     #centerFrequency = django_filters.NumberFilter()
@@ -19,6 +21,13 @@ class ObservationFilter(django_filters.FilterSet):
 #            label='Band',
 #    )
 
+    instrument = django_filters.filters.ModelMultipleChoiceFilter(
+            field_name='instrument__instrumenttype__instrumentType',
+            to_field_name='instrumentType',
+            queryset=InstrumentType.objects.all(),
+            label='Instrument Type',
+    )
+    
     centerFrequency = django_filters.filters.ModelMultipleChoiceFilter(
             field_name='centerFrequency__centerFrequency',
             to_field_name='centerFrequency',
@@ -31,6 +40,6 @@ class ObservationFilter(django_filters.FilterSet):
 
     class Meta:
         model = Observation
-        fields = ['centerFrequency', 'station',
+        fields = ['instrument', 'centerFrequency', 'station',
         #'band'
          ]
