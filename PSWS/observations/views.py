@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.core.files.temp import NamedTemporaryFile
 
 from .models import Observation
+from .models import Instrument
 from .tables import ObservationTable
 from .filters import ObservationFilter
 from .forms import DateTimeForm
@@ -108,7 +109,19 @@ def download_range(request, id=None):
 
     fl_path = observation.path
     filename = observation.fileName
-    full_path = fl_path + filename
+    full_path = fl_path # + filename
+
+    instrument = get_object_or_404(Instrument, id=observation.instrument.id)
+    print(instrument.instrumenttype)
+    print(instrument.id)
+    
+    if instrument.id == 3:
+        full_path = fl_path + filename
+        fl = open(full_path, "rb")
+        mime_type, _ = mimetypes.guess_type(fl_path)
+        response = HttpResponse(fl, content_type=mime_type)
+        response['Content-Disposition'] = "attachment; filename=%s" % filename
+        return response
 
     #zip_path = "/home/ziptemp/" + fl_path.rsplit('/')[2] + \
     #        "/temp/" + filename[:3] + start + "-" + end
