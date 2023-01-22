@@ -60,13 +60,13 @@ for thisfile in fileList:
         continue  # ignore any hidden files
     print("filename:",thisfile)
     startDate = thisfile[3:19] # filename must be of the form OBSYYYY-MM-DDTHH:SS.zip
-    print("startdate:",startDate)
+#    print("startdate:",startDate)
     obsSize = os.path.getsize(os.path.join(path, thisfile))
-    print("file size:",obsSize)
+#    print("file size:",obsSize)
     startDateTZ = dt.strptime(startDate, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
 # temporary
     endDateTZ = dt.strptime(time_stamp, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
-    print("startdate:", str(startDateTZ))
+#    print("startdate:", str(startDateTZ))
    # a=input()
     # Look to see if this observation is already in the database  (for this station and user)
     thisObsQS = Observation.objects.filter(fileName = thisfile, station_id=station_id, instrument_id=instrument_id)
@@ -75,10 +75,10 @@ for thisfile in fileList:
     try:
         observationID = thisObsQS.values()[0]["id"]  # try to extract the id (can also be gotten by: obsPtr=thisObsQS[0].id
         #today = dt.utcnow().date()
-        print("found observation id ",str(observationID))
-        print("obs date:", str(startDateTZ.date())," today:",str(today))
+ #       print("found observation id ",str(observationID))
+ #       print("obs date:", str(startDateTZ.date())," today:",str(today))
         if startDateTZ.date() == today:
-            print("this observation is from today, will update time and size")
+  #          print("this observation is from today, will update time and size")
            # a=input()
 
             Observation.objects.filter(id=observationID).update(size=obsSize, endDate=endDateTZ)
@@ -86,7 +86,7 @@ for thisfile in fileList:
 #  there is a time stamp in the trigger directory that can be used to update the end date
     except IndexError as e: # this observation is not yet in the database
        if startDateTZ.date() == today:  # use previously set end time in trigger
-          print("this observation is from today, setting end time to trigger time")
+   #       print("this observation is from today, setting end time to trigger time")
           noop = 1 
        else:  # adding historical file; set end time to end of that day
           endDateTZ = startDateTZ + dz.timedelta(hours=23,minutes=59)

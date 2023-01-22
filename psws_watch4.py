@@ -48,6 +48,7 @@ class UploadEvent(PatternMatchingEventHandler):
         #Begin by identifying if continuous or not
         #Then locating the path of the event
         print("UPLOAD trigger at local time: " + dt.now().isoformat())
+        print("ULOAD path='" + event.src_path +"'")
         writeLog("UPLOAD, path " + event.src_path)
         instrumentNo = event.src_path.split("_#")[1] # this should be instrument_id in database
 
