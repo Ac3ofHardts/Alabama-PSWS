@@ -34,5 +34,5 @@ urlpatterns = [
     path('favicon.ico', favicon_view),
     path('observations/', include('observations.urls')),
     path('instruments/', include('instruments.urls')),
+    path('analysis/', include('analysis.urls')),
 ] +  staticfiles_urlpatterns()
-

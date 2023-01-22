@@ -27,17 +27,17 @@ def writeLog(theMessage):
 # Arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
 
 path = str (sys.argv[1])
-print("path: '" + path + "'")
+#print("path: '" + path + "'")
 station_name  = str(sys.argv[2])
-print("station: '" + station_name + "'")
+#print("station: '" + station_name + "'")
 instrument_name = str(sys.argv[3])
-print("instrument: '" + instrument_name + "'")
+#print("instrument: '" + instrument_name + "'")
 time_stamp = str(sys.argv[4])  # time stamp of the trigger
 
 theStationQS = Station.objects.filter(station_id=station_name)
-print("found station:",theStationQS)
+#print("found station:",theStationQS)
 #print("values:",theStationQS.values())
-print("id by item:",theStationQS.values()[0]["id"])
+#print("id by item:",theStationQS.values()[0]["id"])
 station_id = theStationQS.values()[0]["id"]
 station_instance = Station.objects.get(station_id = station_name) # Look up ID of this Station
 # Now check that the instrument name given is assigned to this Station
@@ -60,24 +60,25 @@ for thisfile in fileList:
         continue  # ignore any hidden files
     print("filename:",thisfile)
     startDate = thisfile[3:19] # filename must be of the form OBSYYYY-MM-DDTHH:SS.zip
-    print("startdate:",startDate)
+#    print("startdate:",startDate)
     obsSize = os.path.getsize(os.path.join(path, thisfile))
-    print("file size:",obsSize)
+#    print("file size:",obsSize)
     startDateTZ = dt.strptime(startDate, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
 # temporary
     endDateTZ = dt.strptime(time_stamp, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
-    print("startdate:", str(startDateTZ))
+#    print("startdate:", str(startDateTZ))
    # a=input()
     # Look to see if this observation is already in the database  (for this station and user)
     thisObsQS = Observation.objects.filter(fileName = thisfile, station_id=station_id, instrument_id=instrument_id)
  # this size update should be done only if mag data file has today's date! 
+    today = dt.utcnow().date()
     try:
         observationID = thisObsQS.values()[0]["id"]  # try to extract the id (can also be gotten by: obsPtr=thisObsQS[0].id
-        today = dt.utcnow().date()
-        print("found observation id ",str(observationID))
-        print("obs date:", str(startDateTZ.date())," today:",str(today))
+        #today = dt.utcnow().date()
+ #       print("found observation id ",str(observationID))
+ #       print("obs date:", str(startDateTZ.date())," today:",str(today))
         if startDateTZ.date() == today:
-            print("this observation is from today, will update time and size")
+  #          print("this observation is from today, will update time and size")
            # a=input()
 
             Observation.objects.filter(id=observationID).update(size=obsSize, endDate=endDateTZ)
@@ -85,7 +86,8 @@ for thisfile in fileList:
 #  there is a time stamp in the trigger directory that can be used to update the end date
     except IndexError as e: # this observation is not yet in the database
        if startDateTZ.date() == today:  # use previously set end time in trigger
-          print("this observation is from today, setting end time to trigger time") 
+   #       print("this observation is from today, setting end time to trigger time")
+          noop = 1 
        else:  # adding historical file; set end time to end of that day
           endDateTZ = startDateTZ + dz.timedelta(hours=23,minutes=59)
         # add this observation
