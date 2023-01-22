@@ -20,6 +20,7 @@
 	    <li class="details">Center Frequency: {{observation.centerFrequency}}</li>
 	    <li class="details">Station: {{observation.station}}</li>
 	    <li class="details">Instrument: {{observation.instrument}}</li>
+	    <li class="details">Instrument type: {{observation.instrument.instrumenttype.instrumentType}}</li>
 	    <li class="details">Band: {{observation.band}}</li>
 	    <li class="details">Size: {{observation.size}}</li>
 	    <li class="details">File Name: {{observation.fileName}}</li>
@@ -28,6 +29,11 @@
 	    <li class="details">End Date: {{observation.endDate}}</li>
 	</ul>
     </div>
+    {% if observation.instrument.instrumenttype.instrumentType == "Magnetometer" %}
+    <div class="child">
+	<a href="{% url 'download_file' id=observation.id%}">Download Observation Data</a>
+    </div>
+    {% else %}
     <div class="child">
 	<p>Select desired date range for observation data</p>
         <form action="/observations/download_range/{{ observation.id }}/" method="POST">
@@ -38,6 +44,7 @@
             <button type="submit">Download Observation Data</button>
         </form>
     </div>
+    {% endif %}
 </div>
 
 <div>
