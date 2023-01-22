@@ -53,9 +53,9 @@ def InstrumentListView(request):
 def instrument_details_view(request, id=id):
     instrument = get_object_or_404(Instrument, id=id)
     queryset = InstrumentType.objects.filter(id=instrument.instrumenttype_id)
-
+     
     instrument_type_text = queryset[0].instrumentType
-    return render(request, 'instrument_details.html',
+    return render(request, 'instrument_details.html', 
         {'instrument' : instrument, 'instrumentType': instrument_type_text,
          })
 
@@ -72,14 +72,14 @@ def add_instrument_view(request, id=id):
             instrument.dateAdded  = form.cleaned_data.get('dateAdded')
             instrument.nickname   = form.cleaned_data.get('nickname')
             instrument.serialNo   = form.cleaned_data.get('serialNo')
-            instrument.status     = form.cleaned_data.get('status')
+            instrument.status     = form.cleaned_data.get('status') 
             instrument.instrumenttype = form.cleaned_data.get('instrumenttype')
             instrument.save()
 
             station= get_object_or_404(Station, id=iid)
             context = ('station', station)
             table = InstrumentTable(Instrument.objects.filter(station_id=iid))
-            return render(request, 'station_details.html', 
+            return render(request, 'station_details.html',
                 {'station': station, 'table': table })
 
 
@@ -99,7 +99,7 @@ def update_instrument_view(request, id=id):
             instrument.delete()
             return redirect('station_details', station.id)
 
-        if form.is_valid():
+        if form.is_valid(): 
             instrument.instrument  = form.cleaned_data.get('instrument')
             instrument.dateAdded   = form.cleaned_data.get('dateAdded')
             instrument.dateRemoved = form.cleaned_data.get('dateRemoved')
