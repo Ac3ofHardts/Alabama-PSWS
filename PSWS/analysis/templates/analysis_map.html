@@ -1,0 +1,108 @@
+{% extends 'base_analysis.html' %}
+{% block main %}
+
+<tr></tr>
+<br>
+<div id='map' style='position:absolute; top: 220px; width: 1200px; height: 600px;'></div>
+<script>
+  mapboxgl.accessToken = '{{mapbox_access_token}}' ;
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11',
+    center: [-87.0, 33.0],
+    zoom: 3.25
+  });
+
+  //Online
+  var geojson_online = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in online_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+
+  geojson_online.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#008000", scale: .6 })//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .addTo(map);
+  });
+
+  //PossiblyOnline
+  var geojson_poss = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in possiblyonline_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+  geojson_poss.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#FFA500", scale: .6})//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .addTo(map);
+  });
+
+
+  //Offline
+  var geojson_offline = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in offline_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+  geojson_offline.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#FF0000", scale: .6 })//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3><a href="{% url 'home' %}">' + marker.properties.title + '</a></h3>'))
+	  .addTo(map);
+  });
+
+</script>
+ 
+
+{% endblock %}
