@@ -209,5 +209,5 @@ class ObservationListView(SingleTableMixin, FilterView):
     model = Observation
     template_name = "observation_list.html"
     filterset_class = ObservationFilter
-    paginate_by = 4
+    paginate_by = 8
     ordering = ['-endDate'] # list newest observations first
