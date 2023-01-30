@@ -25,7 +25,9 @@
 					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
 				},
 				properties: {
-					title: '{{ i.nickname }}'
+					title: '{{ i.nickname }}',
+					URL: 'station_analysis/',
+					ID: '{{ i.id }}'
 				}
 			},
 		  {% endfor %}
@@ -39,7 +41,7 @@
 	  new mapboxgl.Marker({ color: "#008000", scale: .6 })//el)
 	  .setLngLat(marker.geometry.coordinates)
 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
-	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</h3>'))
 	  .addTo(map);
   });
 
@@ -55,7 +57,9 @@
 					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
 				},
 				properties: {
-					title: '{{ i.nickname }}'
+					title: '{{ i.nickname }}',
+					URL: 'station_analysis/',
+					ID: '{{ i.id }}'
 				}
 			},
 		  {% endfor %}
@@ -68,7 +72,8 @@
 	  new mapboxgl.Marker({ color: "#FFA500", scale: .6})//el)
 	  .setLngLat(marker.geometry.coordinates)
 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
-	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  //.setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</a></h3>')) 
 	  .addTo(map);
   });
 
@@ -85,8 +90,9 @@
 					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
 				},
 				properties: {
-					title: '{{ i.nickname }}'
-					url: 'station_analysis/ + {{ i.station_id }}'
+					title: '{{ i.nickname }}',
+					URL: 'station_analysis/',
+					ID: '{{ i.id }}'
 				}
 			},
 		  {% endfor %}
@@ -99,7 +105,7 @@
 	  new mapboxgl.Marker({ color: "#FF0000", scale: .6 })//el)
 	  .setLngLat(marker.geometry.coordinates)
 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
-	  .setHTML('<h3><a href="' + marker.properties.url + '">' + marker.properties.title + '</a></h3>'))
+	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</a></h3>'))
 	  .addTo(map);
   });
 

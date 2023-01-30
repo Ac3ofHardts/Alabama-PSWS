@@ -14,8 +14,8 @@ possiblyOnlineCutoffHours = 120 #5 days
 
 # Create your views here.
 
-def analysis_view(request):
-    return render(request, 'analysis.html')
+#def analysis_view(request):
+#    return render(request, 'analysis.html')
 
 # Display more detailed information about a station
 def station_analysis(request, id=None):
@@ -43,7 +43,7 @@ def updateStatus():
             instance.station_status = "Online"
         instance.save()
 
-def analysis_map(request, id=None):
+def analysis_map(request):
     updateStatus()
  #   mapbox_access_token = 'pk.eyJ1IjoiYWI0ZWotMSIsImEiOiJjazB1MTRmMTAwamVlM2Jwb2pheWx2cWpmIn0.cGZbctIFT5jSgBi0jBPk3w'
     mapbox_access_token = 'pk.eyJ1Ijoicm9sbHRpZGUiLCJhIjoiY2tueXFmMXhzMGt1MTJ1cDZ4YXkzOXJ3aiJ9.1HmCO6w6W-3r7Ou2HpRaMg'
