@@ -13,19 +13,48 @@ table {
 	width: 1000px;
 	border: 5px solid black;
 }
+
+.wrapper .sidebar{
+	background: #04AA6D;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 20%;
+	height: 100%;
+	padding: 20px 0;
+	transition: all 0.5s ease;
+	border-right: solid black 5px;
+}
+
+.wrapper .sidebar .filter{
+	display: block;
+	width: 70%;
+	height: 50px;
+	border-radius: 50%;
+	margin: auto;
+	color: white;
+	padding: 20px;
+}
 </style>
 
 <br>
 
-{% block content %}
-	<form action="" method="get" class="form form-inline">
-		{{ filter.form.as_p }}
-		<input type="submit" />
-	</form>
-	{% for obj in filter.qs %}
-		{{ obj.name }}
-	{% endfor %}
-{% endblock %}
+<div class="wrapper">
+    <div class="sidebar">
+	<div class="filter">
+	    <p style="color: white; font-weight: bold;">Select options below to filter:</p>
+	    {% block content %}
+		<form action="" method="get" class="form form-inline">
+			{{ filter.form.as_p }}
+			<input type="submit" />
+		</form>
+		{% for obj in filter.qs %}
+			{{ obj.name }}
+		{% endfor %}
+	    {% endblock %}
+         </div>
+     </div>
+</div>
 <div>
 To download observation data, click on File/Observation link. &nbsp; Please be patient, it may take a while to zip a large observation.
 </div>
