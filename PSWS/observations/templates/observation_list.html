@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html>
+<head>
 {% extends 'base_observations.html' %}
 
 {% block title %}
@@ -17,36 +20,86 @@ table {
 .wrapper .sidebar{
 	background: #04AA6D;
 	position: fixed;
+	z-index: 1;
 	top: 0;
 	left: 0;
-	width: 20%;
+	width: 0;
 	height: 100%;
 	padding: 20px 0;
 	transition: all 0.5s ease;
 	border-right: solid black 5px;
+	overflow-x: hidden;
+}
+
+.wrapper .sidebarExpand{
+	background: #04AA6D;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	width: 250px;
+	height: 100%;
+	padding: 20px 0;
+	transition: all 0.5s ease;
+	border-right: solid black 5px;
+	overflow-x: hidden;
 }
 
 .wrapper .sidebar .filter{
 	display: block;
-	width: 70%;
+	width: 90%;
 	height: 50px;
-	border-radius: 50%;
-	margin: auto;
 	color: white;
-	padding: 20px;
+	transform: scale(0.8);
+	align-content: left;
+}
+
+.wrapper .sidebarExpand .filter{
+        display: block;
+        width: 90%;
+        height: 50px;
+        color: white;
+        transform: scale(0.8);
+        align-content: left;
+}
+
+
+.wrapper .sidebar .closebtn{
+	color: white;
+	position: absolute;
+	top: 0;
+	right: 25px;
+	font-size: 24px;
+	margin-left: 50px;
+}
+
+.wrapper .sidebarExpand .closebtn{
+        color: white;
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 24px;
+        margin-left: 50px;
+}
+
+
+#main{
+	transition: margin-left .5s;
 }
 </style>
+</head>
 
-<br>
-
+<body>
 <div class="wrapper">
     <div class="sidebar">
+	<a href="javascript:void(0)" class='closebtn'>&times;</a>
+	<br>
+	<p style="color: white; text-align: center;">Select options below to filter:</p>
 	<div class="filter">
-	    <p style="color: white; font-weight: bold;">Select options below to filter:</p>
 	    {% block content %}
 		<form action="" method="get" class="form form-inline">
 			{{ filter.form.as_p }}
-			<input type="submit" />
+			<input type="submit" value="Filter"/>
 		</form>
 		{% for obj in filter.qs %}
 			{{ obj.name }}
@@ -55,11 +108,10 @@ table {
          </div>
      </div>
 </div>
-<div>
-To download observation data, click on File/Observation link. &nbsp; Please be patient, it may take a while to zip a large observation.
-</div>
-<div>
-	{% render_table table %}
+<div id="main">
+    To download observation data, click on File/Observation link. &nbsp; Please be patient, it may take a while to zip a large observation.
+    <button class="openbtn">&#9776; Open Filter</button>
+    {% render_table table %}
 </div>
 
 <div class="pagination">
@@ -80,4 +132,21 @@ To download observation data, click on File/Observation link. &nbsp; Please be p
     </span>
 </div>
 
+<script>
+    let sidebar = document.querySelector('.sidebar');
+
+    document.querySelector('.closebtn').addEventListener('click', () => {
+	sidebar.style.width = "0";
+    });
+
+    document.querySelector('.openbtn').addEventListener('click', () => {
+	sidebar.style.width = "250px";
+    });
+</script>
+
+</body>
+
 {% endblock main %}
+
+</html>
+	
