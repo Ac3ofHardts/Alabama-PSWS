@@ -65,7 +65,7 @@ def station_details_view(request, id=None):
     #all_stations = Station.objects.all()
     context = {'station': station}
     table = InstrumentTable(Instrument.objects.filter(station_id=id))
-    table.paginate(page=request.GET.get("page", 1), per_page=4)
+    table.paginate(page=request.GET.get("page", 1), per_page=8)
     return render(request, 'station_details.html', 
         {'station': station, 'table': table}
             )

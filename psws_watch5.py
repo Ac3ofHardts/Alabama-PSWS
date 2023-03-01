@@ -205,6 +205,8 @@ class UploadEvent(PatternMatchingEventHandler):
         print("Issuing command: " + command)
         os.system(command)
         writeLog("Issued syscommand:" + command)
+        # Removes flag directory
+        os.rmdir(event.src_path)
 
 if __name__ == "__main__":
     print("starting watchdog")
