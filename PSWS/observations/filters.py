@@ -106,7 +106,7 @@ class ObservationFilter(django_filters.FilterSet):
     startDate__gte = django_filters.DateFilter(
             field_name='startDate',
             lookup_expr='date__gte',
-            label='Start Date',
+            label='Start Date (UTC)',
             widget=forms.DateTimeInput(
                 attrs={'type': 'date', 'class': 'form-control'}
             )
@@ -116,7 +116,7 @@ class ObservationFilter(django_filters.FilterSet):
     endDate__lte = django_filters.DateFilter(
             field_name='endDate', 
             lookup_expr='date__lte',
-            label='End Date',
+            label='End Date (UTC)',
             widget=forms.DateTimeInput(
                 attrs={'type': 'date', 'class': 'form-control'}
             )
