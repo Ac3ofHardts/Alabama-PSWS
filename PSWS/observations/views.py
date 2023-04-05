@@ -155,6 +155,7 @@ def download_range(request, id=None):
                 for sub_file in os.listdir(full_path + '/ch0/metadata/' + file):
                     zipF.write(full_path + "/ch0/metadata/" + file + "/" + sub_file, \
                             arcname = "ch0/metadata/" + file + "/" + sub_file) 
+        zipF.close()        
 
         fl = open(zip_path, 'rb')
         

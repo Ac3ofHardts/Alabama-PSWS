@@ -50,6 +50,7 @@ class UploadEvent(PatternMatchingEventHandler):
         print("UPLOAD trigger at local time: " + dt.now().isoformat())
         print("ULOAD path='" + event.src_path +"'")
         writeLog("UPLOAD, path " + event.src_path)
+
         try:
             instrumentNo = event.src_path.split("_#")[1] # this should be instrument_id in database
         except:
@@ -62,6 +63,10 @@ class UploadEvent(PatternMatchingEventHandler):
             path = event.src_path
             channelPath = event.src_path + "/ch0"
             uploadType = 'd'
+
+            #GRAPHING COMMAND TESTING
+            graph_command = "ts python3 graphing_testing.py " + event.src_path
+            os.system(graph_command)
 
         elif event.src_path.rsplit('/')[3][0] == 'c': # processing for Continuous type upload
             print("C! path=" + event.src_path)
