@@ -18,8 +18,8 @@ class Observation(models.Model):
     size = models.BigIntegerField()
     fileName = models.CharField("File", max_length=40)
     path = models.CharField(max_length=40)
-    startDate = models.DateTimeField("Start Date")
-    endDate = models.DateTimeField("End Date", null=True, blank=True)
+    startDate = models.DateTimeField("Start Date (UTC)")
+    endDate = models.DateTimeField("End Date (UTC)", null=True, blank=True)
 
     def __str__(self):
         return 'Observation_' + self.station.station_id + '_' + self.fileName
