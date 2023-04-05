@@ -12,9 +12,19 @@
 {% load render_table from django_tables2 %}
 
 <style>
-table {
-	width: 1000px;
+.obsTable {
+	margin-left: auto;
+	margin-right: auto;
+	width: 1200px;	
 	border: 5px solid black;
+}
+
+.obsTable th {
+	border-bottom: 2px solid #dcdde0;
+}
+
+.obsTable tr {
+	border-bottom: 1px solid #dcdde0;
 }
 
 .wrapper .sidebar{
@@ -109,10 +119,11 @@ table {
      </div>
 </div>
 <div id="main">
-    To download observation data, click on File/Observation link. &nbsp; Please be patient, it may take a while to zip a large observation.
     <button class="openbtn">&#9776; Open Filter</button>
-    {% render_table table %}
-</div>
+    To download observation data, click on File/Observation link. &nbsp; Please be patient, it may take a while to zip a large observation.
+    <table>
+    	{% render_table table %}
+    </table>
 
 <div class="pagination">
     <span class="step-links">
@@ -131,6 +142,29 @@ table {
 	{% endif %}
     </span>
 </div>
+</div>
+
+<script>
+    let sidebar = document.querySelector('.sidebar');
+
+    document.querySelector('.closebtn').addEventListener('click', () => {
+	sidebar.style.width = "0";
+    });
+
+    document.querySelector('.openbtn').addEventListener('click', () => {
+	if (sidebar.style.width == '250px') {
+	    sidebar.style.width = "0";
+	}
+	else if (sidebar.style.width == '0') {
+	    sidebar.style.width = "250px";
+	}
+	else {
+	    sidebar.style.width = "250px";
+	}
+    });
+</script>
+
+</body>
 
 <script>
     let sidebar = document.querySelector('.sidebar');
