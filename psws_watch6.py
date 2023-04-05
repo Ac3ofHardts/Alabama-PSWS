@@ -63,6 +63,11 @@ class UploadEvent(PatternMatchingEventHandler):
             channelPath = event.src_path + "/ch0"
             uploadType = 'd'
 
+            # GRAPHING COMMAND TESTING
+            graph_command = "ts python3 graphing_testing.py " + event.src_path
+            os.system(graph_command)
+
+
         elif event.src_path.rsplit('/')[3][0] == 'c': # processing for Continuous type upload
             print("C! path=" + event.src_path)
             observation_no = event.src_path.rsplit('/')[3][1:20]
