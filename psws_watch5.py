@@ -25,7 +25,7 @@ from urllib.parse import quote_plus
 
 def writeLog(theMessage):
     timestamp = dt.now(timezone.utc).isoformat()[0:19]
-    f = open("/home/bengelke/Documents/watchdog.log", "a")
+    f = open("/home/abliddle/Bills-Branch/watchdog.log", "a")
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
 
@@ -206,17 +206,17 @@ class UploadEvent(PatternMatchingEventHandler):
         os.system(command)
         writeLog("Issued syscommand:" + command)
         # Removes flag directory
-        os.rmdir(event.src_path)
+        # os.rmdir(event.src_path)
 
 if __name__ == "__main__":
     print("starting watchdog")
      
-    path = sys.argv[1] if len(sys.argv) > 1 else '/home'
+    path = sys.argv[1] if len(sys.argv) > 1 else '/home/abliddle'
 # directory starting with "d" - this upload is in response to a Data Request
 # directory starting with "c" = this upload is from a Continuous Upload
 # directory starting with "m" = this upload is from magnetometer data
 # The "N" prefixes are legacy, need to delete after test period
-    event_handler = UploadEvent(patterns=["S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*" ]) 
+    event_handler = UploadEvent(patterns=[ "S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*" ]) 
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     writeLog("Starting watchdog")
     try:
         while True:
-        #    print("waiting")
+            print("waiting")
             time.sleep(2)
 
     finally:            
