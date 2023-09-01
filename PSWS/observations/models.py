@@ -20,6 +20,8 @@ class Observation(models.Model):
     path = models.CharField(max_length=40)
     startDate = models.DateTimeField("Start Date")
     endDate = models.DateTimeField("End Date", null=True, blank=True)
+    # Added for initial graph upon upload
+    graph = models.ForeignKey("analysis.Experiment", on_delete=models.CASCADE, null=True, blank=True, related_name='+')
 
     def __str__(self):
         return 'Observation_' + self.station.station_id + '_' + self.fileName
