@@ -25,8 +25,8 @@
 	    <li class="details">Size: {{observation.size}}</li>
 	    <li class="details">File Name: {{observation.fileName}}</li>
 	    <li class="details">Path: {{observation.path}}</li>
-	    <li class="details">Start Date: {{observation.startDate}}</li>
-	    <li class="details">End Date: {{observation.endDate}}</li>
+	    <li class="details">Start Date: {{observation.startDate|date:'M. d, Y, H:i:s'}}</li>
+	    <li class="details">End Date: {{observation.endDate|date:'M. d, Y, H:i:s'}}</li>
 	</ul>
     </div>
     {% if observation.instrument.instrumenttype.instrumentType == "Magnetometer" %}
@@ -36,13 +36,28 @@
     {% else %}
     <div class="child">
 	<p>Select desired date range for observation data</p>
-        <form action="/observations/download_range/{{ observation.id }}/" method="POST">
+	<form action="/observations/download_range/{{ observation.id }}/" method="POST">
+	    {% csrf_token %}
+	    {% for field in form %}
+	    	<p>
+		    {{ field.label_tag }} {% if field.field.required %}*{% endif %} <br>
+		    {{ field }}
+		    {% if field.help_text %}
+		    	<small style="color: grey">{{ field.help_text }}</small>
+		    {% endif %}
+		    {% for error in field.errors %}
+		        <p style="color:red">{{ error }}</p>
+		    {% endfor %}
+		</p>
+	    {% endfor %}
+	    <button type="submit">Download Observation Data</button>
+	</form>
+        <!--form action="/observations/download_range/{{ observation.id }}/" method="POST">
             {% csrf_token %}
-            <p>Start Date:<input name='start_date' type='datetime-local'></p>
-            <p>End Date:<input name='end_date' type='datetime-local'></p>
-            <!--<a href="{% url 'download_range' id=observation.id %}">Download Observation Data</a>-->
+	    <p>Start Date (UTC): <input name='start_date' type='datetime-local'></p>
+	    <p>End Date (UTC): <input name='end_date' type='datetime-local'></p>
             <button type="submit">Download Observation Data</button>
-        </form>
+	</form-->
     </div>
     {% endif %}
 </div>
@@ -50,4 +65,5 @@
 <div>
     <a href="{% url 'observation_list' %}">Back</a>
 </div>
+
 {% endblock main %}

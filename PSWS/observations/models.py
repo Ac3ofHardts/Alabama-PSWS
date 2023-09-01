@@ -18,10 +18,15 @@ class Observation(models.Model):
     size = models.BigIntegerField()
     fileName = models.CharField("File", max_length=40)
     path = models.CharField(max_length=40)
+<<<<<<< HEAD
     startDate = models.DateTimeField("Start Date")
     endDate = models.DateTimeField("End Date", null=True, blank=True)
     # Added for initial graph upon upload
     graph = models.ForeignKey("analysis.Experiment", on_delete=models.CASCADE, null=True, blank=True, related_name='+')
+=======
+    startDate = models.DateTimeField("Start Date (UTC)")
+    endDate = models.DateTimeField("End Date (UTC)", null=True, blank=True)
+>>>>>>> 4328dc95f3c6520770a48711928b43cbda0799a3
 
     def __str__(self):
         return 'Observation_' + self.station.station_id + '_' + self.fileName

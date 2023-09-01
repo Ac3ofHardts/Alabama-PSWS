@@ -1,17 +1,32 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+
 
 from datetime import datetime, timedelta, timezone
 
 from stations.models import Station
+from observations.models import Observation
+from observations.tables import ObservationTable
 
 #Declaring time cutoffs here since will probably change in the future
 onlineCutoffHours = 24
 possiblyOnlineCutoffHours = 120 #5 days
 
 # Create your views here.
-def analysis_view(request):
-    return render(request, 'analysis.html')
+
+#def analysis_view(request):
+#    return render(request, 'analysis.html')
+
+# Display more detailed information about a station
+def station_analysis(request, id=None):
+    station = get_object_or_404(Station, id=id)
+
+    #all_stations = Station.objects.all()
+    table = ObservationTable(Observation.objects.filter(station_id=id))
+    table.paginate(page=request.GET.get("page", 1), per_page=8)
+    return render(request, 'station_analysis.html',
+        {'station': station, 'table': table}
+            )
 
 def updateStatus():
     #Update Station status of all stations before displaying

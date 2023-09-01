@@ -95,7 +95,7 @@ def add_station_view(request):
             station.nickname = form.cleaned_data.get('nickname')
             station.grid = form.cleaned_data.get('grid')
             try:
-                station.latitute =  mh.to_location(station.grid, center=True)[0]
+                station.latitude =  mh.to_location(station.grid, center=True)[0]
                 station.longitude = mh.to_location(station.grid, center=True)[1]
             except Exception as e:
                 text = "You entered an invalid grid square value. For help with this see <a href='https://www.levinecentral.com/ham/grid_square.php'>here.</a>"
