@@ -7,3 +7,6 @@ venv/*
 PSWS/PSWS/settings.py
 PSWS/PSWS/settings/prod.py
 **/plotting/**
+graphing.log
+watchdog.log
+graphing_testing.py
