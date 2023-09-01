@@ -42,6 +42,12 @@ station_id = theStationQS.values()[0]["id"]
 
 station_instance = Station.objects.get(station_id = station_name)
 
+# update last_alive for this station
+station_instance.last_alive = dt.now(timezone.utc)
+# the station_status will update by itself when queried.
+station_instance.save()
+writeLog("Updated last alive for " + station_name + " to " + str(dt.now(timezone.utc)))
+
 instrument_name = str(sys.argv[6])
 theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
 #print("found instrument:",theInstrumentQS)
@@ -98,6 +104,6 @@ else:  # this  observation is already in database. update endDate
 
 #from datetime import datetime, timezone
 
-station_instance.last_alive = dt.now(timezone.utc)
+#station_instance.last_alive = dt.now(timezone.utc)
 # the station_status will update by itself when queried.
-station_instance.save()
+#station_instance.save()

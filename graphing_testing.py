@@ -6,7 +6,7 @@ import time
 
 def writeLog(theMessage):
     timestamp = dt.now(timezone.utc).isoformat()[0:19]
-    f = open("/home/abliddle/Bills-Branch/graphing.log", "a")
+    f = open("/var/www/html/graphing.log", "a")
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
 

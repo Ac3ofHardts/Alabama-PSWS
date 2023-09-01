@@ -64,12 +64,19 @@ class UploadEvent(PatternMatchingEventHandler):
             uploadType = 'd'
 
             # GRAPHING COMMAND TESTING
-            graph_command = "ts python3 graphing_testing.py " + event.src_path
+            graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path
             os.system(graph_command)
 
 
         elif event.src_path.rsplit('/')[3][0] == 'c': # processing for Continuous type upload
+            
+            # GRAPHING COMMAND TESTING
+            writeLog("Trigger graphing  program")
+            graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path 
+            os.system(graph_command)
+            
             print("C! path=" + event.src_path)
+            writeLog("Processing trigger:" + event.src_path)
             observation_no = event.src_path.rsplit('/')[3][1:20]
             path = "/" + event.src_path.rsplit('/')[1] + "/" +  event.src_path.rsplit('/')[2] \
                     +  "/" + observation_no
@@ -86,8 +93,9 @@ class UploadEvent(PatternMatchingEventHandler):
               start_idx = dmr.get_bounds()[0]
     #          print("Start:" , start_idx)
             except IOError:
+              writeLog("IO error accessing digital metadata, path=" + event.src_path)
               print("IO error accessing digital metadata")
-              raise
+              return
             fields = dmr.get_fields()
      #       print("Available fields are <%s>" % (str(fields)))
             freq_list = []
@@ -123,15 +131,19 @@ class UploadEvent(PatternMatchingEventHandler):
             # Each zipped magnetometer file is of the form OBSYYYY-MM-DDTHH:SS.zip 
             # The date in the zip file name is when the magnetometer data starts, in UTC
 
-            command = "python3 psws_addMAG.py " + path + " " + \
+            command = "/var/www/html/venv/bin/python3 psws_addMAG.py " + path + " " + \
                       station_id + " " + instrumentNo + " "  + endDate 
             #freq_list = [] # for magnetometer
             #freq_list.append('0.0') # single frequency
             #for this_freq in freq_list:
             #    command = command + str(this_freq) + " "
             print("Issuing command: " + command)
-            os.system(command)
+            # os.system(command)
             writeLog("Issued syscommand:" + command)
+            
+            # Using venv instead of os.system
+            args = list(command.split(" "))
+            subprocess.run(args)
 
             # Removes target directory
             os.rmdir(event.src_path)
@@ -139,7 +151,8 @@ class UploadEvent(PatternMatchingEventHandler):
             return
 
         else:
-            print("Error! Unrecognized upload type: " + event.src_path.rsplit('/')[3][0] )
+            writeLog("ERROR. Unrecognized upload type: " + event.src_path.rsplit('/')[3][0] )
+            print   ("Error! Unrecognized upload type: " + event.src_path.rsplit('/')[3][0] )
             return
 
         #Extracting tar file if a D file        
@@ -206,14 +219,18 @@ class UploadEvent(PatternMatchingEventHandler):
         myTimestamp = endDate / dataRate
         endDate =   dt.fromtimestamp(myTimestamp, tz=pytz.UTC).strftime('%Y-%m-%dT%H:%M')
         print("End date:"+endDate)
-        command = "python3 psws_addOBS.py " + str(dataRate) + " " + str(obsSize) + " " +  \
+        command = "/var/www/html/venv/bin/python3 psws_addOBS.py " + str(dataRate) + " " + str(obsSize) + " " +  \
                    fileName + " " + datapath + " " + station_id + " " + instrumentNo + " " + \
                    startDate + " " + endDate + " "
         for this_freq in freq_list:
             command = command + str(this_freq) + " "
-        print("Issuing command: " + command)
-        os.system(command)
-        writeLog("Issued syscommand:" + command)
+        
+        print   ("Issuing command:" + command)
+        writeLog("Issuing command:" + command)
+        # os.system(command)
+        args = list(command.split(" "))
+        subprocess.run(args)
+        # writeLog("Issued syscommand:" + command)
 
         # Removes target directory
         os.rmdir(event.src_path)
