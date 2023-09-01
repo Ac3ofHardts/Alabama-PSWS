@@ -3,11 +3,11 @@ Decription=Watchdog script
 
 [Service]
 Type=simple
-User=abliddle
-Group=abliddle
-ExecStart=/usr/bin/python3 /home/abliddle/Bills-Branch/psws_watch5.py
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /var/www/html/psws_watch5.py
 Restart=always
-WorkingDirectory=/home/abliddle/Bills-Branch
+WorkingDirectory=/var/www/html
 
 [Install]
 WantedBy=multi-user.target

@@ -166,6 +166,20 @@
 
 </body>
 
+<script>
+    let sidebar = document.querySelector('.sidebar');
+
+    document.querySelector('.closebtn').addEventListener('click', () => {
+	sidebar.style.width = "0";
+    });
+
+    document.querySelector('.openbtn').addEventListener('click', () => {
+	sidebar.style.width = "250px";
+    });
+</script>
+
+</body>
+
 {% endblock main %}
 
 </html>
