@@ -41,7 +41,13 @@ theStationQS = Station.objects.filter(station_id=station_name)
 station_id = theStationQS.values()[0]["id"]
 station_instance = Station.objects.get(station_id = station_name) # Look up ID of this Station
 # Now check that the instrument name given is assigned to this Station
-theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
+# In addition, we check if we are given the instrument name or ID
+if Instrument.objects.filter(instrument_id=instrument_name).exists():
+    # We've been given the instrument id, so pull data using ID
+    theInstrumentQS = Instrument.objects.filter(instrument_id=instrument_name, station_id=station_id)
+else:
+    # Given instrument name, so pull data using name
+    theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
 
 try:
     instrument_id = theInstrumentQS.values()[0]["id"]
