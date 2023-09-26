@@ -65,7 +65,7 @@ print("files to be processed:",len(fileList))
 for thisfile in fileList:
     if thisfile[0] == ".":
         continue  # ignore any hidden files
-    print("filename:",thisfile)
+    #print("filename:",thisfile)
     startDate = thisfile[3:19] # filename must be of the form OBSYYYY-MM-DDTHH:SS.zip
 #    print("startdate:",startDate)
     obsSize = os.path.getsize(os.path.join(path, thisfile))
