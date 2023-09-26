@@ -65,7 +65,7 @@ class UploadEvent(PatternMatchingEventHandler):
 
             # GRAPHING COMMAND TESTING
             graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path
-            os.system(graph_command)
+            #os.system(graph_command)
 
 
         elif event.src_path.rsplit('/')[3][0] == 'c': # processing for Continuous type upload
@@ -73,7 +73,7 @@ class UploadEvent(PatternMatchingEventHandler):
             # GRAPHING COMMAND TESTING
             writeLog("Trigger graphing  program")
             graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path 
-            os.system(graph_command)
+            #os.system(graph_command)
             
             print("C! path=" + event.src_path)
             writeLog("Processing trigger:" + event.src_path)
@@ -97,14 +97,14 @@ class UploadEvent(PatternMatchingEventHandler):
               print("IO error accessing digital metadata")
               return
             fields = dmr.get_fields()
-     #       print("Available fields are <%s>" % (str(fields)))
+            #writeLog("Available fields are <%s>" % (str(fields)))
             freq_list = []
             # get list of center frequencies in this spectrum (often just 1)
             data_dict = dmr.read(start_idx, start_idx + 2, "center_frequencies")
-   #         print("Center freq list:")
+            #writeLog("Center freq list:")
             for x in list(data_dict)[0:1]:
-  #             print("key{}, val{}:".format(x, data_dict[x]))
-               freq_list = data_dict[x] 
+                #writeLog("key{}, val{}:".format(x, data_dict[x]))
+                freq_list = data_dict[x]
             #print("Freq list:", freq_list)
 
         elif event.src_path.rsplit('/')[3][0] == 'm': # processing for "m" (magnetometer) type upload

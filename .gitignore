@@ -8,4 +8,4 @@ PSWS/PSWS/settings.py
 PSWS/PSWS/settings/prod.py
 makegraph.py
 plotspectrum_v4.py
-
+requirements.txt
