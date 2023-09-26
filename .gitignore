@@ -6,3 +6,5 @@ venv/*
 !**/migrations/__init__.py
 PSWS/PSWS/settings.py
 PSWS/PSWS/settings/prod.py
+requirements.txt
+
