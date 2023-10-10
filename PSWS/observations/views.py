@@ -1,4 +1,4 @@
-# Authors:   Nicholas Muscolino, Anderson Liddle, Cole Robbins
+#Authors:   Nicholas Muscolino, Anderson Liddle, Cole Robbins
 # University of Alabama, Apr-May 2022 with funding from  NSF Grant 80NSSC21K1772
 # Modified by W. Engelke, July 2022 
 
@@ -82,30 +82,30 @@ def download_file(request, id=None):
 def download_range(request, id=None):
     observation = get_object_or_404(Observation, id=id)
 
-    start = str(request.POST.get('start_date'))
-    end = str(request.POST.get('end_date'))
+    #start = str(request.POST.get('start_date'))
+    #end = str(request.POST.get('end_date'))
 
-    if start == '' or end == '':
-        messages.error(request, "Error: Blank fields")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    #if start == '' or end == '':
+    #    messages.error(request, "Error: Blank fields")
+    #    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-    start = start[:10]
-    end = end[:10]
+    #start = start[:10]
+    #end = end[:10]
     
     # TODO: Add try catch here to replace blank if statement above
-    start_converted = datetime.strptime(start, '%Y-%m-%d').date()
-    end_converted = datetime.strptime(end, '%Y-%m-%d').date()
+    #start_converted = datetime.strptime(start, '%Y-%m-%d').date()
+    #end_converted = datetime.strptime(end, '%Y-%m-%d').date()
 
-    if (end < start):
-        messages.error(request, "Error: End date before start date")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    # if (end < start):
+        #messages.error(request, "Error: End date before start date")
+        #return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
  
-    if (end_converted - start_converted).days > 7:
-        messages.error(request, "You've selected " + str((end_converted - start_converted).days) + " days. Please limit to at most 7 days")
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/')) 
+    #if (end_converted - start_converted).days > 7:
+        #messages.error(request, "You've selected " + str((end_converted - start_converted).days) + " days. Please limit to at most 7 days")
+        #return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/')) 
 
-    print(start)
-    print(end)
+    #print(start)
+    #print(end)
 
     fl_path = observation.path
     filename = observation.fileName
@@ -126,35 +126,51 @@ def download_range(request, id=None):
     #zip_path = "/home/ziptemp/" + fl_path.rsplit('/')[2] + \
     #        "/temp/" + filename[:3] + start + "-" + end
 
-    zip_name = filename[:16] + "-" + start + "-" + end + ".zip"
+    zip_name = "Range-" + filename
     zip_path = "/home/ziptemp/" + zip_name
     print(zip_path)
+
+    shutil.make_archive(zip_path, 'zip', full_path)
+    command = "chmod 777 " + zip_path + ".zip"  # this is to allow leter cleanup
+    os.system(command)
+    #fl = open(zip_path + '.zip', 'rb')
+
+    # The following replaces the original tar/gzip code as it produces a
+    # zip file without the internal directory structure
+    fl = open(zip_path + ".zip", 'rb')
+    os.remove(zip_path + ".zip")
+    mime_type, _ = mimetypes.guess_type(zip_path+'.zip')
+    response = HttpResponse(fl, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % fl_path+'.zip'
+
+    return response
+
+
+    """
     
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipF:
 
-        zipF.write(full_path + "/ch0/drf_properties.h5", \
-                 arcname = "ch0/drf_properties.h5")
+        #zipF.write(full_path + "/ch0/drf_properties.h5", \
+         #        arcname = "ch0/drf_properties.h5")
 
-        zipF.write(full_path + "/ch0/metadata/dmd_properties.h5", \
-                 arcname = "ch0/metadata/dmd_properties.h5")
+        #zipF.write(full_path + "/ch0/metadata/dmd_properties.h5", \
+         #        arcname = "ch0/metadata/dmd_properties.h5")
 
         for file in os.listdir(full_path + '/ch0'):
 
             if '-' not in file: continue
 
             file_name = str(file[0:10])
-            print(file_name)
-            if (start <= file_name <= end):
-                for sub_file in os.listdir(full_path + '/ch0/' + file):
-                    zipF.write(full_path + "/ch0/" + file + "/" + sub_file,\
-                            arcname = "ch0/" + file + "/" + sub_file)
+            for sub_file in os.listdir(full_path + '/ch0/' + file):
+                zipF.write(full_path + "/ch0/" + file + "/" + sub_file,\
+                        arcname = "ch0/" + file + "/" + sub_file)
 
         for file in os.listdir(full_path + '/ch0/metadata'):
             file_name = str(file[0:10])
-            if (start <= file_name <= end):
-                for sub_file in os.listdir(full_path + '/ch0/metadata/' + file):
-                    zipF.write(full_path + "/ch0/metadata/" + file + "/" + sub_file, \
-                            arcname = "ch0/metadata/" + file + "/" + sub_file) 
+            if os.path.isdir(full_path + '/ch0/metadata/' + file): continue
+            for sub_file in os.listdir(full_path + '/ch0/metadata/' + file):
+                zipF.write(full_path + "/ch0/metadata/" + file + "/" + sub_file, \
+                        arcname = "ch0/metadata/" + file + "/" + sub_file) 
         zipF.close()        
 
         fl = open(zip_path, 'rb')
@@ -166,7 +182,7 @@ def download_range(request, id=None):
         response['Content-Disposition'] = "attachment; filename=%s" % zip_name
 
         return response
-
+"""
 
 def get_date_range(request, id=None): 
     observation = get_object_or_404(Observation, id=id) 
