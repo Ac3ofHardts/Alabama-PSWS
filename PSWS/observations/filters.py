@@ -66,7 +66,8 @@ class ObservationForm(forms.Form):
 class ObservationFilter(django_filters.FilterSet):
     # Select a single station to filter the query
     station = django_filters.ModelChoiceFilter(
-            queryset=Station.objects.all(), 
+         #   queryset=Station.objects.all(), 
+            queryset=Station.objects.order_by("nickname"),
             label='Station Nickname',
             widget=forms.Select(
                 attrs={'class': 'form-control'}
