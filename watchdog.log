@@ -152350,3 +152350,6 @@
 2023-10-10T02:26:37 UPLOAD, path /home/S000031/mOBS2022-08-28T12:00_#Mag_rev_E_#2023-10-10T02:26
 2023-10-10T02:26:37 Issued syscommand:/var/www/html/venv/bin/python3 psws_addMAG.py /home/S000031/magData/ S000031 Mag_rev_E 2023-10-10T02:26
 2023-10-10T02:26:38 Removed directory:/home/S000031/mOBS2022-08-28T12:00_#Mag_rev_E_#2023-10-10T02:26
+2023-10-10T02:33:18 UPLOAD, path /home/N000003/mOBS2022-07-27T12:00_#Magnetometer2_#2023-10-10T02:33
+2023-10-10T02:33:18 Issued syscommand:/var/www/html/venv/bin/python3 psws_addMAG.py /home/N000003/magData/ N000003 Magnetometer2 2023-10-10T02:33
+2023-10-10T02:33:19 Removed directory:/home/N000003/mOBS2022-07-27T12:00_#Magnetometer2_#2023-10-10T02:33

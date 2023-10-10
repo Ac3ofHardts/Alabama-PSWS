@@ -7,4 +7,7 @@ venv/*
 PSWS/PSWS/settings.py
 PSWS/PSWS/settings/prod.py
 requirements.txt
-
+watchdog.log
+watch.log
+pip-requirements.txt
+graphing.log
