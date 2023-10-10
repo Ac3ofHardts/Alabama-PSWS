@@ -78,10 +78,10 @@ for  c in range(9, 17): # handles up to 8 center frequencies in this version
       theFreq = str(sys.argv[c])
       print("look up cfid ",theFreq)
       this_cfid = CenterFrequency.objects.filter(centerFrequency=theFreq).values('id')
-      #print("found cfid:",this_cfid)
-      cfid_list.append(this_cfid)
+      print("found cfid:",this_cfid)
+      cfid_list.append(this_cfid[0]['id'])
     except Exception as ex:
-      #print("Exception:",str(ex))
+      print("Exception:",str(ex))
       print("center freq ids found:", c-8)
       break
 

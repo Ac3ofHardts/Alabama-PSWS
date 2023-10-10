@@ -9,3 +9,8 @@ PSWS/PSWS/settings/prod.py
 makegraph.py
 plotspectrum_v4.py
 requirements.txt
+watchdog.log
+watch.log
+pip-requirements.txt
+graphing.log
+
