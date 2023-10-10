@@ -7,7 +7,7 @@ h5py==3.1.0
 maidenhead==1.6.0
 numpy==1.19.5
 packaging==21.3
-pandas==1.5.3
+pandas
 python_dateutil==2.8.2
 pytz==2021.1
 six==1.15.0
