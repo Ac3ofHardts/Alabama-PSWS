@@ -35,27 +35,13 @@
     </div>
     {% else %}
     <div class="child">
-	<p>Select desired date range for observation data</p>
+	<p>Press the button below to download the observation</p>
 	<form action="/observations/download_range/{{ observation.id }}/" method="POST">
 	    {% csrf_token %}
-	    {% for field in form %}
-	    	<p>
-		    {{ field.label_tag }} {% if field.field.required %}*{% endif %} <br>
-		    {{ field }}
-		    {% if field.help_text %}
-		    	<small style="color: grey">{{ field.help_text }}</small>
-		    {% endif %}
-		    {% for error in field.errors %}
-		        <p style="color:red">{{ error }}</p>
-		    {% endfor %}
-		</p>
-	    {% endfor %}
 	    <button type="submit">Download Observation Data</button>
 	</form>
         <!--form action="/observations/download_range/{{ observation.id }}/" method="POST">
             {% csrf_token %}
-	    <p>Start Date (UTC): <input name='start_date' type='datetime-local'></p>
-	    <p>End Date (UTC): <input name='end_date' type='datetime-local'></p>
             <button type="submit">Download Observation Data</button>
 	</form-->
     </div>
