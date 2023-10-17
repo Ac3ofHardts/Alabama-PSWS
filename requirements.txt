@@ -1,0 +1,15 @@
+digital_rf==2.6.7
+Django==3.1.6
+django_filter==21.1
+django_tables2==2.4.1
+djangorestframework==3.14.0
+h5py==3.1.0
+maidenhead==1.6.0
+numpy==1.19.5
+packaging==21.3
+pandas
+python_dateutil==2.8.2
+pytz==2021.1
+six==1.15.0
+SQLAlchemy==1.4.32
+watchdog==2.1.7

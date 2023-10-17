@@ -17,9 +17,11 @@ class Observation(models.Model):
     band = models.ManyToManyField(Band, verbose_name="Band", blank=True)
     size = models.BigIntegerField()
     fileName = models.CharField("File", max_length=40)
+    plotFile = models.CharField("Plot", max_length=40, null=True, blank=True)
     path = models.CharField(max_length=40)
-    startDate = models.DateTimeField("Start Date")
-    endDate = models.DateTimeField("End Date", null=True, blank=True)
+    plotPath = models.CharField(max_length=40, null=True, blank=True)
+    startDate = models.DateTimeField("Start Date (UTC)")
+    endDate = models.DateTimeField("End Date (UTC)", null=True, blank=True)
 
     def __str__(self):
         return 'Observation_' + self.station.station_id + '_' + self.fileName

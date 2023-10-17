@@ -5,6 +5,7 @@
   <li><a class="active" href="/home">Home</a></li>
   <li><a href="/stations/stations">Stations</a></li>
   <li><a href="/observations/observation_list">Observations</a></li>
+  <li><a href="/analysis/analysis">Analysis</a></li>
   <li><a href="/user_list">Users</a></li>
   <li><a href="/login/">Log In</a></li>
   <li><a href="/signup/">Register your station</a></li>
@@ -66,7 +67,7 @@
   geojson_online.features.forEach(function(marker) {
 	//var el = document.createElement('div');
 	//el.className = 'marker-light-red';
-	  new mapboxgl.Marker({ color: "#008000" })//el)
+	  new mapboxgl.Marker({ color: "#008000", scale: .6 })//el)
 	  .setLngLat(marker.geometry.coordinates)
 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
 	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
@@ -95,7 +96,7 @@
   geojson_poss.features.forEach(function(marker) {
 	//var el = document.createElement('div');
 	//el.className = 'marker-light-red';
-	  new mapboxgl.Marker({ color: "#FFA500" })//el)
+	  new mapboxgl.Marker({ color: "#FFA500", scale: .6})//el)
 	  .setLngLat(marker.geometry.coordinates)
 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
 	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
@@ -125,7 +126,7 @@
   geojson_offline.features.forEach(function(marker) {
 	//var el = document.createElement('div');
 	//el.className = 'marker-light-red';
-	  new mapboxgl.Marker({ color: "#FF0000" })//el)
+	  new mapboxgl.Marker({ color: "#FF0000", scale: .6 })//el)
 	  .setLngLat(marker.geometry.coordinates)
 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
 	  .setHTML('<h3>' + marker.properties.title + '</h3>'))

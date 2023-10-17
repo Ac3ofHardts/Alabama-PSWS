@@ -65,7 +65,7 @@ def station_details_view(request, id=None):
     #all_stations = Station.objects.all()
     context = {'station': station}
     table = InstrumentTable(Instrument.objects.filter(station_id=id))
-    table.paginate(page=request.GET.get("page", 1), per_page=4)
+    table.paginate(page=request.GET.get("page", 1), per_page=8)
     return render(request, 'station_details.html', 
         {'station': station, 'table': table}
             )
@@ -95,7 +95,7 @@ def add_station_view(request):
             station.nickname = form.cleaned_data.get('nickname')
             station.grid = form.cleaned_data.get('grid')
             try:
-                station.latitute =  mh.to_location(station.grid, center=True)[0]
+                station.latitude =  mh.to_location(station.grid, center=True)[0]
                 station.longitude = mh.to_location(station.grid, center=True)[1]
             except Exception as e:
                 text = "You entered an invalid grid square value. For help with this see <a href='https://www.levinecentral.com/ham/grid_square.php'>here.</a>"

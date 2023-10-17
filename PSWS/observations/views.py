@@ -155,6 +155,7 @@ def download_range(request, id=None):
                 for sub_file in os.listdir(full_path + '/ch0/metadata/' + file):
                     zipF.write(full_path + "/ch0/metadata/" + file + "/" + sub_file, \
                             arcname = "ch0/metadata/" + file + "/" + sub_file) 
+        zipF.close()        
 
         fl = open(zip_path, 'rb')
         
@@ -209,5 +210,5 @@ class ObservationListView(SingleTableMixin, FilterView):
     model = Observation
     template_name = "observation_list.html"
     filterset_class = ObservationFilter
-    paginate_by = 4
+    paginate_by = 8
     ordering = ['-endDate'] # list newest observations first

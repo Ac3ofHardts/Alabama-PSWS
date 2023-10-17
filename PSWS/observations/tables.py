@@ -3,7 +3,8 @@ from .models import Observation
 from django_tables2 import A
 
 class ObservationTable(tables.Table):
-    #fileName = tables.LinkColumn('download_file', args=[A('id')], verbose_name='File/Observation')
+    #fileName = tables.LinkColumn('download_file', args=[A('id')], verbose_name='File/Observation') 
+    size = tables.Column(verbose_name='Size (MB)')
     fileName = tables.LinkColumn('select_download_range', args=[A('id')], verbose_name='File/Observation')
     startDate = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="Start (UTC)")
     endDate   = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="End (UTC)")
@@ -19,4 +20,5 @@ class ObservationTable(tables.Table):
         template_name = "django_tables2/bootstrap.html"
        # fields = ("dataType", "dataRate", "centerFrequency", "station", "instrument", "band", "size", "fileName", "startDate", "endDate")
         fields = ("dataRate", "centerFrequency", "station", "instrument.instrument", "size", "fileName", "startDate", "endDate")
+        attrs = {"class": "obsTable"}
         

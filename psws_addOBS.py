@@ -42,8 +42,21 @@ station_id = theStationQS.values()[0]["id"]
 
 station_instance = Station.objects.get(station_id = station_name)
 
+# update last_alive for this station
+station_instance.last_alive = dt.now(timezone.utc)
+# the station_status will update by itself when queried.
+station_instance.save()
+writeLog("Updated last alive for " + station_name + " to " + str(dt.now(timezone.utc)))
+
 instrument_name = str(sys.argv[6])
-theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
+if instrument_name.isdigit():
+    if Instrument.objects.filter(id=int(instrument_name)).exists():
+        # We've been given the instrument id, so pull data using ID
+        theInstrumentQS = Instrument.objects.filter(id=int(instrument_name), station_id=station_id)
+else:
+    # Given instrument name, so pull data using name
+    theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
+
 #print("found instrument:",theInstrumentQS)
 try:
     instrument_id = theInstrumentQS.values()[0]["id"]
@@ -65,10 +78,10 @@ for  c in range(9, 17): # handles up to 8 center frequencies in this version
       theFreq = str(sys.argv[c])
       print("look up cfid ",theFreq)
       this_cfid = CenterFrequency.objects.filter(centerFrequency=theFreq).values('id')
-      #print("found cfid:",this_cfid)
-      cfid_list.append(this_cfid)
+      print("found cfid:",this_cfid)
+      cfid_list.append(this_cfid[0]['id'])
     except Exception as ex:
-      #print("Exception:",str(ex))
+      print("Exception:",str(ex))
       print("center freq ids found:", c-8)
       break
 
@@ -98,6 +111,6 @@ else:  # this  observation is already in database. update endDate
 
 #from datetime import datetime, timezone
 
-station_instance.last_alive = dt.now(timezone.utc)
+#station_instance.last_alive = dt.now(timezone.utc)
 # the station_status will update by itself when queried.
-station_instance.save()
+#station_instance.save()
