@@ -52,4 +52,9 @@
     <a href="{% url 'observation_list' %}">Back</a>
 </div>
 
+
+{% load static %}
+<img src="{%static observation.plotFile %}" alt="No graph for this observation available." height="50%" class="right">
+
 {% endblock main %}
+
