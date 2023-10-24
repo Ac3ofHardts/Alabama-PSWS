@@ -106,12 +106,11 @@ class UploadEvent(PatternMatchingEventHandler):
             #print("Freq list:", freq_list)
 
             # GRAPHING COMMAND
-            try:
-                if "N000004" in path: 
-                    writeLog("Trigger graphing  program")
-                    graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v4.py -e " + event.src_path + " -p /home/plots"
-                    writeLog("Running graph_command ----> " + graph_command)
-                    os.system(graph_command)
+            try: 
+                writeLog("Trigger graphing  program")
+                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v4.py -e " + event.src_path + " -p /home/plots"
+                writeLog("Running graph_command ----> " + graph_command)
+                os.system(graph_command)
             except Exception as ex:
                 print("Exception: ", str(ex))
 
