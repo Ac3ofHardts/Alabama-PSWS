@@ -51,6 +51,7 @@ station_instance.save()
 writeLog("Updated last alive for " + station_name + " to " + str(dt.now(timezone.utc)))
 
 instrument_name = str(sys.argv[6])
+
 if instrument_name.isdigit():
     if Instrument.objects.filter(id=int(instrument_name)).exists():
         # We've been given the instrument id, so pull data using ID
@@ -60,13 +61,16 @@ else:
     theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
 
 #print("found instrument:",theInstrumentQS)
+
 try:
     instrument_id = theInstrumentQS.values()[0]["id"]
 except IndexError as e:
     # the instrument given is not assigned to this station
     writeLog("ERROR. User specified " + station_name + " & " + instrument_name + "; no database match")
+    print("ERROR. User specified " + station_name + " & " + instrument_name + "; no database match")
     exit()
 
+print("instrumentid=",instrument_id)
 startDate =  str (sys.argv[7])
 # ensure database knows about UTC timezone
 startDateTZ = dt.strptime(startDate, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
@@ -82,6 +86,7 @@ for  c in range(9, 17): # handles up to 8 center frequencies in this version
       this_cfid = CenterFrequency.objects.filter(centerFrequency=theFreq).values('id')
       print("found cfid:",this_cfid)
       cfid_list.append(this_cfid[0]['id'])
+
     except Exception as ex:
       print("Exception:",str(ex))
       print("center freq ids found:", c-8)
