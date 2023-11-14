@@ -13,3 +13,8 @@ graphing_testing.py
 makegraph.py
 plotspectrum_v4.py
 requirements.txt
+watchdog.log
+watch.log
+pip-requirements.txt
+graphing.log
+PSWS/logs/debug.log

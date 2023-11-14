@@ -12,6 +12,7 @@ from django.db import models
 django.setup()
 from centerfrequencies.models import *
 from observations.models import *
+from datatypes.models import *
 #import datetime
 
 from datetime import timezone
@@ -28,6 +29,7 @@ def writeLog(theMessage):
 #  (4)  path, (5) station_id, (6) instrument, (7) start date, (8) end date
 
 #print ('Argument List:', str(sys.argv))
+
 dataRate = str(sys.argv[1])
 obsSize = str (sys.argv[2])
 fileName = str (sys.argv[3])
@@ -83,7 +85,8 @@ for  c in range(9, 17): # handles up to 8 center frequencies in this version
       print("look up cfid ",theFreq)
       this_cfid = CenterFrequency.objects.filter(centerFrequency=theFreq).values('id')
       print("found cfid:",this_cfid)
-      cfid_list.append(this_cfid)
+      cfid_list.append(this_cfid[0]['id'])
+
     except Exception as ex:
       print("Exception:",str(ex))
       print("center freq ids found:", c-8)
@@ -97,7 +100,12 @@ if len(obs_list) == 0:   # this is a new observation
         #      instrument_id=instrument_id, station_id=station_id, startDate=startDateTZ, endDate=endDateTZ)
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
-
+    
+    # DataType Fix - Anderson November 2023
+    # dataType = DataType.objects.filter(dataType='spectrum').values('id')
+    # print(dataType)
+    # theObs.dataType.add(dataType)
+    
     theObs.save()
     for this_cfid in cfid_list: # add one or more center frequencies in this datase
         theObs.centerFrequency.add(this_cfid)

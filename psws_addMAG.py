@@ -12,6 +12,7 @@ from django.db import models
 django.setup()
 #from centerfrequencies.models import *
 from observations.models import *
+from datatypes.models import *
 #import datetime
 
 from datetime import timezone
@@ -65,7 +66,7 @@ print("files to be processed:",len(fileList))
 for thisfile in fileList:
     if thisfile[0] == ".":
         continue  # ignore any hidden files
-    print("filename:",thisfile)
+    #print("filename:",thisfile)
     startDate = thisfile[3:19] # filename must be of the form OBSYYYY-MM-DDTHH:SS.zip
 #    print("startdate:",startDate)
     obsSize = os.path.getsize(os.path.join(path, thisfile))
@@ -101,6 +102,12 @@ for thisfile in fileList:
        theObs  = Observation(dataRate=1,size=obsSize,fileName=thisfile,path=path,  \
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
+
+        # DataType Fix - Anderson November 2023
+       # print(dataType)
+       # dataType = DataType.objects.filter(dataType='spectrum').values('id')
+       # theObs.dataType.add(dataType)
+
        print("saving obs")
        # a=input()
        theObs.save()
