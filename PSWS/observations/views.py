@@ -141,7 +141,7 @@ def download_range(request, id=None):
     os.remove(zip_path + ".zip")
     mime_type, _ = mimetypes.guess_type(zip_path+'.zip')
     response = HttpResponse(fl, content_type=mime_type)
-    response['Content-Disposition'] = "attachment; filename=%s" % fl_path+'.zip'
+    response['Content-Disposition'] = "attachment; filename=%s" % filename+'.zip'
 
     return response
 
@@ -227,4 +227,4 @@ class ObservationListView(SingleTableMixin, FilterView):
     template_name = "observation_list.html"
     filterset_class = ObservationFilter
     paginate_by = 8
-    ordering = ['-endDate'] # list newest observations first
+    ordering = ['-endDate', 'id'] # list newest observations first

@@ -12,6 +12,7 @@ from django.db import models
 django.setup()
 #from centerfrequencies.models import *
 from observations.models import *
+from datatypes.models import *
 #import datetime
 
 from datetime import timezone
@@ -101,6 +102,12 @@ for thisfile in fileList:
        theObs  = Observation(dataRate=1,size=obsSize,fileName=thisfile,path=path,  \
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
+
+        # DataType Fix - Anderson November 2023
+       # print(dataType)
+       # dataType = DataType.objects.filter(dataType='spectrum').values('id')
+       # theObs.dataType.add(dataType)
+
        print("saving obs")
        # a=input()
        theObs.save()
