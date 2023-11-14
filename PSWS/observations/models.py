@@ -19,6 +19,8 @@ class Observation(models.Model):
     fileName = models.CharField("File", max_length=40)
     plotFile = models.CharField("Plot", max_length=40, null=True, blank=True)
     path = models.CharField(max_length=40)
+    # Added for initial graph upon upload
+    # graph = models.ForeignKey("analysis.Experiment", on_delete=models.CASCADE, null=True, blank=True, related_name='+')
     plotPath = models.CharField(max_length=40, null=True, blank=True)
     startDate = models.DateTimeField("Start Date (UTC)")
     endDate = models.DateTimeField("End Date (UTC)", null=True, blank=True)

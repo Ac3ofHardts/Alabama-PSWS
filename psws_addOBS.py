@@ -49,8 +49,17 @@ station_instance.save()
 writeLog("Updated last alive for " + station_name + " to " + str(dt.now(timezone.utc)))
 
 instrument_name = str(sys.argv[6])
-theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
-print("found instrument:",theInstrumentQS)
+
+if instrument_name.isdigit():
+    if Instrument.objects.filter(id=int(instrument_name)).exists():
+        # We've been given the instrument id, so pull data using ID
+        theInstrumentQS = Instrument.objects.filter(id=int(instrument_name), station_id=station_id)
+else:
+    # Given instrument name, so pull data using name
+    theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
+
+#print("found instrument:",theInstrumentQS)
+
 try:
     instrument_id = theInstrumentQS.values()[0]["id"]
 except IndexError as e:

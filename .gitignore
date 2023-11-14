@@ -6,6 +6,10 @@ venv/*
 !**/migrations/__init__.py
 PSWS/PSWS/settings.py
 PSWS/PSWS/settings/prod.py
+**/plotting/**
+graphing.log
+watchdog.log
+graphing_testing.py
 makegraph.py
 plotspectrum_v4.py
-
+requirements.txt
