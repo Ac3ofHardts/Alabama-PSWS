@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'centerfrequencies',
     'django_tables2',
     'django_filters',
-    'analysis'
+    'analysis',
+    'chartjs',
 ]
 
 MIDDLEWARE = [

@@ -7,7 +7,7 @@ import os, sys
 import django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'PSWS.PSWS.settings'
 from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+# application = get_wsgi_application()
 from django.db import models
 django.setup()
 #from centerfrequencies.models import *
