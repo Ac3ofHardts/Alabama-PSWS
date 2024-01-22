@@ -31,7 +31,12 @@
     </div>
     {% if observation.instrument.instrumenttype.instrumentType == "Magnetometer" %}
     <div class="child">
-	<a href="{% url 'download_file' id=observation.id%}">Download Observation Data</a>
+		<!--<a href="{% url 'download_file' id=observation.id%}">Download Observation Data</a>-->
+		<p>Press the button below to download the observation</p>
+		<form action="{% url 'download_file' id=observation.id%}" method="POST">
+	    	{% csrf_token %}
+	    	<button type="submit">Download Observation Data</button>
+		</form>
     </div>
     {% else %}
     <div class="child">
@@ -49,11 +54,16 @@
 </div>
 
 <div>
-    <a href="{% url 'observation_list' %}">Back</a>
+    <!--<a href="{% url 'observation_list' %}">Back</a>-->
+	<form action="{% url 'observation_list' %}" method="GET">
+		{% csrf_token %}
+		<button type="submit">Back</button>
+	</form>
 </div>
 
-
-<img src= '/static/PSWS/plots/{{observation.plotFile}}' alt="No graph for this observation available." height="30%" class="right">
+<div style="margin-top: 5%; margin-bottom: 5%;">
+	<img src= '/static/PSWS/plots/{{observation.plotFile}}' alt="Graph for Observation Unavailable" width="85%" class="border" style="display: block; margin-left: auto; margin-right: auto;">
+</div>
 
 {% endblock main %}
 
