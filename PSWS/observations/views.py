@@ -27,6 +27,20 @@ import h5py
 from datetime import datetime
 
 # Create your views here.
+def download_plot(request, id=None):
+    observation= get_object_or_404(Observation, id=id)
+
+    fl_path= observation.plotPath + '/'
+    filename= observation.plotFile
+    fl_path += filename
+
+    fl= open(fl_path, 'rb')
+    mime_type= mimetypes.guess_type(fl_path)
+    
+    response= HttpResponse(fl, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % observation.plotFile
+    return response
+
 def download_file(request, id=None):
     observation = get_object_or_404(Observation, id=id)
    
