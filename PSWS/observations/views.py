@@ -26,18 +26,30 @@ import digital_rf as drf
 import h5py
 from datetime import datetime
 
-# Create your views here.
 def download_plot(request, id=None):
+    """ Downloads observation plot to local computer using website
+    Parameter
+    ---------
+    id : int
+        provides id for the observation object from which to pull 
+        and download plot file
+    Returns
+    -------
+    response : HTTPResponse
+        begins download of target plot img file to local computer
+        upon request
+    """
+
+    # retreives observation by provied id or throws 404 error to site
     observation= get_object_or_404(Observation, id=id)
-
-    fl_path= observation.plotPath + '/'
-    filename= observation.plotFile
-    fl_path += filename
-
-    fl= open(fl_path, 'rb')
-    mime_type= mimetypes.guess_type(fl_path)
     
-    response= HttpResponse(fl, content_type=mime_type)
+    # determines path to retrieve plot img from as well as file type
+    file_path= observation.plotPath + '/' + observation.plotFile
+    img_file= open(file_path, 'rb')
+    mime_type= mimetypes.guess_type(file_path)
+    
+    # creates and returns site response triggering img file download
+    response= HttpResponse(img_file, content_type=mime_type)
     response['Content-Disposition'] = "attachment; filename=%s" % observation.plotFile
     return response
 

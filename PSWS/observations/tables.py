@@ -1,27 +1,68 @@
+# ----------------------------------------------------------------------------
+# Copyright (c) 2024 University of Alabama
+# All rights reserved.
+#
+# Distributed under the terms of the BSD 3-clause license.
+#
+# The full license is in the LICENSE file, distributed with this software.
+# ----------------------------------------------------------------------------
 import django_tables2 as tables
 from .models import Observation
 from django_tables2 import A
 
 class TruncatedTextColumn(tables.Column):
+    """ Custom Column class derived from django_tables2 Column class """
+
     def render(self, value):
+        """ Limits the length of the Instrument Name
+        Parameters
+        ----------
+        value : string | len < 41
+            Instrument name corresponding to the Observation.
+        Returns
+        -------
+        value : string
+            Instrument name truncated to length 15 with '...' added
+            to signify that the Instument name is longer than shown
+            in the observation table if and only if the instument name
+            was orginally of length greater than 15. 
+        """  
+
         if len(value) > 15:
+            # returns first 15 chars of instrument name. Appends '...' to end
             return value[0:15] + '...'
         return str(value)
 
-class CustomBooleanColumn(tables.BooleanColumn):
-    def render(self, value):
-        if value != None:
-            return str("Yes")
-        return str("No")
+class BooleanColumn(tables.BooleanColumn):
+    """ Custom  Boolean Column class derived from django_tables2 BooleanColumn class """
+
+    def render(self, PlotFile):
+        """ Determines boolean value for if Observation Plot File exists
+        Parameters
+        ----------
+        PlotFile : string | len < 41
+            Plot filename associated with current observation within database.
+        Returns
+        -------
+        truth_val : string
+            "Yes" or "No" value dependent on if the Plot file exists for 
+            the current observation within the database.
+        """
+        
+        truth_val= "Yes"
+        if PlotFile == None:
+           # changes value if file DNE
+           truth_val= "No"
+
+        return str(truth_val)
 
 class ObservationTable(tables.Table):
-    #fileName = tables.LinkColumn('download_file', args=[A('id')], verbose_name='File/Observation') 
     size = tables.Column(verbose_name='Size (MB)')
     fileName = tables.LinkColumn('select_download_range', args=[A('id')], verbose_name='File/Observation')
     startDate = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="Start (UTC)")
     endDate   = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="End (UTC)")
     instrument = TruncatedTextColumn(accessor=A('instrument.instrument'))
-    plotExists = CustomBooleanColumn(accessor=A('plotFile'), verbose_name="Plot")
+    plotExists = BooleanColumn(accessor=A('plotFile'), verbose_name="Plot")
 
     def render_size(self, value):
         converted_size = float(value)
@@ -32,7 +73,6 @@ class ObservationTable(tables.Table):
     class Meta:
         model = Observation
         template_name = "django_tables2/bootstrap.html"
-       # fields = ("dataType", "dataRate", "centerFrequency", "station", "instrument", "band", "size", "fileName", "startDate", "endDate")
         fields = ("dataRate", "centerFrequency", "station", "instrument", "size", "fileName", "plotExists", "startDate", "endDate")
         attrs = {"class": "obsTable"}
         
