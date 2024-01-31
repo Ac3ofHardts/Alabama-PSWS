@@ -33,10 +33,10 @@ class TruncatedTextColumn(tables.Column):
             return value[0:15] + '...'
         return str(value)
 
-class BooleanColumn(tables.BooleanColumn):
+class CustomBooleanColumn(tables.BooleanColumn):
     """ Custom  Boolean Column class derived from django_tables2 BooleanColumn class """
 
-    def render(self, PlotFile):
+    def render(self, value):
         """ Determines boolean value for if Observation Plot File exists
         Parameters
         ----------
@@ -49,12 +49,9 @@ class BooleanColumn(tables.BooleanColumn):
             the current observation within the database.
         """
         
-        truth_val= "Yes"
-        if PlotFile == None:
-           # changes value if file DNE
-           truth_val= "No"
-
-        return str(truth_val)
+        if value != None:
+           return str("Yes")
+        return str("No")
 
 class ObservationTable(tables.Table):
     size = tables.Column(verbose_name='Size (MB)')
@@ -62,7 +59,7 @@ class ObservationTable(tables.Table):
     startDate = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="Start (UTC)")
     endDate   = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="End (UTC)")
     instrument = TruncatedTextColumn(accessor=A('instrument.instrument'))
-    plotExists = BooleanColumn(accessor=A('plotFile'), verbose_name="Plot")
+    plotExists = CustomBooleanColumn(accessor=A('plotFile'), verbose_name="Plot")
 
     def render_size(self, value):
         converted_size = float(value)
