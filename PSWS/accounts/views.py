@@ -129,7 +129,8 @@ def signup_view(request):
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': account_activation_token.make_token(user),
                 })
-                from_email = 'AB4EJ1@gmail.com'
+                # from_email = 'AB4EJ1@gmail.com'
+                from_email = 'bengelke@cs.ua.edu'
                 to = user.email
                 msg = EmailMultiAlternatives(subject, message, from_email, [to])
                 msg.send(fail_silently=False)
@@ -150,7 +151,8 @@ def signup_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            from_email = 'AB4EJ1@gmail.com'
+            # from_email = 'AB4EJ1@gmail.com'
+            from_email = "bengelke@cs.ua.edu"
             to = user.email
             msg = EmailMultiAlternatives(subject, message, from_email, [to])
             msg.send(fail_silently=False)
