@@ -90,9 +90,10 @@ class UploadEvent(PatternMatchingEventHandler):
               dmr = drf.DigitalMetadataReader(metadata_dir)
               start_idx = dmr.get_bounds()[0]
     #          print("Start:" , start_idx)
-            except IOError:
-              writeLog("IO error accessing digital metadata, path=" + event.src_path)
-              print("IO error accessing digital metadata")
+            except IOError as e:
+              writeLog("IO error accessing digital metadata, path=" + metadata_dir)
+              writeLog(str(e))
+              #print("IO error accessing digital metadata")
               return
             fields = dmr.get_fields()
             #writeLog("Available fields are <%s>" % (str(fields)))
@@ -246,6 +247,7 @@ class UploadEvent(PatternMatchingEventHandler):
 
 if __name__ == "__main__":
     print("starting watchdog")
+    writeLog("Watchdog triggered")
      
     path = sys.argv[1] if len(sys.argv) > 1 else '/home'
 # directory starting with "d" - this upload is in response to a Data Request
