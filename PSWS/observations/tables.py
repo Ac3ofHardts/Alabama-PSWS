@@ -33,25 +33,27 @@ class TruncatedTextColumn(tables.Column):
             return value[0:15] + '...'
         return str(value)
 
-class CustomBooleanColumn(tables.BooleanColumn):
-    """ Custom  Boolean Column class derived from django_tables2 BooleanColumn class """
+class PlotColumn(tables.BooleanColumn):
+    """ Custom  Boolean Column class derived from django_tables2 BooleanColumn class."""
 
     def render(self, value):
         """ Determines boolean value for if Observation Plot File exists
         Parameters
         ----------
-        PlotFile : string | len < 41
-            Plot filename associated with current observation within database.
+        value : string | len < 41
+            Holds plot filename associated with current observation within database.
         Returns
         -------
-        truth_val : string
-            "Yes" or "No" value dependent on if the Plot file exists for 
-            the current observation within the database.
+        response : char
+           If condiational returns true, repsones is fed the python unicode for a green
+           dot to appear in the column, where as if the condition returns false, response 
+           returns an empty string to display.
         """
-        
+        response= ''
         if value != None:
-           return str("Yes")
-        return str("No")
+           response= '\U0001F7E2'
+           return response
+        return response
 
 class ObservationTable(tables.Table):
     size = tables.Column(verbose_name='Size (MB)')
@@ -59,7 +61,7 @@ class ObservationTable(tables.Table):
     startDate = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="Start (UTC)")
     endDate   = tables.DateTimeColumn(format="Y-m-d H:i:s", verbose_name="End (UTC)")
     instrument = TruncatedTextColumn(accessor=A('instrument.instrument'))
-    plotExists = CustomBooleanColumn(accessor=A('plotFile'), verbose_name="Plot")
+    plotExists = PlotColumn(accessor=A('plotFile'), verbose_name="Plot")
 
     def render_size(self, value):
         converted_size = float(value)
