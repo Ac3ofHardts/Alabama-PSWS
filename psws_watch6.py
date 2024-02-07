@@ -64,7 +64,7 @@ class UploadEvent(PatternMatchingEventHandler):
             uploadType = 'd'
 
             # GRAPHING COMMAND TESTING
-            graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path
+            # graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path
             #os.system(graph_command)
 
 
@@ -107,13 +107,20 @@ class UploadEvent(PatternMatchingEventHandler):
             #print("Freq list:", freq_list)
 
             # GRAPHING COMMAND
-            try: 
+            if not (os.path.isfile(channelPath + '/drf_properties.h5')):
+                writeLog("DRF Properties file missing!")
+                return
+            try:
                 writeLog("Trigger graphing  program")
-                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots"
-                writeLog("Running graph_command ----> " + graph_command)
-                os.system(graph_command)
+                # graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
+                graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
+                # writeLog("Running graph_command ----> " + graph_command)
+                # os.system(graph_command)
+                # writeLog(graph_command.stdout)
+                writeLog("Graphing command run!")
             except Exception as ex:
                 print("Exception: ", str(ex))
+                writeLog("Exception: " + str(ex))
 
 
         elif event.src_path.rsplit('/')[3][0] == 'm': # processing for "m" (magnetometer) type upload
@@ -198,14 +205,22 @@ class UploadEvent(PatternMatchingEventHandler):
             tar_file = observation_no
             
         #Scrape the metadata from the properties files
-        fp = h5py.File(channelPath + '/drf_properties.h5','r')  # WDE added 'r'
+        writeLog("Scraping metadata!")
+        if (os.path.isfile(channelPath + '/drf_properties.h5')):
+            fp = h5py.File(channelPath + '/drf_properties.h5','r')  # WDE added 'r'
+        else:
+            writeLog("Cannot find metadata!")
+            return
         if uploadType == 'd':  # this will be obsolete if all uploads standardize on digital_metadata
             afp = h5py.File(channelPath + '/aux_drf_properties.h5')
-
+        writeLog("Successfully scraped metadata!")
+        
         # Getting start time and end time
         drf_data = drf.DigitalRFReader(path)
         startDate, endDate = drf_data.get_bounds('ch0')
         print("bounds:", startDate, endDate)
+        writeLog("Got Bounds")
+        # writeLog("bounds: " + startDate + " " + endDate)
         # Converting from Unix time to datetime
 
         #All needed fields for insertion
