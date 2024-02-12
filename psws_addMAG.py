@@ -12,6 +12,7 @@ from django.db import models
 django.setup()
 #from centerfrequencies.models import *
 from observations.models import *
+from datatypes.models import *
 #import datetime
 
 from datetime import timezone
@@ -65,7 +66,7 @@ print("files to be processed:",len(fileList))
 for thisfile in fileList:
     if thisfile[0] == ".":
         continue  # ignore any hidden files
-    print("filename:",thisfile)
+    #print("filename:",thisfile)
     startDate = thisfile[3:19] # filename must be of the form OBSYYYY-MM-DDTHH:SS.zip
 #    print("startdate:",startDate)
     obsSize = os.path.getsize(os.path.join(path, thisfile))
@@ -101,6 +102,17 @@ for thisfile in fileList:
        theObs  = Observation(dataRate=1,size=obsSize,fileName=thisfile,path=path,  \
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
+       theObs.save()
+       try:
+           dataType = DataType.objects.filter(dataType='magnetometer').values('id') # not working as of 2024-01-15
+           theObs.dataType.add(dataType[0]["id"])
+           # DataType Fix - Anderson November 2023
+           print("datatype!! = ", dataType, "  ID = ", dataType[0]["id"])
+           writeLog("Add data type to MAG" )
+       except Exception as ex:
+           template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+           message = template.format(type(ex).__name__, ex.args)
+           writeLog("While adding data type:" + message)
        print("saving obs")
        # a=input()
        theObs.save()

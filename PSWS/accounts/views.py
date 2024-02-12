@@ -38,6 +38,7 @@ def updateStatus():
     #Update Station status of all stations before displaying
     AliveCutoff = datetime.now(timezone.utc) - timedelta(hours=onlineCutoffHours)
     DeadCutoff = datetime.now(timezone.utc) - timedelta(hours=possiblyOnlineCutoffHours)
+
     for instance in Station.objects.all():
         if (instance.last_alive is None):
             instance.last_alive = datetime(2000,1,1,tzinfo=timezone.utc)
@@ -47,8 +48,11 @@ def updateStatus():
             instance.station_status = "PossiblyOnline"
         else:
             instance.station_status = "Online"
+       # if station has never submitted an upload, they are marked inactive
+       # and won't show on map
+        if (instance.last_alive == datetime(2000,1,1,tzinfo=timezone.utc)):
+            instance.station_status = "Inactive"
         instance.save()
-
 
 def home(request):
     updateStatus()
@@ -125,7 +129,8 @@ def signup_view(request):
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': account_activation_token.make_token(user),
                 })
-                from_email = 'AB4EJ1@gmail.com'
+                # from_email = 'AB4EJ1@gmail.com'
+                from_email = 'bengelke@cs.ua.edu'
                 to = user.email
                 msg = EmailMultiAlternatives(subject, message, from_email, [to])
                 msg.send(fail_silently=False)
@@ -146,7 +151,8 @@ def signup_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': account_activation_token.make_token(user),
             })
-            from_email = 'AB4EJ1@gmail.com'
+            # from_email = 'AB4EJ1@gmail.com'
+            from_email = "bengelke@cs.ua.edu"
             to = user.email
             msg = EmailMultiAlternatives(subject, message, from_email, [to])
             msg.send(fail_silently=False)

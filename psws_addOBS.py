@@ -12,6 +12,7 @@ from django.db import models
 django.setup()
 from centerfrequencies.models import *
 from observations.models import *
+from datatypes.models import *
 #import datetime
 
 from datetime import timezone
@@ -28,6 +29,7 @@ def writeLog(theMessage):
 #  (4)  path, (5) station_id, (6) instrument, (7) start date, (8) end date
 
 #print ('Argument List:', str(sys.argv))
+
 dataRate = str(sys.argv[1])
 obsSize = str (sys.argv[2])
 fileName = str (sys.argv[3])
@@ -49,6 +51,7 @@ station_instance.save()
 writeLog("Updated last alive for " + station_name + " to " + str(dt.now(timezone.utc)))
 
 instrument_name = str(sys.argv[6])
+
 if instrument_name.isdigit():
     if Instrument.objects.filter(id=int(instrument_name)).exists():
         # We've been given the instrument id, so pull data using ID
@@ -58,13 +61,16 @@ else:
     theInstrumentQS = Instrument.objects.filter(instrument=instrument_name, station_id=station_id)
 
 #print("found instrument:",theInstrumentQS)
+
 try:
     instrument_id = theInstrumentQS.values()[0]["id"]
 except IndexError as e:
     # the instrument given is not assigned to this station
     writeLog("ERROR. User specified " + station_name + " & " + instrument_name + "; no database match")
+    print("ERROR. User specified " + station_name + " & " + instrument_name + "; no database match")
     exit()
 
+print("instrumentid=",instrument_id)
 startDate =  str (sys.argv[7])
 # ensure database knows about UTC timezone
 startDateTZ = dt.strptime(startDate, '%Y-%m-%dT%H:%M').replace(tzinfo=timezone.utc)
@@ -78,10 +84,11 @@ for  c in range(9, 17): # handles up to 8 center frequencies in this version
       theFreq = str(sys.argv[c])
       print("look up cfid ",theFreq)
       this_cfid = CenterFrequency.objects.filter(centerFrequency=theFreq).values('id')
-      #print("found cfid:",this_cfid)
-      cfid_list.append(this_cfid)
+      print("found cfid:",this_cfid)
+      cfid_list.append(this_cfid[0]['id'])
+
     except Exception as ex:
-      #print("Exception:",str(ex))
+      print("Exception:",str(ex))
       print("center freq ids found:", c-8)
       break
 
@@ -93,7 +100,12 @@ if len(obs_list) == 0:   # this is a new observation
         #      instrument_id=instrument_id, station_id=station_id, startDate=startDateTZ, endDate=endDateTZ)
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
-
+    theObs.save()
+    # DataType Fix - Anderson November 2023
+    dataType = DataType.objects.filter(dataType='spectrum').values('id')
+    print("datatype!! = ", dataType, "  ID = ", dataType[0]['id'])
+    theObs.dataType.add(dataType[0]['id'])
+    
     theObs.save()
     for this_cfid in cfid_list: # add one or more center frequencies in this datase
         theObs.centerFrequency.add(this_cfid)

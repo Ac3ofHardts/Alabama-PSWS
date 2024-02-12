@@ -26,7 +26,33 @@ import digital_rf as drf
 import h5py
 from datetime import datetime
 
-# Create your views here.
+def download_plot(request, id=None):
+    """ Downloads observation plot to local computer using website
+    Parameter
+    ---------
+    id : int
+        provides id for the observation object from which to pull 
+        and download plot file
+    Returns
+    -------
+    response : HTTPResponse
+        begins download of target plot img file to local computer
+        upon request
+    """
+
+    # retreives observation by provied id or throws 404 error to site
+    observation= get_object_or_404(Observation, id=id)
+    
+    # determines path to retrieve plot img from as well as file type
+    file_path= observation.plotPath + '/' + observation.plotFile
+    img_file= open(file_path, 'rb')
+    mime_type= mimetypes.guess_type(file_path)
+    
+    # creates and returns site response triggering img file download
+    response= HttpResponse(img_file, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename=%s" % observation.plotFile
+    return response
+
 def download_file(request, id=None):
     observation = get_object_or_404(Observation, id=id)
    
@@ -141,7 +167,7 @@ def download_range(request, id=None):
     os.remove(zip_path + ".zip")
     mime_type, _ = mimetypes.guess_type(zip_path+'.zip')
     response = HttpResponse(fl, content_type=mime_type)
-    response['Content-Disposition'] = "attachment; filename=%s" % fl_path+'.zip'
+    response['Content-Disposition'] = "attachment; filename=%s" % filename+'.zip'
 
     return response
 
@@ -210,8 +236,23 @@ def get_date_range(request, id=None):
 
 def select_download_range(request, id=None):
     observation = get_object_or_404(Observation, id=id)
-    form_class = DateTimeForm
-    return render(request, 'select_download_range.html', {'observation': observation, 'form': form_class})
+
+    # Intermediary variables meant to get the ID of datatype from the stinkin' intersection table b/w observations and datatypes
+    # For now, accessing only the first query, as we only have observations with one datatype
+    # In the future, will need to convert this to handle multiple datatypes
+    datatype_list       = observation.dataType.all()
+    centerfreq_list     = observation.centerFrequency.all()
+    if datatype_list:
+        datatype        = datatype_list[0]
+    else:
+        datatype        = None
+    if centerfreq_list:
+        centerfreq      = centerfreq_list[0]
+    else:
+        centerfreq      = None
+
+    form_class  = DateTimeForm
+    return render(request, 'select_download_range.html', {'observation': observation, 'datatype': datatype, 'centerfreq': centerfreq, 'form': form_class})
 
 # Display a list of all observations in the database
 #class ObservationListView(SingleTableView):

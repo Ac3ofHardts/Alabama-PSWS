@@ -35,4 +35,4 @@ urlpatterns = [
     path('observations/', include('observations.urls')),
     path('instruments/', include('instruments.urls')),
     path('analysis/', include('analysis.urls')),
-] +  staticfiles_urlpatterns()
+] +  staticfiles_urlpatterns() # + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

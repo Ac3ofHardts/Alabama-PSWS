@@ -71,9 +71,7 @@ class UploadEvent(PatternMatchingEventHandler):
         elif event.src_path.rsplit('/')[3][0] == 'c': # processing for Continuous type upload
             
             # GRAPHING COMMAND TESTING
-            writeLog("Trigger graphing  program")
-            graph_command = "ts python3 /var/www/html/graphing_testing.py " + event.src_path 
-            #os.system(graph_command)
+            # Old location. Now lower.
             
             print("C! path=" + event.src_path)
             writeLog("Processing trigger:" + event.src_path)
@@ -92,9 +90,10 @@ class UploadEvent(PatternMatchingEventHandler):
               dmr = drf.DigitalMetadataReader(metadata_dir)
               start_idx = dmr.get_bounds()[0]
     #          print("Start:" , start_idx)
-            except IOError:
-              writeLog("IO error accessing digital metadata, path=" + event.src_path)
-              print("IO error accessing digital metadata")
+            except IOError as e:
+              writeLog("IO error accessing digital metadata, path=" + metadata_dir)
+              writeLog(str(e))
+              #print("IO error accessing digital metadata")
               return
             fields = dmr.get_fields()
             #writeLog("Available fields are <%s>" % (str(fields)))
@@ -106,6 +105,16 @@ class UploadEvent(PatternMatchingEventHandler):
                 #writeLog("key{}, val{}:".format(x, data_dict[x]))
                 freq_list = data_dict[x]
             #print("Freq list:", freq_list)
+
+            # GRAPHING COMMAND
+            try: 
+                writeLog("Trigger graphing  program")
+                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots"
+                writeLog("Running graph_command ----> " + graph_command)
+                os.system(graph_command)
+            except Exception as ex:
+                print("Exception: ", str(ex))
+
 
         elif event.src_path.rsplit('/')[3][0] == 'm': # processing for "m" (magnetometer) type upload
             observation_no = event.src_path.rsplit('/')[3][1:20]
@@ -238,6 +247,7 @@ class UploadEvent(PatternMatchingEventHandler):
 
 if __name__ == "__main__":
     print("starting watchdog")
+    writeLog("Watchdog triggered")
      
     path = sys.argv[1] if len(sys.argv) > 1 else '/home'
 # directory starting with "d" - this upload is in response to a Data Request

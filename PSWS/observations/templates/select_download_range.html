@@ -15,9 +15,9 @@
     <div class="child">
         <ul>
 	    <li class="details">ID: {{observation.id}}</li>
-	    <li class="details">Data Type: {{observation.dataType}}</li>
+	    <li class="details">Data Type: {{datatype.dataType}}</li>
 	    <li class="details">Data Rate: {{observation.dataRate}}</li>
-	    <li class="details">Center Frequency: {{observation.centerFrequency}}</li>
+	    <li class="details">Center Frequency: {{centerfreq.centerFrequency}}</li>
 	    <li class="details">Station: {{observation.station}}</li>
 	    <li class="details">Instrument: {{observation.instrument}}</li>
 	    <li class="details">Instrument type: {{observation.instrument.instrumenttype.instrumentType}}</li>
@@ -31,7 +31,13 @@
     </div>
     {% if observation.instrument.instrumenttype.instrumentType == "Magnetometer" %}
     <div class="child">
-	<a href="{% url 'download_file' id=observation.id%}">Download Observation Data</a>
+		<!--<a href="{% url 'download_file' id=observation.id%}">Download Observation Data</a>-->
+		<p>Press the button below to download the observation</p>
+		<form action="{% url 'download_file' id=observation.id%}" method="POST">
+	    	{% csrf_token %}
+	    	<button type="submit">Download Observation Data</button>
+		</form>
+		<br>
     </div>
     {% else %}
     <div class="child">
@@ -40,21 +46,32 @@
 	    {% csrf_token %}
 	    <button type="submit">Download Observation Data</button>
 	</form>
-        <!--form action="/observations/download_range/{{ observation.id }}/" method="POST">
-            {% csrf_token %}
-            <button type="submit">Download Observation Data</button>
-	</form-->
+	<br>
+	{% endif %}
+
+	<!-- Download Plot button only shows if the observation has a plot attached to it -->
+	{% if observation.plotPath != None %}
+	<!-- Download Plots -->
+    <p>Press the button below to download the plot</p>
+	<form action="{% url 'download_plot' id=observation.id %}" method="POST">
+		{% csrf_token %}
+		<button type="submit">Download Plot</button>
+	</form>    
     </div>
     {% endif %}
 </div>
 
 <div>
-    <a href="{% url 'observation_list' %}">Back</a>
+    <!--<a href="{% url 'observation_list' %}">Back</a>-->
+	<form action="{% url 'observation_list' %}" method="GET">
+		{% csrf_token %}
+		<button type="submit">Back</button>
+	</form>
 </div>
 
-
-{% load static %}
-<img src="{%static observation.plotFile %}" alt="No graph for this observation available." height="50%" class="right">
+<div style="margin-top: 5%; margin-bottom: 5%;">
+	<img src= '/static/PSWS/plots/{{observation.plotFile}}' alt="Graph for Observation Unavailable" width="85%" class="border" style="display: block; margin-left: auto; margin-right: auto;">
+</div>
 
 {% endblock main %}
 
