@@ -108,7 +108,7 @@ class UploadEvent(PatternMatchingEventHandler):
             # GRAPHING COMMAND
             try: 
                 writeLog("Trigger graphing  program")
-                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots"
+                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v6.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots"
                 writeLog("Running graph_command ----> " + graph_command)
                 os.system(graph_command)
             except Exception as ex:
