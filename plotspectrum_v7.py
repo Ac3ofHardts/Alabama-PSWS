@@ -26,7 +26,7 @@ import django
 from django.core.wsgi import get_wsgi_application
 from django.db import models
 
-# Sets up environment to host modules from PSWS database
+# Sets up envirtonment to host modules from PSWS database
 os.environ['DJANGO_SETTINGS_MODULE'] = 'PSWS.PSWS.settings'
 application= get_wsgi_application()
 django.setup()
@@ -37,7 +37,7 @@ from observations.models import *
 from stations.models import *
 
 plot_output_path= "/home/plots" # for use on pswsnetwork server
-#plot_output_path = "/home/echardt/Plot-Graphing/plots"  # testing output path
+#plot_output_path = "C:\\temp"  # test
 
 # Retrieve supplied arg(s)
 # Remove the first arg from the list of command line args
@@ -80,21 +80,21 @@ except getopt.error as err:
 print("event:",event_src_path)
 stationIDstr = event_src_path.rsplit('/')[2]
 instrumentID = event_src_path.rsplit('_#')[1]
-# Note: when testing in VM, if path to datafile has 'c' in pwd, will need to change to 'z'
-datapath = event_src_path.rsplit('_#')[0].rsplit('c')[0] 
-filename = event_src_path.rsplit('_#')[0].rsplit('c')[1] 
+datapath = event_src_path.rsplit('_#')[0].rsplit('c')[0] #TODO: change 'z' to 'c' when testing on server
+filename = event_src_path.rsplit('_#')[0].rsplit('c')[1] #TODO: change 'z' to 'c' when testing on server
 
 # following just for testing
 #stationIDstr = 'T000107'
 #instrumentID = '117'
-#datapath = '/home/echardt/Plot-Graphing/'
-#filename = 'OBS2024-02-18T00-00'
+#datapath = 'C:\\Users\\engel\\Downloads'
+#filename = 'OBS2024-02-19T00-00'
 print("datapath: ",datapath)
 print("filename: ",filename)
 dataDir = os.path.join(datapath,filename)
 print("data dir: ", dataDir)
 
 plt.style.use('classic') #TODO: replace w/ '_mpl-gallery-nogrid' when testing on server
+plt.style.use('_mpl-gallery-nogrid') 
 maidenheadGrid= 'EN91' # Default grid
 
 # Plot creation
@@ -161,14 +161,14 @@ try:
 except IOError:
     print("IO Error; metadata not found at " + metadata_dir)
 
-# Number of frequencies in metadata
+# Loops through all of the frequencies in a given metadata file
+
 freqCount = len(freqList)
 
 # Create all the axes
 fig, axs = plt.subplots(nrows=freqCount*2,ncols=1,figsize=(10,5*freqCount)) # plot size, inches x and y
 print("# axes created=",len(axs))
 
-# Loops through all of the frequencies in a given metadata file
 for i in range(0,freqCount):
     print("Working on frequency #",i, "  ", freqList[i],"Mhz")
     frequency = freqList[i]
@@ -190,8 +190,15 @@ for i in range(0,freqCount):
     for j in range(1439):
         try:
             data= do.read_vector(s + offset, 1024, 'ch0')
+            
             for val in data:
-                bigarray[bptr]= val[i]
+#                print(" val type:",type(val))
+                if "ndarray" in  str(type(val)) :   # did DRF return a number or an array?
+                    bigarray[bptr] = val[i]
+                else:
+                    bigarray[bptr] = val
+                # i is the frequency from the metadata array
+                # bigarray[bptr]= val[i]
                 bptr += 1
 
         # Tried to read DRF data but didn't find requested time slice       
@@ -214,7 +221,9 @@ for i in range(0,freqCount):
     # Create custom color map to simulate gnuradio display
     cmap= matplotlib.colors.LinearSegmentedColormap.from_list(" ", ["black", "darkgreen", "green", "yellow", "red"])
 
-    # Create Doppler subplot
+    # WDE - moved this outside the main loop, only should be done once
+  #  fig, axs = plt.subplots(len(freqList)*2,1, figsize=(14,len(freqList)*3)) # plot size, inches x and y
+
     axs[2*i] = plt.subplot(freqCount*2,1,(2*i)+1)
     print("Doppler subplot", freqCount*2, 1 ,(2*i)+1)
     plt.tight_layout()
@@ -230,6 +239,7 @@ for i in range(0,freqCount):
     axs[2*i].set_xlabel('Hours, UTC')
 
     # get info from database for use in plot titles
+    print("Look for station",stationIDstr)    
     theStationQS = Station.objects.filter(station_id=stationIDstr) # WDE test
     station_id = theStationQS.values()[0]['id']  # WDE test
     station_nickname = theStationQS.values()[0]['nickname']
@@ -290,8 +300,10 @@ output_filename =  stationIDstr + '_' + instrumentID + '_' + t + '_' + maidenhea
 plt.savefig(plot_output_path + '/' + stationIDstr + '_' + instrumentID + '_' + t + '_' + maidenheadGrid + '.png')
 
 print("Saving to database...")
-print("stationID","station_id","instrumentID",instrumentID,"datapath",datapath,"filename",filename)
-
+print("stationID",station_id,"instrumentID",instrumentID,"datapath",plot_output_path ,"filename","'"+filename+"'")
+o = filename.rsplit("/",2)
+filename = o[-1]
+print("filename:",filename)
 # remove database update for testing
 theObsQS = Observation.objects.filter(station_id=station_id, instrument_id=instrumentID,fileName=filename)
 
