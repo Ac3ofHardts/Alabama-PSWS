@@ -12,4 +12,5 @@ urlpatterns = [
     path('station_details/<int:id>/', views.station_details_view, name="station_details"),
     ]
 
+
 #url paths updated to use current django url paths instead of regular expressions
