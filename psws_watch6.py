@@ -45,6 +45,14 @@ class UploadEvent(PatternMatchingEventHandler):
         super(UploadEvent, self).__init__(patterns=patterns)
 
     def on_created(self, event):
+        if event.src_path.rsplit('/')[-1] == 'm_Test':
+            print("Test file seen!")
+            writeLog("Test file seen at  " + event.src_path)
+            print("Located at " + event.src_path)
+            os.rmdir(event.src_path)
+            print("Removed directory:" + event.src_path)
+            time.sleep(1)
+            return
         #Begin by identifying if continuous or not
         #Then locating the path of the event
         print("UPLOAD trigger at local time: " + dt.now().isoformat())
@@ -110,12 +118,18 @@ class UploadEvent(PatternMatchingEventHandler):
             if not (os.path.isfile(channelPath + '/drf_properties.h5')):
                 writeLog("DRF Properties file missing!")
                 return
+            # EMERGENCY CHNAGE TO PREVENT s000123 from crashing watchdog
+            if not (os.path.exists(channelPath)):
+                writeLog("Channel path does not exist! Might be issue with parsing of trigger file name.")
+                return
             try:
                 writeLog("Trigger graphing  program")
                 # graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
-                graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
-                # writeLog("Running graph_command ----> " + graph_command)
-                # os.system(graph_command)
+                # graph_command = "/home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots | batch"
+                # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
+                graph_command = "/home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + "c" + observation + "_#" + str(instrumentID) + "_# -p /var/www/html/PSWS/static/PSWS/plots | at -q b -m now & "
+                writeLog("Running graph_command ----> " + graph_command)
+                os.system(graph_command)
                 # writeLog(graph_command.stdout)
                 writeLog("Graphing command run!")
             except Exception as ex:
@@ -269,7 +283,8 @@ if __name__ == "__main__":
 # directory starting with "c" = this upload is from a Continuous Upload
 # directory starting with "m" = this upload is from magnetometer data
 # The "N" prefixes are legacy, need to delete after test period
-    event_handler = UploadEvent(patterns=["S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*" ]) 
+    event_handler = UploadEvent(patterns=["S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*", 
+        "stations/N*/home/N*/c*", "stations/N*/home/N*/m*", "stations/m*", "stations/N*/m*", "stations/N*/home/N*/m*" ]) 
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
