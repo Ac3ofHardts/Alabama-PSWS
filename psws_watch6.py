@@ -1,4 +1,4 @@
- # PSWS Watchdog - watches selected directories for creation of named subdirectories.
+# PSWS Watchdog - watches selected directories for creation of named subdirectories.
 # When the subdirectory is created, it means that a data upload is complete and
 # ready to be cross-referenced into the PSWS database.
 # Author: Cole Robbins, University of Alabama, 2021-2022
@@ -25,7 +25,7 @@ from urllib.parse import quote_plus
 
 def writeLog(theMessage):
     timestamp = dt.now(timezone.utc).isoformat()[0:19]
-    f = open("/var/www/html/watchdog.log", "a")
+    f = open("watchdog.log", "a")
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
 
@@ -124,6 +124,7 @@ class UploadEvent(PatternMatchingEventHandler):
                 return
             try:
                 writeLog("Trigger graphing  program")
+
                 # graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
                 # graph_command = "/home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v5.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots | batch"
                 # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])

@@ -7,8 +7,8 @@
 {% block main %}
 
 <br>
-
-<ul>
+<b>Details of this Instrument:</b>
+<ul class="info">
         <li class="details">ID: {{instrument.id}}</li>
         <li class="details">Instrument: {{instrument.instrument}}</li>
         <li class="details">Date Added: {{instrument.dateAdded}}</li>
@@ -19,13 +19,15 @@
         <li class="details">Status: {{instrument.status}}</li>
         <li class="details">Type: {{instrumentType}}</li>
 </ul>
+<br>
 
-<div>
-        <a href="{% url 'instrument_update' id=instrument.id %}">Edit (or delete) this instrument</a>
-</div>
-
-<div>
-        <a href="{% url 'station_details'   id=instrument.station_id %}">Back to Station Details</a>
-</div>
+<form action="{% url 'instrument_update' id=instrument.id %}" method="GET">
+        {% csrf_token %}
+        <button type="submit">Edit (or delete) this instrument</button>
+</form>
+<form style="padding-top: 10px;" action="{% url 'station_details'   id=instrument.station_id %}" method="GET">
+        {% csrf_token %}
+        <button type="submit">Back</button>
+</form>
 
 {% endblock main %}

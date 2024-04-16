@@ -5,8 +5,11 @@
 <link  rel="stylesheet"  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"  crossorigin="anonymous">
 <title>Personal Space Weather Station Server</title>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.0.2/chart.min.js" integrity="sha512-dnUg2JxjlVoXHVdSMWDYm2Y5xcIrJg1N+juOuRi0yLVkku/g26rwHwysJDAMwahaDfRpr1AxFz43ktuMPr/l1A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
 <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+
 <style>
 .header {
   list-style-type: none;
@@ -15,6 +18,16 @@
   overflow: hidden;
   background-color: #333;
 }
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+ul.a {list-style-type: circle;}
 
 li {
   float: left;
@@ -35,6 +48,8 @@ li a {
 
 li a:hover:not(.active) {
   background-color: #111;
+  text-decoration: none;
+  color: white;
 }
 
 .pagination li:not(.active) {
@@ -60,17 +75,32 @@ li a:hover:not(.active) {
       {% block title %}
       {% endblock title %}
       <div>
-      	<ul class="header">
-		<li><a href="/home">Home</a></li>
-		<li><a href="/stations/stations">Stations</a></li>
-		<li><a href="/observations/observation_list">Observations</a></li>
-		<li><a class="active" href="/analysis/analysis">Analysis
-		<li><a href="/user_list">Users</a></li>
-		<li><a href="/login/">Log In</a></li>
-		<li><a href="/signup/">Register your station</a></li>
-		<li style="float:right"><a href="#about">About</a></li>
-	</ul>
+        {% if user.is_authenticated %}
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/stations/stations">Stations</a></li>
+          <li><a href="/observations/observation_list">Observations</a></li>
+          <li class="active"><a href="/analysis/analysis">Analysis</a></li>
+          <li><a href="/user_list">Users</a></li>
+          <li><a href="{% url 'logout' %}">Log Out</a></li>
+          <li><a href="/signup/">Register your station</a></li>
+          <li><a href="{% url 'profile' %}">{{ request.user.username }}</a></li>
+          <li style="float:right"><a href="/about/">About</a></li>
+        </ul>
+        {% else %}
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/stations/stations">Stations</a></li>
+          <li><a href="/observations/observation_list">Observations</a></li>
+          <li class="active"><a href="/analysis/analysis">Analysis</a></li>
+          <li><a href="/user_list">Users</a></li>
+          <li><a href="/login/">Log In</a></li>
+          <li><a href="/signup/">Register your station</a></li>
+          <li style="float:right"><a href="/about/">About</a></li>
+        </ul>
+        {% endif %}
       </div>
+
       {% block main %}
       {% endblock main %}
      </div>
