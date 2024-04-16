@@ -5,6 +5,8 @@ from datetime import datetime, timedelta, timezone
 import zipfile
 from stations.models import Station
 from observations.models import Observation
+from instruments.models import Instrument
+from instrumenttypes.models import InstrumentType
 from observations.tables import ObservationTable
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
@@ -24,7 +26,7 @@ possiblyOnlineCutoffHours = 120 #5 days
 def station_analysis(request, id=None):
     station = get_object_or_404(Station, id=id)
 
-    #all_stations = Station.objects.all()
+    #mag_stations = Station.objects.all()
     table = ObservationTable(Observation.objects.filter(station_id=id))
     table.paginate(page=request.GET.get("page", 1), per_page=8)
     return render(request, 'station_analysis.html',
@@ -63,8 +65,14 @@ def updateStatus():
 ####### take the resquest from frontend to request information from database, then return the requested value########
 ####### data is averaged by minutes data #######
 def analysis_map(request):
-    updateStatus()
-    all_stations = Station.objects.all()
+    # updateStatus()
+    
+    # Filtering for Magnetometer stations only
+    # all_stations = Station.objects.all()
+    # mag_instruments = Instrument.objects.filter(instrumenttype=3)
+    # mag_instruments = Instrument.objects.get(id=mag_instruments)
+    # mag_stations = Station.objects.all(instrument__id__in = mag_instruments)
+    mag_stations = Station.objects.filter(instrument__id__in = Instrument.objects.filter(instrumenttype=3))
     msg=''
  #   mapbox_access_token = 'pk.eyJ1IjoiYWI0ZWotMSIsImEiOiJjazB1MTRmMTAwamVlM2Jwb2pheWx2cWpmIn0.cGZbctIFT5jSgBi0jBPk3w'
     mapbox_access_token = 'pk.eyJ1Ijoicm9sbHRpZGUiLCJhIjoiY2tueXFmMXhzMGt1MTJ1cDZ4YXkzOXJ3aiJ9.1HmCO6w6W-3r7Ou2HpRaMg'
@@ -86,7 +94,7 @@ def analysis_map(request):
             return render(request, 'analysis_map.html',
             { 'mapbox_access_token' : mapbox_access_token,
                 'online_stations' : online_stations,
-                'all_stations': all_stations,
+                'mag_stations': mag_stations,
                 'datasets':datasets,
                 'possiblyonline_stations' : possiblyonline_stations,
                 'offline_stations' : offline_stations,
@@ -98,7 +106,7 @@ def analysis_map(request):
             return render(request, 'analysis_map.html',
             { 'mapbox_access_token' : mapbox_access_token,
                 'online_stations' : online_stations,
-                'all_stations': all_stations,
+                'mag_stations': mag_stations,
                 'datasets':datasets,
                 'possiblyonline_stations' : possiblyonline_stations,
                 'offline_stations' : offline_stations,
@@ -109,14 +117,14 @@ def analysis_map(request):
         start=str(request.POST.get('start_datetime'))
         end=str(request.POST.get('end_datetime'))
        
-        if start == '' or end == '':
+        if start == '':# or end == '':
             messages.error(request, "Error: Blank fields")
             datasets=None
             msg='"Error: Blank fields"'
             return render(request, 'analysis_map.html',
                 { 'mapbox_access_token' : mapbox_access_token,
                     'online_stations' : online_stations,
-                    'all_stations': all_stations,
+                    'mag_stations': mag_stations,
                     'datasets':datasets,
                     'possiblyonline_stations' : possiblyonline_stations,
                     'offline_stations' : offline_stations,
@@ -126,7 +134,11 @@ def analysis_map(request):
         # print(Observation.objects.all())  #all objects queryset()
         utc=pytz.UTC #the startDate in database is aware datatime, has to convert to same type
         start_converted = utc.localize(datetime.strptime(start, '%Y-%m-%dT%H:%M'))# 'start_datetime': ['2022-12-09T00:00'], '
-        end_converted = utc.localize(datetime.strptime(end, '%Y-%m-%dT%H:%M'))
+        
+        # Incrementing start day by one to find end time. This is so the user doesn't have to provide an endtime
+        #end_converted = utc.localize(datetime.strptime(end, '%Y-%m-%dT%H:%M'))
+        end_converted = start_converted + timedelta(days=.5)
+
         if (end_converted < start_converted):
             messages.error(request, "Error: End date before start date")
             datasets=None
@@ -134,7 +146,7 @@ def analysis_map(request):
             return render(request, 'analysis_map.html',
                 { 'mapbox_access_token' : mapbox_access_token,
                     'online_stations' : online_stations,
-                    'all_stations': all_stations,
+                    'mag_stations': mag_stations,
                     'datasets':datasets,
                     'possiblyonline_stations' : possiblyonline_stations,
                     'offline_stations' : offline_stations,
@@ -335,7 +347,7 @@ def analysis_map(request):
         return render(request, 'analysis_map.html',
             { 'mapbox_access_token' : mapbox_access_token,
                 'online_stations' : online_stations,
-                'all_stations': all_stations,
+                'mag_stations': mag_stations,
                 'datasets':datasets,
                 'start': start.replace('T',' '),
                 'end':end.replace('T',' '),
@@ -348,7 +360,7 @@ def analysis_map(request):
     return render(request, 'analysis_map.html',
       { 'mapbox_access_token' : mapbox_access_token,
           'online_stations' : online_stations,
-          'all_stations': all_stations,
+          'mag_stations': mag_stations,
           'datasets':datasets,
           'start': '',
           'end':'',
