@@ -236,8 +236,23 @@ def get_date_range(request, id=None):
 
 def select_download_range(request, id=None):
     observation = get_object_or_404(Observation, id=id)
-    form_class = DateTimeForm
-    return render(request, 'select_download_range.html', {'observation': observation, 'form': form_class})
+
+    # Intermediary variables meant to get the ID of datatype from the stinkin' intersection table b/w observations and datatypes
+    # For now, accessing only the first query, as we only have observations with one datatype
+    # In the future, will need to convert this to handle multiple datatypes
+    datatype_list       = observation.dataType.all()
+    centerfreq_list     = observation.centerFrequency.all()
+    if datatype_list:
+        datatype        = datatype_list[0]
+    else:
+        datatype        = None
+    if centerfreq_list:
+        centerfreq      = centerfreq_list[0]
+    else:
+        centerfreq      = None
+
+    form_class  = DateTimeForm
+    return render(request, 'select_download_range.html', {'observation': observation, 'datatype': datatype, 'centerfreq': centerfreq, 'form': form_class})
 
 # Display a list of all observations in the database
 #class ObservationListView(SingleTableView):
