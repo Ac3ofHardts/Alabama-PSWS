@@ -100,11 +100,11 @@ if len(obs_list) == 0:   # this is a new observation
         #      instrument_id=instrument_id, station_id=station_id, startDate=startDateTZ, endDate=endDateTZ)
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
-    
+    theObs.save()
     # DataType Fix - Anderson November 2023
-    # dataType = DataType.objects.filter(dataType='spectrum').values('id')
-    # print(dataType)
-    # theObs.dataType.add(dataType)
+    dataType = DataType.objects.filter(dataType='spectrum').values('id')
+    print("datatype!! = ", dataType, "  ID = ", dataType[0]['id'])
+    theObs.dataType.add(dataType[0]['id'])
     
     theObs.save()
     for this_cfid in cfid_list: # add one or more center frequencies in this datase
