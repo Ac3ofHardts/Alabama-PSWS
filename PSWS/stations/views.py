@@ -62,7 +62,7 @@ class StationListView(SingleTableView):
 def station_details_view(request, id=None):
     station = get_object_or_404(Station, id=id, user=request.user)
 
-    #all_stations = Station.objects.all()
+    #mag_stations = Station.objects.all()
     context = {'station': station}
     table = InstrumentTable(Instrument.objects.filter(station_id=id))
     table.paginate(page=request.GET.get("page", 1), per_page=8)
