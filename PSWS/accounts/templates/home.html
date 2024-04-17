@@ -1,37 +1,43 @@
 {% extends 'base.html' %}
 {% block main %}
 
-<ul>
-  <li><a class="active" href="/home">Home</a></li>
-  <li><a href="/stations/stations">Stations</a></li>
-  <li><a href="/observations/observation_list">Observations</a></li>
-  <li><a href="/analysis/analysis">Analysis</a></li>
-  <li><a href="/user_list">Users</a></li>
-  <li><a href="/login/">Log In</a></li>
-  <li><a href="/signup/">Register your station</a></li>
-  <li style="float:right"><a href="/about/">About</a></li>
-</ul>
+<div>
 
-{% if user.is_authenticated %}
-
-	<table width: 100%>
-		<tr width: 100%>
-			<td>Welcome {{ request.user.profile.role }} :</td>
-			<td><a href="{% url 'profile' %}">{{ request.user.username }}</a></td>
-			<td><a href="{% url 'logout' %}">Log out</a></td>
-		</tr>
-        </table>
+	{% if user.is_authenticated %}
+	<ul>
+		<li><a class="active" href="/home">Home</a></li>
+		<li><a href="/stations/stations">Stations</a></li>
+		<li><a href="/observations/observation_list">Observations</a></li>
+		<li><a href="/analysis/analysis">Analysis</a></li>
+		<li><a href="/user_list">Users</a></li>
+		<li><a href="{% url 'logout' %}">Log Out</a></li>
+		<li><a href="/signup/">Register your station</a></li>
+		<li><a href="{% url 'profile' %}">{{ request.user.username }}</a></li>
+		<li style="float:right"><a href="/about/">About</a></li>
+	</ul>
 	{% else %}
+	<ul>
+		<li><a class="active" href="/home">Home</a></li>
+		<li><a href="/stations/stations">Stations</a></li>
+		<li><a href="/observations/observation_list">Observations</a></li>
+		<li><a href="/analysis/analysis">Analysis</a></li>
+		<li><a href="/user_list">Users</a></li>
+		<li><a href="/login/">Log In</a></li>
+		<li><a href="/signup/">Register your station</a></li>
+		<li style="float:right"><a href="/about/">About</a></li>
+	</ul>
+
 	<table>
 		<tr>
 			<td>Welcome to Personal Space Weather Station/Central Control!</td>
 		</tr>
 		<tr>
-			<td>You are not logged in <a href="{% url 'login' %}">Log In</a></td>
+			<td>You are not logged in. Please log in.</td>
 		</tr>
                 
 	</table>
-{% endif %}
+	{% endif %}
+</div>
 <tr></tr>
 <br>
 <div id='map' style='position:absolute; top: 220px; width: 1200px; height: 600px;'></div>

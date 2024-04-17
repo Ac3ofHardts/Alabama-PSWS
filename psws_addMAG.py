@@ -7,7 +7,7 @@ import os, sys
 import django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'PSWS.PSWS.settings'
 from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
+# application = get_wsgi_application()
 from django.db import models
 django.setup()
 #from centerfrequencies.models import *
@@ -102,12 +102,17 @@ for thisfile in fileList:
        theObs  = Observation(dataRate=1,size=obsSize,fileName=thisfile,path=path,  \
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
-
-        # DataType Fix - Anderson November 2023
-       # print(dataType)
-       # dataType = DataType.objects.filter(dataType='spectrum').values('id')
-       # theObs.dataType.add(dataType)
-
+       theObs.save()
+       try:
+           dataType = DataType.objects.filter(dataType='magnetometer').values('id') # not working as of 2024-01-15
+           theObs.dataType.add(dataType[0]["id"])
+           # DataType Fix - Anderson November 2023
+           print("datatype!! = ", dataType, "  ID = ", dataType[0]["id"])
+           writeLog("Add data type to MAG" )
+       except Exception as ex:
+           template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+           message = template.format(type(ex).__name__, ex.args)
+           writeLog("While adding data type:" + message)
        print("saving obs")
        # a=input()
        theObs.save()
