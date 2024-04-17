@@ -78,7 +78,7 @@ except getopt.error as err:
 
 # Parse event from watchdog
 print("event:",event_src_path)
-stationIDstr = event_src_path.rsplit('/')[2]
+stationIDstr = event_src_path.rsplit('/')[-2]
 instrumentID = event_src_path.rsplit('_#')[1]
 datapath = event_src_path.rsplit('_#')[0].rsplit('c')[0] #TODO: change 'z' to 'c' when testing on server
 filename = event_src_path.rsplit('_#')[0].rsplit('c')[1] #TODO: change 'z' to 'c' when testing on server

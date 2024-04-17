@@ -29,7 +29,7 @@ def writeLog(theMessage):
 #  (4)  path, (5) station_id, (6) instrument, (7) start date, (8) end date
 
 #print ('Argument List:', str(sys.argv))
-
+writeLog("Started addOBS with args " + str(sys.argv[1]) + " " + str(sys.argv[2]) + " " + str(sys.argv[3]))
 dataRate = str(sys.argv[1])
 obsSize = str (sys.argv[2])
 fileName = str (sys.argv[3])
