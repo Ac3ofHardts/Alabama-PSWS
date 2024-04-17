@@ -26,12 +26,14 @@ tr, td {
 </style>
 -->
 
-<div>
-	<a href="{% url 'stations' %}">View all registered stations</a>
+<div style="padding-top: 10px;">
+    <!-- Add Station -->
+	<form action="{% url 'add_station' %}" method="GET">
+		{% csrf_token %}
+		<button type="submit">Add New Station</button>
+	</form>
 </div>
-<div>
-	<a href="{% url 'add_station' %}">Add new station</a>
-</div>
+
 <div>
 To add a new instrument, click on the station's ID.
 </div>
@@ -68,14 +70,12 @@ To look at the details of a station (or edit it), click on its link in the ID co
 	{% endfor %}
 </table>
 -->
-<div>
-	<a href="{% url 'stations' %}">View all registered stations</a>
-</div>
-<div>
-	<a href="{% url 'add_station' %}">Add new station</a>
-</div>
-<div>
-
+<div style="padding-top: 10px;">
+    <!-- Back to Stations page-->
+	<form action="{% url 'stations' %}" method="GET">
+		{% csrf_token %}
+		<button type="submit">Back</button>
+	</form>
 </div>
 
 <div class="pagination">

@@ -1,0 +1,99 @@
+{% extends 'base_analysis.html' %}
+{%block title%}
+<h1> line plot </h1>
+{%endblock%}
+
+{% block main %}
+<a href="{% url 'analysis_map' %}">Back to map</a>
+
+    <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
+    canvas!!
+    <canvas id="myChart" width="800px" height="250px" style="border-style: solid;"></canvas>
+   
+     canvas!!
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      },
+      x:{
+        ticks:{stepSize: 0.5,}
+      }
+    }
+  }
+});
+    //    var chrt = new Chart(document.getElementById("dataLineChart"), {
+    //     type: 'line',
+    //     data: {
+    //         labels: ["A","B","C","D","E", "F","G","H","I","J"],
+    //         datasets: [{ 
+    //             data: [86,114,106,106,107,111,133,221,783,2478],
+    //             label: "Alpha",
+    //             borderColor: "#3e95cd",
+    //             fill: false
+    //         }, { 
+    //             data: [282,350,411,502,635,809,947,1402,3700,5267],
+    //             label: "Betta",
+    //             borderColor: "#8e5ea2",
+    //             fill: false
+    //         }, { 
+    //             data: [168,170,178,190,203,276,408,547,675,734],
+    //             label: "Gamma",
+    //             borderColor: "#3cba9f",
+    //             fill: false
+    //         }, { 
+    //             data: [40,20,10,16,24,38,74,167,508,784],
+    //             label: "Delta",
+    //             borderColor: "#e8c3b9",
+    //             fill: false
+    //         }
+    //         ]
+    //     },
+    //     options: {
+    //         title: {
+    //         display: true,
+    //         text: 'Line Chart Test'
+    //         }
+    //     }
+    //     });
+    //     //console.log(chrt.data.datasets[1].data);
+    //     var accumulator = 0;
+
+    //     function newValue() {
+        
+    //         chrt.data.datasets[1].data.shift();
+    //         chrt.data.datasets[1].data.push(Math.random()*1000*Math.sin(accumulator));
+        
+    //         chrt.data.datasets[2].data.shift();
+    //         chrt.data.datasets[2].data.push(Math.random()*1200*Math.cos(accumulator*.5)+accumulator);
+        
+    //         chrt.data.datasets[3].data.shift();
+    //         chrt.data.datasets[3].data.push(Math.random()*1300+accumulator);
+        
+    //         chrt.data.datasets[0].data.shift();
+    //         chrt.data.datasets[0].data.push(Math.sin(accumulator**2)*800+accumulator);
+
+    //         chrt.update();
+    //         //console.log(chrt.data.datasets[1].data);
+    //         accumulator += 30;
+    //     }
+
+    //     let timerId = setInterval(() => newValue(), 800);
+
+        
+    </script>
+{%endblock%}
