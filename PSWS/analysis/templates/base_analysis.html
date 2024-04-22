@@ -24,6 +24,9 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+ul.Menu{
   background-color: #333;
 }
 
@@ -76,7 +79,7 @@ li a:hover:not(.active) {
       {% endblock title %}
       <div>
         {% if user.is_authenticated %}
-        <ul>
+        <ul class="Menu">
           <li><a href="/home">Home</a></li>
           <li><a href="/stations/stations">Stations</a></li>
           <li><a href="/observations/observation_list">Observations</a></li>
@@ -88,7 +91,7 @@ li a:hover:not(.active) {
           <li style="float:right"><a href="/about/">About</a></li>
         </ul>
         {% else %}
-        <ul>
+        <ul class="Menu">
           <li><a href="/home">Home</a></li>
           <li><a href="/stations/stations">Stations</a></li>
           <li><a href="/observations/observation_list">Observations</a></li>
