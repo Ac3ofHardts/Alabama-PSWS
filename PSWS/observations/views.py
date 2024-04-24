@@ -61,7 +61,7 @@ def download_file(request, id=None):
     #NJIT Fix 
 
     # for magnetometer data, this opens file; for DRF data, it takes the exception
-    fl_path = fl_path + filename
+    fl_path = fl_path + '/' + filename
     
     fl_path = fl_path.replace(":", "_")
 
@@ -75,7 +75,7 @@ def download_file(request, id=None):
         # here we skip doing the tar if the file is already in zip format
         # In version 1, this is magnetometer
         if file_extension == ".zip":
-            fl_path = observation.path + observation.fileName # correct this
+            fl_path = observation.path + "/" +observation.fileName # correct this
             fl = open(fl_path, 'rb')
             mime_type, _ = mimetypes.guess_type(fl_path)
             response = HttpResponse(fl, content_type=mime_type)
@@ -146,7 +146,7 @@ def download_range(request, id=None):
     print(instrument.id)
     
     if instrument.instrumenttype_id == 3:
-        full_path = fl_path + filename
+        full_path = fl_path + "/" + filename
         fl = open(full_path, "rb")
         mime_type, _ = mimetypes.guess_type(fl_path)
         response = HttpResponse(fl, content_type=mime_type)
