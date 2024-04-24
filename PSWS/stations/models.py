@@ -26,8 +26,7 @@ class Station(models.Model):
 
     last_rID = models.IntegerField(default=0)
     last_alive = models.DateTimeField(null=True)
-
-
+    
     class StationStatus(models.TextChoices):
            ONLINE =  "Online",
            POSSIBLYONLINE =  "PossiblyOnline",
