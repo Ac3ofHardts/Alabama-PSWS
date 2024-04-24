@@ -22,25 +22,25 @@ tr, td {
 }
 -->
 <!--<h1 class="text-center">Stations</h1>-->
-<div>
-	<a href="{% url 'my_stations_list' %}">View your stations</a>
+<div style="padding-top: 10px;">
+    <!-- View User's Stations -->
+	<form action="{% url 'my_stations_list' %}" method="GET">
+		{% csrf_token %}
+		<button type="submit">View My Stations</button>
+	</form>
 </div>
-<div>
-	<a href="{% url 'add_station' %}">Add new station</a>
+<div style="padding-top: 10px;">
+    <!-- Add new Station -->
+	<form action="{% url 'add_station' %}" method="GET">
+		{% csrf_token %}
+		<button type="submit">Add New Station</button>
+	</form>
 </div>
 
 <br>
 
 <div>
 	{% render_table table %}
-</div>
-
-
-<div>
-	<a href="{% url 'my_stations_list' %}">View your stations</a>
-</div>
-<div>
-	<a href="{% url 'add_station' %}">Add new station</a>
 </div>
 
 <div class="pagination">
