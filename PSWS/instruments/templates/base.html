@@ -13,6 +13,9 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+ul.Menu{
   background-color: #333;
 }
 
@@ -50,7 +53,7 @@ li a:hover:not(.active) {
        <h2 class="text-center">Central Control System</h2>
       {% block title %}
       {% endblock title %}
-        <ul>
+        <ul class="Menu">
                 <li><a class="active" href="#home">Home</a></li>
                 <li><a href="#stations">Stations</a></li>
                 <li><a href="#observations">Observations</a></li>
