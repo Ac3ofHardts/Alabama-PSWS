@@ -298,7 +298,7 @@ if __name__ == "__main__":
 # directory starting with "m" = this upload is from magnetometer data
 # The "N" prefixes are legacy, need to delete after test period
     event_handler = UploadEvent(patterns=["S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*", 
-        "stations/N*/home/N*/c*", "stations/N*/home/N*/m*", "stations/m*", "stations/N*/m*", "stations/N*/home/N*/m*" ]) 
+        "stations/N*/home/N*/c*", "stations/N*/home/N*/m*", "stations/m*", "stations/N*/m*", "stations/N*/home/N*/m*", 'abliddle/m_Test' ]) 
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
