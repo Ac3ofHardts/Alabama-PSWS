@@ -29,8 +29,8 @@ table {
 <ul class="info">
 	<li class="details">ID: {{station.station_id}}</li>
     <li class="details">Nickname: {{station.nickname}}</li>
-	<li class="details">Token: {{station.station_pass}}</li>
 	<li class="details">User: {{station.user.username}}</li>
+	<li class="details">Token: {{station.station_pass}}</li>
 	<li class="details">Latitude: {{station.latitude|floatformat:3}}</li>
 	<li class="details">Longitude: {{station.longitude|floatformat:3}}</li>
 	<li class="details">Grid: {{station.grid}}</li>
@@ -42,6 +42,7 @@ table {
 	<li class="details">State: {{station.state}}</li>
 	<li class="details">Postal Code: {{station.postal_code}}</li>
 	<li class="details">Date Created: {{station.create_date}}</li>
+	<li class="details">Recieve emails when station goes offline?  {{station.offlineNotify}}</li>
 </ul>
 <br>
 Below is a list of instruments of this station. To edit details of an instrument, click on its ID.
