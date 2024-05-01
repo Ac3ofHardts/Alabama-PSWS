@@ -1,0 +1,14 @@
+[Unit]
+Decription=Audit script
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /var/www/html/psws_audit_v2.py -a
+Restart=always
+RuntimeMaxSec=7d
+WorkingDirectory=/var/www/html
+
+[Install]
+WantedBy=multi-user.target
