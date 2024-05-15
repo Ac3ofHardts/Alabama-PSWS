@@ -18,3 +18,4 @@ watch.log
 pip-requirements.txt
 graphing.log
 PSWS/logs/debug.log
+PSWS/static/PSWS/plots
