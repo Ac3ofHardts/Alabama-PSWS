@@ -113,6 +113,7 @@ def add_station_view(request):
             station.create_date = datetime.now()
             station.save()
             os.system('/bin/stationcreation3 ' + station.station_id + ' ' + station.station_pass)
+            #os.system('sudo /bin/create_jail.sh ' + station.station_id)
             return redirect('stations')
     else:
         form = StationCreationForm()
