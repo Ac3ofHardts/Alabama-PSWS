@@ -135,8 +135,8 @@ def main():
 
     # Production Environmental Variables
     HOST= "localhost"
-    USER= "webserver"
-    PASSWD= "8796fasd!"
+    USER= "auditaccount"
+    PASSWD= "kH*oR3Jsk#oQNY^R7APqRW^3^XY9v%THd#fr4hqu"
     DB= "prod"
 
     # Other Environmental Variables
