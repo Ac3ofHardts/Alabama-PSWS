@@ -86,8 +86,8 @@ def obs_exists(db, obs, station_id):
 def main():
     # Environmental Variables
     HOST= "localhost"
-    USER= "webserver"
-    PASSWD= "8796fasd!"
+    USER= "auditaccount"
+    PASSWD= "kH*oR3Jsk#oQNY^R7APqRW^3^XY9v%THd#fr4hqu"
     DB= "prod"
     PSWS_DB= load_db(HOST, USER, PASSWD, DB)
 
