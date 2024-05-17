@@ -1,0 +1,13 @@
+[Unit]
+Decription=Watchdog script
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /var/www/html/psws_watch7.py
+Restart=always
+WorkingDirectory=/var/www/html
+
+[Install]
+WantedBy=multi-user.target

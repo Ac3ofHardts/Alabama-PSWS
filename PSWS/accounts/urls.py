@@ -23,4 +23,5 @@ urlpatterns = [
     path('user_list/', UserListView.as_view(), name="user_list"),
     path('about/', views.about_view, name="about"),
     path('about1/', views.about1_view, name="about1"),
+    path('station_analysis/<int:id>/', views.station_analysis, name='station_analysis'),
 ]

@@ -140,10 +140,10 @@ def main():
     DB= "prod"
 
     # Other Environmental Variables
-    PSWS_DB= load_db(TESTHOST, TESTUSER, TESTPASSWD, TESTDB)
+    PSWS_DB= load_db(HOST, USER, PASSWD, DB)
     ROOTDIRS= {'/home/', '/home/stations/'}
     TIMESTAMP = dt.now(timezone.utc).isoformat()[0:19]
-    BASE_LOG_DIR= "audit_logs/"
+    BASE_LOG_DIR= "/home/audit_logs/"
     TRIGGERNDB= BASE_LOG_DIR + "trigger_in_db_" + TIMESTAMP[0:10] + ".log"
     TRIGGERDNE= BASE_LOG_DIR + "trigger_not_in_db_" + TIMESTAMP[0:10] + ".log"
     OBSDNE= BASE_LOG_DIR + "obs_not_in_db_" + TIMESTAMP[0:10] + ".log"

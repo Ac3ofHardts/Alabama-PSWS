@@ -23,6 +23,10 @@ from .models import Profile
 from .tables import UserTable
 from stations.models import Station
 
+from observations.models import Observation
+from observations.tables import ObservationTable
+from instruments.models import Instrument
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -186,6 +190,17 @@ def about_view(request):
 
 def about1_view(request):
     return render(request, 'about1.html')
+
+# Display more detailed information about a station
+def station_analysis(request, id=None):
+        station = get_object_or_404(Station, id=id)
+
+        #mag_stations = Station.objects.all()
+        table = ObservationTable(Observation.objects.filter(station_id=id))
+        table.paginate(page=request.GET.get("page", 1), per_page=8)
+        return render(request, 'station_analysis.html',
+            {'station': station, 'table': table}
+                )
 
 @method_decorator(login_required, name='dispatch')
 # Display a list of all registered users
