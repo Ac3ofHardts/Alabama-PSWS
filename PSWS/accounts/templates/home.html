@@ -148,6 +148,35 @@
 	  .addTo(map);
   });
 
+//Retired
+  var geojson_retired = {
+	  type: 'FeatureCollection',
+	  features: [
+		  {% for i in retired_stations %}
+		  	{
+				type: 'Feature',
+				geometry: {
+					type: 'Point',
+					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+				},
+				properties: {
+					title: '{{ i.nickname }}'
+				}
+			},
+		  {% endfor %}
+	  ]
+  };
+  // add markers to map
+  geojson_retired.features.forEach(function(marker) {
+	//var el = document.createElement('div');
+	//el.className = 'marker-light-red';
+	  new mapboxgl.Marker({ color: "#808080", scale: .6 })//el)
+	  .setLngLat(marker.geometry.coordinates)
+	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+	  .setHTML('<h3>' + marker.properties.title + '</h3>'))
+	  .addTo(map);
+  });
+
 </script>
  
 
