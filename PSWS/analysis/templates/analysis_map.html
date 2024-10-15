@@ -13,17 +13,17 @@
 		<input type="text" id="search" onkeyup="search()" placeholder="Search..">
 	</td>
 	<td>
-	<!---
-	<div id="test">test2</div>
+	
+	<!-- <div id="test">test2</div>
 	<label for="dropdown">Avability</label>
 	<select name="drop" id="drop" onclick="avability(value)">
 		<option value="all">avability</option>
 	  <option value="online" >online</option>
 	  <option value="PossiblyOnline">PossiblyOnline</option>
 	  <option value="Offline" >Offline</option>
-	</select> -->
+	</select>
 
-		<div>
+	<div> -->
 		
 		
 		<label for="start">Start date:</label>
@@ -32,13 +32,14 @@
 		<!-- <input type="date" id="start_date" name="start_date"
 			value="2022-12-09"
 			min="1988-01-01" max="2099-12-31"> -->
-		<label for="end">End date:</label>
+		<!-- <label for="end">End date:</label>
 		<input type="datetime-local" id="end_datetime" name="end_datetime" value="2022-12-09T23:59"
-		min="1988-06-07T00:00" max="2099-06-14T00:00"/>
+		min="1988-06-07T00:00" max="2099-06-14T00:00"/> -->
+
 		<!-- <input type="date" id="end_date" name="end_date"
 			value="2022-12-09"
 			min="1988-01-01" max="2099-12-31"> -->
-		</div>
+		<!-- </div> -->
 		<!-- <div>
 		<label for="start_time">From: </label>
 		<input id="start_time" type="time" name="start_time" value="00:00"  timeformat="auto" />
@@ -54,19 +55,17 @@
 	</tr>
 </table>
 
-
-
-<table>
-<tr><td>
-		<div id="selectednumber">0 of {{all_stations.count}} is selected </div>
+<tr>
+	<!-- <td>
+		<div id="selectednumber">0 of {{mag_stations.count}} is selected </div>
 		
-	</td>
+	</td> -->
 	
 	<td>
 		<div style=" width: 800px; overflow-x: hidden;overflow-y: auto;">
 			<table id="station_table">
 				
-			<div id="switch_station">{% for station in all_stations %}
+			<div id="switch_station">{% for station in mag_stations %}
 			{% if forloop.counter0|divisibleby:4  %} <tr>  {% endif %}
 			<td><input class="form" type='checkbox' name='station' id='{{station.id}}'  value="{{station.id}}"onclick="show_select()">
 			<label for ='station'>{{station.nickname}}</label></td>
@@ -93,11 +92,11 @@
 
 </tr>
 <tr>
-	<td>
+	<!-- <td>
 		<input type="button" onclick='selectAll()' value="Select All"/>
         <input type="button" onclick='UnSelectAll()' value="Unselect All"/>
 		
-		</td>
+	</td> -->
 
 </tr>
 </form>
@@ -108,9 +107,9 @@
 <!-- <button onClick="get_info()">check</button> -->
 <table> 
 	
-	<tr>
+<!-- <tr>
 <div id='map' style='position:flex; top: 0px; width: 800px; height: 400px;padding-left: 20'></div>
-</tr>
+</tr> -->
 <tr>
 	
 <div id="line_plot">
@@ -180,7 +179,7 @@
 		
 		var str;
 		if(value=="all"){
-			str="all_stations";
+			str="mag_stations";
 		}
 		if(value=="online"){
 			str="online_stations";
@@ -225,7 +224,7 @@
             }
         }
         const element=document.getElementById('selectednumber');
-        element.innerHTML=count+ " of {{all_stations.count}} is selected";
+        element.innerHTML=count+ " of {{mag_stations.count}} is selected";
     
     }
 	function selectAll(){
@@ -243,109 +242,109 @@
 	}	
 
 
- mapboxgl.accessToken = '{{mapbox_access_token}}' ;
-  var map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [-87.0, 33.0],
-    zoom: 3.25
-  });
+//  mapboxgl.accessToken = '{{mapbox_access_token}}' ;
+//   var map = new mapboxgl.Map({
+//     container: 'map',
+//     style: 'mapbox://styles/mapbox/streets-v11',
+//     center: [-87.0, 33.0],
+//     zoom: 3.25
+//   });
 
-  //Online
-  var geojson_online = {
-	  type: 'FeatureCollection',
-	  features: [
-		  {% for i in online_stations %}
-		  	{
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
-				},
-				properties: {
-					title: '{{ i.nickname }}',
-					URL: 'station_analysis/',
-					ID: '{{ i.id }}'
-				}
-			},
-		  {% endfor %}
-	  ]
-  };
-  // add markers to map
+//   //Online
+//   var geojson_online = {
+// 	  type: 'FeatureCollection',
+// 	  features: [
+// 		  {% for i in online_stations %}
+// 		  	{
+// 				type: 'Feature',
+// 				geometry: {
+// 					type: 'Point',
+// 					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+// 				},
+// 				properties: {
+// 					title: '{{ i.nickname }}',
+// 					URL: 'station_analysis/',
+// 					ID: '{{ i.id }}'
+// 				}
+// 			},
+// 		  {% endfor %}
+// 	  ]
+//   };
+//   // add markers to map
 
-  geojson_online.features.forEach(function(marker) {
-	//var el = document.createElement('div');
-	//el.className = 'marker-light-red';
-	  new mapboxgl.Marker({ color: "#008000", scale: .6 })//el)
-	  .setLngLat(marker.geometry.coordinates)
-	  .setPopup(new mapboxgl.Popup({ offset: 25 })
-	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</h3>'))
-	  .addTo(map);
-  }  
-  );
+//   geojson_online.features.forEach(function(marker) {
+// 	//var el = document.createElement('div');
+// 	//el.className = 'marker-light-red';
+// 	  new mapboxgl.Marker({ color: "#008000", scale: .6 })//el)
+// 	  .setLngLat(marker.geometry.coordinates)
+// 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+// 	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</h3>'))
+// 	  .addTo(map);
+//   }  
+//   );
 
-  //PossiblyOnline
-  var geojson_poss = {
-	  type: 'FeatureCollection',
-	  features: [
-		  {% for i in possiblyonline_stations %}
-		  	{
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
-				},
-				properties: {
-					title: '{{ i.nickname }}',
-					URL: 'station_analysis/',
-					ID: '{{ i.id }}'
-				}
-			},
-		  {% endfor %}
-	  ]
-  };
-  // add markers to map
-  geojson_poss.features.forEach(function(marker) {
-	//var el = document.createElement('div');
-	//el.className = 'marker-light-red';
-	  new mapboxgl.Marker({ color: "#8EE5FE", scale: .6})//el)
-	  .setLngLat(marker.geometry.coordinates)
-	  .setPopup(new mapboxgl.Popup({ offset: 25 })
-	  //.setHTML('<h3>' + marker.properties.title + '</h3>'))
-	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</a></h3>')) 
-	  .addTo(map);
-  });
+//   //PossiblyOnline
+//   var geojson_poss = {
+// 	  type: 'FeatureCollection',
+// 	  features: [
+// 		  {% for i in possiblyonline_stations %}
+// 		  	{
+// 				type: 'Feature',
+// 				geometry: {
+// 					type: 'Point',
+// 					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+// 				},
+// 				properties: {
+// 					title: '{{ i.nickname }}',
+// 					URL: 'station_analysis/',
+// 					ID: '{{ i.id }}'
+// 				}
+// 			},
+// 		  {% endfor %}
+// 	  ]
+//   };
+//   // add markers to map
+//   geojson_poss.features.forEach(function(marker) {
+// 	//var el = document.createElement('div');
+// 	//el.className = 'marker-light-red';
+// 	  new mapboxgl.Marker({ color: "#8EE5FE", scale: .6})//el)
+// 	  .setLngLat(marker.geometry.coordinates)
+// 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+// 	  //.setHTML('<h3>' + marker.properties.title + '</h3>'))
+// 	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</a></h3>')) 
+// 	  .addTo(map);
+//   });
 
-  //Offline
-  var geojson_offline = {
-	  type: 'FeatureCollection',
-	  features: [
-		  {% for i in offline_stations %}
-		  	{
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
-				},
-				properties: {
-					title: '{{ i.nickname }}',
-					URL: 'station_analysis/',
-					ID: '{{ i.id }}'
-				}
-			},
-		  {% endfor %}
-	  ]
-  };
-  // add markers to map
-  geojson_offline.features.forEach(function(marker) {
-	//var el = document.createElement('div');
-	//el.className = 'marker-light-red';
-	  new mapboxgl.Marker({ color: "#727272", scale: .6 })//el)
-	  .setLngLat(marker.geometry.coordinates)
-	  .setPopup(new mapboxgl.Popup({ offset: 25 })
-	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</a></h3>'))
-	  .addTo(map);
-  });
+//   //Offline
+//   var geojson_offline = {
+// 	  type: 'FeatureCollection',
+// 	  features: [
+// 		  {% for i in offline_stations %}
+// 		  	{
+// 				type: 'Feature',
+// 				geometry: {
+// 					type: 'Point',
+// 					coordinates: [{{ i.longitude }}, {{ i.latitude }}]
+// 				},
+// 				properties: {
+// 					title: '{{ i.nickname }}',
+// 					URL: 'station_analysis/',
+// 					ID: '{{ i.id }}'
+// 				}
+// 			},
+// 		  {% endfor %}
+// 	  ]
+//   };
+//   // add markers to map
+//   geojson_offline.features.forEach(function(marker) {
+// 	//var el = document.createElement('div');
+// 	//el.className = 'marker-light-red';
+// 	  new mapboxgl.Marker({ color: "#727272", scale: .6 })//el)
+// 	  .setLngLat(marker.geometry.coordinates)
+// 	  .setPopup(new mapboxgl.Popup({ offset: 25 })
+// 	  .setHTML('<h3><a href="' + marker.properties.URL + marker.properties.ID + '">' + marker.properties.title + '</a></h3>'))
+// 	  .addTo(map);
+//   });
 
 //   test how to pass data from js to html
     // var dataNode = document.getElementById('alldata');
@@ -510,8 +509,6 @@ if(document.getElementById('datasets')){
 	
 }
 			
-	
-
   
 </script>
 

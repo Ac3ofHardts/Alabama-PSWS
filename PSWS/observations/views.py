@@ -75,7 +75,7 @@ def download_file(request, id=None):
         # here we skip doing the tar if the file is already in zip format
         # In version 1, this is magnetometer
         if file_extension == ".zip":
-            fl_path = observation.path + "/" + observation.fileName # correct this
+            fl_path = observation.path + observation.fileName # correct this
             fl = open(fl_path, 'rb')
             mime_type, _ = mimetypes.guess_type(fl_path)
             response = HttpResponse(fl, content_type=mime_type)

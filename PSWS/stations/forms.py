@@ -38,9 +38,11 @@ class EditStationForm(forms.ModelForm):
     postal_code = forms.CharField(max_length=15,required=False)
     phone_number = forms.CharField(max_length=20,required=False)
     
+    offlineNotify = forms.BooleanField(label="Recieve email notifications if you station goes offline? (Emails sent daily)", required=False)
+    
     class Meta:
         model = Station
-        fields = ('nickname', 'grid', 'elevation', 'antenna_1', 'antenna_2', 'street_address', 'city', 'state', 'postal_code', 'phone_number', )
+        fields = ('nickname', 'grid', 'elevation', 'antenna_1', 'antenna_2', 'street_address', 'city', 'state', 'postal_code', 'phone_number', 'offlineNotify',)
 
 
 # This is redundant with form in instruments area; may be possible to unify.

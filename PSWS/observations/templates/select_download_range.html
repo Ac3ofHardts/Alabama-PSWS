@@ -63,7 +63,7 @@
 
 <div>
     <!--<a href="{% url 'observation_list' %}">Back</a>-->
-	<form action="{% url 'observation_list' %}" method="GET">
+	<form action="javascript: history.back()" method="GET">
 		{% csrf_token %}
 		<button type="submit">Back</button>
 	</form>

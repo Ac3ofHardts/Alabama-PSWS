@@ -12,23 +12,23 @@ table {
         width: 1000px;
         border: 5px solid black;
 }
+.info{
+	background-color: white;
+}
 </style>
 
 <br>
-<a href="{% url 'my_stations_list' %}">Back to your stations</a>
+<form action="{% url 'station_update' id=station.id %}" method="GET">
+	{% csrf_token %}
+	<button type="submit">Edit Station Details (this station)</button>
+</form>
+<br>
 <div>
-	<a href="{% url 'station_update' id=station.id %}">Edit Station Details (this station)</a>
+<b>Details of this station:</b>
 </div>
-<div>
-	<a href="{% url 'add_instrument' id=station.id %}">Add New Instrument to this station</a>
-</div>
-<div>
-Details of this station:
-</div>
-<ul>
+<ul class="info">
 	<li class="details">ID: {{station.station_id}}</li>
-        <li class="details">Nickname: {{station.nickname}}</li>
-	<li class="details">Token: {{station.station_pass}}</li>
+    <li class="details">Nickname: {{station.nickname}}</li>
 	<li class="details">User: {{station.user.username}}</li>
 	<li class="details">Latitude: {{station.latitude|floatformat:3}}</li>
 	<li class="details">Longitude: {{station.longitude|floatformat:3}}</li>
@@ -41,16 +41,12 @@ Details of this station:
 	<li class="details">State: {{station.state}}</li>
 	<li class="details">Postal Code: {{station.postal_code}}</li>
 	<li class="details">Date Created: {{station.create_date}}</li>
+	<li class="details">Recieve emails when station goes offline?  {{station.offlineNotify}}</li>
 </ul>
+<br>
 Below is a list of instruments of this station. To edit details of an instrument, click on its ID.
 <div>
 	{% render_table table %}
-</div>
-
-<div>
-	<a href="{% url 'station_update' id=station.id %}">Edit Station Details (this station)</a>
-	&nbsp; &nbsp;
-	<a href="{% url 'add_instrument' id=station.id %}">Add New Instrumennt</a>
 </div>
 
 <div class="pagination">
@@ -70,5 +66,15 @@ Below is a list of instruments of this station. To edit details of an instrument
         {% endif %}
     </span>
 </div>
+<div style="padding-top: 10px;">
+	<form action="{% url 'add_instrument' id=station.id %}" method="GET">
+		<button type="submit">Add New Instrument</button>
+	</form>
+</div>
+<br>
+<form action="{% url 'my_stations_list' %}" method="GET">
+	{% csrf_token %}
+	<button type="submit">Back</button>
+</form>
 
 {% endblock main %}

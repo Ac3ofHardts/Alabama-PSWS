@@ -1,5 +1,6 @@
 asgiref==3.3.1
 cached-property==1.5.2
+chartjs==1.2
 digital-rf==2.6.7
 Django==3.1.6
 django-crispy-forms==1.11.0
@@ -9,6 +10,7 @@ djangorestframework==3.12.2
 greenlet==1.1.2
 h5py==3.1.0
 importlib-metadata==4.8.3
+maidenhead==1.6.0
 mysqlclient==2.0.3
 numpy==1.19.5
 packaging==21.3
