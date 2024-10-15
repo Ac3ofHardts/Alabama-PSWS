@@ -31,6 +31,7 @@ from datetime import datetime, timedelta, timezone
 #Declaring time cutoffs here since will probably change in the future
 onlineCutoffHours = 24
 possiblyOnlineCutoffHours = 120 #5 days
+retirementCutoffHours = 504
 
 
 
@@ -38,11 +39,14 @@ def updateStatus():
     #Update Station status of all stations before displaying
     AliveCutoff = datetime.now(timezone.utc) - timedelta(hours=onlineCutoffHours)
     DeadCutoff = datetime.now(timezone.utc) - timedelta(hours=possiblyOnlineCutoffHours)
+    RetiredCutoff = datetime.now(timezone.utc) - timedelta(hours=retirementCutoffHours)
 
     for instance in Station.objects.all():
         if (instance.last_alive is None):
             instance.last_alive = datetime(2000,1,1,tzinfo=timezone.utc)
-        if (instance.last_alive < DeadCutoff):
+        if (instance.last_alive < RetiredCutoff):
+            instance.station_status = "Retired"
+        elif (instance.last_alive < DeadCutoff):
             instance.station_status = "Offline"
         elif (instance.last_alive < AliveCutoff):
             instance.station_status = "PossiblyOnline"
@@ -61,11 +65,14 @@ def home(request):
     online_stations = Station.objects.filter(station_status="Online") 
     possiblyonline_stations = Station.objects.filter(station_status="PossiblyOnline")
     offline_stations = Station.objects.filter(station_status="Offline")
+    retired_stations = Station.objects.filter(station_status="Retired")
+
     return render(request, 'home.html',
       { 'mapbox_access_token' : mapbox_access_token,
           'online_stations' : online_stations,
           'possiblyonline_stations' : possiblyonline_stations,
-          'offline_stations' : offline_stations, 
+          'offline_stations' : offline_stations,
+	  'retired_stations' : retired_stations,
         } )
 
 @login_required
