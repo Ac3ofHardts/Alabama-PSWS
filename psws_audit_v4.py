@@ -170,7 +170,7 @@ def main():
     DB= "prod"
 
     # Other Environmental Variables
-    PSWS_DB= load_db(TESTHOST, TESTUSER, TESTPASSWD, TESTDB)
+    PSWS_DB= load_db(HOST, USER, PASSWD, DB)
     ROOTDIR= '/home/'
     TIMESTAMP = dt.now(timezone.utc).isoformat()[0:19]
     BASE_LOG_DIR= "/home/audit_logs/"
