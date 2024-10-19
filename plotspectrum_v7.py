@@ -93,8 +93,7 @@ print("filename: ",filename)
 dataDir = os.path.join(datapath,filename)
 print("data dir: ", dataDir)
 
-plt.style.use('classic') #TODO: replace w/ '_mpl-gallery-nogrid' when testing on server
-plt.style.use('_mpl-gallery-nogrid') 
+plt.style.use('classic') #TODO: replace w/ '_mpl-gallery-nogrid' when testing on server 
 maidenheadGrid= 'EN91' # Default grid
 
 # Plot creation
@@ -192,13 +191,10 @@ for i in range(0,freqCount):
             data= do.read_vector(s + offset, 1024, 'ch0')
             
             for val in data:
-#                print(" val type:",type(val))
                 if "ndarray" in  str(type(val)) :   # did DRF return a number or an array?
                     bigarray[bptr] = val[i]
                 else:
                     bigarray[bptr] = val
-                # i is the frequency from the metadata array
-                # bigarray[bptr]= val[i]
                 bptr += 1
 
         # Tried to read DRF data but didn't find requested time slice       
@@ -238,13 +234,12 @@ for i in range(0,freqCount):
     axs[2*i].set_ylabel('Doppler Shift (Hz)')
     axs[2*i].set_xlabel('Hours, UTC')
 
-    # get info from database for use in plot titles
-    print("Look for station",stationIDstr)    
+    # get info from database for use in plot titles    
     theStationQS = Station.objects.filter(station_id=stationIDstr) # WDE test
     station_id = theStationQS.values()[0]['id']  # WDE test
     station_nickname = theStationQS.values()[0]['nickname']
     
-    #station_nickname= "test station" # WDE testing
+
     print("axis#",i)
     print("Station name: " + station_nickname)
 
@@ -253,7 +248,7 @@ for i in range(0,freqCount):
                     + maidenheadGrid + ') Station: ' + station_nickname + " Subchannel " + str(i),
                        fontsize=10)
 
-    
+    plt.grid() # put grid into spectrum plot    
     print("File loaded. Frequency: ",freqList[i])
 
     # subplot is                nrows, ncols, index
@@ -289,7 +284,7 @@ for i in range(0,freqCount):
     axs[(2*i)+1].plot(minute_sample)
 
     plt.xticks(np.arange(0,1560, 120), labels=['00','02','04','06','08','10','12','14','16','18','20','22','24'])
-
+    plt.grid() # put grid into amplitude chart
     axs[(2*i)+1].set_ylabel('Amplitude, uncalibrated units')
     axs[(2*i)+1].set_xlabel('Hours, UTC')
     axs[(2*i)+1].set_title('Peak Amplitude by Minute' ) 
@@ -297,6 +292,7 @@ for i in range(0,freqCount):
     
 fig.tight_layout()
 output_filename =  stationIDstr + '_' + instrumentID + '_' + t + '_' + maidenheadGrid + '.png'
+plt.grid()
 plt.savefig(plot_output_path + '/' + stationIDstr + '_' + instrumentID + '_' + t + '_' + maidenheadGrid + '.png')
 
 print("Saving to database...")
