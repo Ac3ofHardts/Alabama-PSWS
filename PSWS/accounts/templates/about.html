@@ -26,6 +26,23 @@
 </ul>
 {% endif %}
 
+<style>
+  .legend-desc {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
+    
+  .legend-key {
+    display: inline-block;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+  }
+</style>
+
+
 <div class="card">
 	<div class="card-body">
 		<h4 class="card-title">About PSWS</h4>
@@ -37,5 +54,11 @@
 		<p>To get started with your own station, click on the stations tab and then hit "Add new station". Here is where you can put in your geographical information and details about the model you have obtained. At the end of this process, you will be given a randomly generated token. This token needs to be input into your Tangerine or Grape device. The token acts as your station's unique password. Once input, the device will be able to send and receive heartbeat signals to our server, and it will be automatically marked as online. Then your device will be ready to begin uploading data, either automatically or upon request depending on the selected mode</p>
 		<p>You can add a new station at any time and have multiple stations under one user account. Each with their own unique geographical information and token</p>
 		<p>Lastly, if you are a research scientist who would like to be able to create requests for data collection after an event, contact <a href="mailto: bill.engelke@cs.ua.edu">Bill Engelke</a> to be made into a Science User. Once you have that permission you will be able to create data requests  that cause the ring buffer devices to upload</p>
+		
+		<h4 id="legend-info" class="card-title">Legend</h4>
+		<div class="legend-desc"><span style="background-color: #008000;" class="legend-key"></span> <span>Online: Last upload within 24 hours</span></div>
+          	<div class="legend-desc"><span style="background-color: #FFA500;" class="legend-key"></span> <span>Possibly Online: Last upload between 1 and 5 days ago</span></div>
+          	<div class="legend-desc"><span style="background-color: #FF0000;" class="legend-key"></span> <span>Offline: Last upload >5 days ago</span></div>
+          	<div class="legend-desc"><span style="background-color: #808080;" class="legend-key"></span> <span>Retired: Last upload >3 weeks ago</span></div>
 
 {% endblock %}
