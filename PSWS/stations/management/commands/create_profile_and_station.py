@@ -11,6 +11,12 @@ import os
 import secrets
 import string
 
+'''
+EXAMPLE USAGE
+
+python manage.py create_profile_and_station --username johndoe6 --password mypassword --email john@example.com --station_id N000014 --nickname "John's Station" --latitude 34.05 --longitude -118.25 --city "Los Angeles" --state "CA" --postal_code "90001" --antenna_1 "Test_antenna" --antenna_2 "NA" --street_address "1234 Nowhere Drive" --phone_number "123456789"
+'''
+
 
 def generate_random_string(length=32):
     characters = string.ascii_letters + string.digits
