@@ -12,170 +12,149 @@
 {% load render_table from django_tables2 %}
 
 <style>
-.obsTable {
-	margin-left: auto;
-	margin-right: auto;
-	width: 1200px;	
-	border: 5px solid black;
-}
+    .obsTable {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+        max-width: 1200px;    
+        border: 5px solid black;
+    }
 
-.obsTable th {
-	border-bottom: 2px solid #dcdde0;
-}
+    .obsTable th {
+        border-bottom: 2px solid #dcdde0;
+    }
 
-.obsTable tr {
-	border-bottom: 1px solid #dcdde0;
-}
+    .obsTable tr {
+        border-bottom: 1px solid #dcdde0;
+    }
 
-.wrapper .sidebar{
-	background: #04AA6D;
-	position: fixed;
-	z-index: 1;
-	top: 0;
-	left: 0;
-	width: 0;
-	height: 100%;
-	padding: 20px 0;
-	transition: all 0.5s ease;
-	border-right: solid black 5px;
-	overflow-x: hidden;
-}
+    /* Responsive filter form styling */
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin: 20px auto;
+        max-width: 1200px;
+        width: 90%; /* 90% width for responsiveness */
+    }
 
-.wrapper .sidebarExpand{
-	background: #04AA6D;
-	position: fixed;
-	z-index: 1;
-	top: 0;
-	left: 0;
-	width: 250px;
-	height: 100%;
-	padding: 20px 0;
-	transition: all 0.5s ease;
-	border-right: solid black 5px;
-	overflow-x: hidden;
-}
+    .filter-form form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
 
-.wrapper .sidebar .filter{
-	display: block;
-	width: 90%;
-	height: 50px;
-	color: white;
-	transform: scale(0.8);
-	align-content: left;
-}
-
-.wrapper .sidebarExpand .filter{
-        display: block;
-        width: 90%;
-        height: 50px;
+    .filter-form input[type="submit"],
+    .filter-form input[type="reset"],
+    .filter-form button {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        background-color: #04AA6D;
         color: white;
-        transform: scale(0.8);
-        align-content: left;
-}
+        border-radius: 3px;
+        cursor: pointer;
+        margin-right: 80px; /* Adds space between buttons */
+    }
 
+    .filter-form input[type="reset"],
+    .filter-form button {
+        background-color: #ddd;
+        color: #333;
+    }
 
-.wrapper .sidebar .closebtn{
-	color: white;
-	position: absolute;
-	top: 0;
-	right: 25px;
-	font-size: 24px;
-	margin-left: 50px;
-}
+    .filter-form input[type="submit"]:hover,
+    .filter-form input[type="reset"]:hover,
+    .filter-form button:hover {
+        background-color: #ccc;
+    }
 
-.wrapper .sidebarExpand .closebtn{
-        color: white;
-        position: absolute;
-        top: 0;
-        right: 25px;
-        font-size: 24px;
-        margin-left: 50px;
-}
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        .filter-form {
+            flex-direction: column;
+        }
 
+        .filter-form form {
+            flex-direction: column;
+        }
 
-#main{
-	transition: margin-left .5s;
-}
+        .filter-form input[type="submit"],
+        .filter-form input[type="reset"],
+        .filter-form button {
+            width: 100%; /* Full width buttons on smaller screens */
+        }
+    }
 </style>
 </head>
 
 <body>
-<div class="wrapper">
-    <div class="sidebar">
-	<a href="javascript:void(0)" class='closebtn'>&times;</a>
-	<br>
-	<p style="color: white; text-align: center;">Select options below to filter:</p>
-	<div class="filter">
-	    {% block content %}
-		<form action="" method="get" class="form form-inline">
-			{{ filter.form.as_p }}
-			<input type="submit" value="Filter"/>
-		</form>
-		{% for obj in filter.qs %}
-			{{ obj.name }}
-		{% endfor %}
-	    {% endblock %}
-         </div>
-     </div>
-</div>
 <div id="main">
-    <button class="openbtn">&#9776; Open Filter</button>
-    To download observation data, click on File/Observation link. &nbsp; Please be patient, it may take a while to zip a large observation.
-    <table>
-    	{% render_table table %}
+    <!-- Filter form above the table -->
+    <div class="filter-form">
+        <form action="" method="get" class="form-inline">
+            {{ filter.form.as_p }}
+            
+            <!-- Submit button to apply filters -->
+            <input type="submit" value="Filter" />
+
+            <!-- Clear Filters button to reset the form and reload without filters -->
+            <button type="button" onclick="clearFilters()">Clear Filters</button>
+        </form>
+    </div>
+
+    <p>To download observation data, click on File/Observation link. Please be patient, it may take a while to zip a large observation.</p>
+
+    <table class="obsTable">
+        {% render_table table %}
     </table>
 
-<div class="pagination">
-    <span class="step-links">
-	{% if page_obj.has_previous %}
-	    <a href="?page=1">&laquo; first</a>
-	    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-	{% endif %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
 
-	<span class="current">
-	    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-	</span>
+                <!-- Jump back by 5 pages -->
+                {% if page_obj.number > 5 %}
+                    <a href="?page={{ page_obj.number|add:"-5" }}">back 5</a>
+                {% endif %}
 
-	{% if page_obj.has_next %}
-	    <a href="?page={{ page_obj.next_page_number }}">next</a>
-	    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-	{% endif %}
-    </span>
-</div>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+
+                <!-- Jump forward by 5 pages -->
+                {% if page_obj.number|add:"5" <= page_obj.paginator.num_pages %}
+                    <a href="?page={{ page_obj.number|add:"5" }}">forward 5</a>
+                {% endif %}
+
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </div>
 
 <script>
-    let sidebar = document.querySelector('.sidebar');
+    function clearFilters() {
+        // Select the form
+        const form = document.querySelector('.filter-form form');
 
-    document.querySelector('.closebtn').addEventListener('click', () => {
-	sidebar.style.width = "0";
-    });
+        // Reset the form fields
+        form.reset();
 
-    document.querySelector('.openbtn').addEventListener('click', () => {
-	if (sidebar.style.width == '250px') {
-	    sidebar.style.width = "0";
-	}
-	else if (sidebar.style.width == '0') {
-	    sidebar.style.width = "250px";
-	}
-	else {
-	    sidebar.style.width = "250px";
-	}
-    });
-</script>
-
-</body>
-
-<script>
-    let sidebar = document.querySelector('.sidebar');
-
-    document.querySelector('.closebtn').addEventListener('click', () => {
-	sidebar.style.width = "0";
-    });
-
-    document.querySelector('.openbtn').addEventListener('click', () => {
-	sidebar.style.width = "250px";
-    });
+        // Submit the form to apply the clear action
+        form.submit();
+    }
 </script>
 
 </body>
@@ -183,4 +162,4 @@
 {% endblock main %}
 
 </html>
-	
+
