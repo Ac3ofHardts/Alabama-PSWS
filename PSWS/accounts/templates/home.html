@@ -26,7 +26,6 @@
 		<li><a href="/signup/">Register your station</a></li>
 		<li style="float:right"><a href="/about/">About</a></li>
 	</ul>
-
 	<table>
 		<tr>
 			<td>Welcome to Personal Space Weather Station/Central Control!</td>
@@ -40,7 +39,45 @@
 </div>
 <tr></tr>
 <br>
-<div id='map' style='position:absolute; top: 220px; width: 1200px; height: 600px;'></div>
+
+<style>
+  .map-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #fff;
+    margin-right: 20px;
+    font-family: Arial, sans-serif;
+    overflow: auto;
+    border-radius: 3px;
+  }
+
+  #legend {
+    padding: 10px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+    line-height: 18px;
+    width: 120px;
+  }
+
+  .legend-key {
+    display: inline-block;
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+  }
+
+  #legend div {
+    margin-bottom: 5px;
+  }
+</style>
+
+<div id='map' style='position:absolute; top: 220px; width: 1200px; height: 600px;'>
+  <div id="legend" style="position: absolute; bottom: 30px; right: 10px; background-color: white; padding: 10px; border 1px solid black; border-radius: 3px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); z-index: 1;">
+      <h4 style="margin: 0 0 10px; fongt-weight: bold;"><a href="/about#legend-info">Legend</a><h4>
+  </div>
+</div>
+
 <script>
   mapboxgl.accessToken = '{{mapbox_access_token}}' ;
   var map = new mapboxgl.Map({
@@ -179,6 +216,38 @@
 	  .addTo(map);
   });
 
+  map.on('load', () => {
+    const layers = [
+          'Online',
+          'Possibly Offline',
+          'Offline',
+          'Retired'
+        ];
+        const colors = [
+          '#008000',
+          '#FFA500',
+          '#FF0000',
+          '#808080'
+        ];
+
+        // create legend
+        const legend = document.getElementById('legend');
+
+        layers.forEach((layer, i) => {
+          const color = colors[i];
+          const item = document.createElement('div');
+          const key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+
+          const value = document.createElement('span');
+          value.innerHTML = `${layer}`;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        });
+   
+  });
 </script>
  
 
