@@ -102,8 +102,7 @@
             <!-- Submit button to apply filters -->
             <input type="submit" value="Filter" />
 
-            <!-- Clear Filters button to reset the form and reload without filters -->
-            <button type="button" onclick="clearFilters()">Clear Filters</button>
+            <a href="/observations/observation_list/">Clear Filters</a>
         </form>
     </div>
 
@@ -144,18 +143,6 @@
     </div>
 </div>
 
-<script>
-    function clearFilters() {
-        // Select the form
-        const form = document.querySelector('.filter-form form');
-
-        // Reset the form fields
-        form.reset();
-
-        // Submit the form to apply the clear action
-        form.submit();
-    }
-</script>
 
 </body>
 
