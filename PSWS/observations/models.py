@@ -30,7 +30,7 @@ class Observation(models.Model):
     #
     size = models.BigIntegerField()
     # Observation filename
-    fileName = models.CharField("File", max_length=40)
+    fileName = models.CharField("File", max_length=60)
     # Observation plot filename
     plotFile = models.CharField("Plot", max_length=40, null=True, blank=True)
     # Directory to which all Observation data is stored via schema - /home/"station_name"/"observation_filename"
