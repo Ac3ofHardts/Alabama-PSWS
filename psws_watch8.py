@@ -89,7 +89,10 @@ class UploadEvent(PatternMatchingEventHandler):
             writeLog("Station#=" + stationID)
             instrumentID = event.src_path.rsplit('_#')[1]
             writeLog("Instrument#=" + instrumentID)
-            trigger = event.src_path.rsplit('/')[3]
+            if event.src_path.rsplit('/')[3][0] == 'g':
+               trigger = event.src_path.rsplit('/')[3]  # this is non-jailed account
+            else
+               trigger = event.src_path.rsplit('/')[6] # this is jailed account
             writeLog("trigger=" + trigger)
             # for calling addCSV, arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
             cmd = '/home/bengelke/venv/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
