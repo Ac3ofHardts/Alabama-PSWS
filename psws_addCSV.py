@@ -1,6 +1,6 @@
 # psws_addCSV.py
-# Add Graape 1 Legacy csv file to
-# Observations table
+# Add Grape 1 Legacy csv file to
+# Observations table - W. Engelke, Jan 2025
 
 import os, sys, pytz
 #  admin to use Django ORM for db updating
