@@ -1,6 +1,6 @@
 # psws_addCSV.py
-# Add Grape 1 Legacy csv file to
-# Observations table - W. Engelke, Jan 2025
+# Add Graape 1 Legacy csv file to
+# Observations table
 
 import os, sys, pytz
 #  admin to use Django ORM for db updating
@@ -24,8 +24,6 @@ def writeLog(theMessage):
     f = open("watchdog.log", "a")
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
-
-
 
 # Arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
 

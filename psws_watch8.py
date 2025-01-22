@@ -80,24 +80,32 @@ class UploadEvent(PatternMatchingEventHandler):
 
         if event.src_path.rsplit('/')[-1][0] == 'g': # processing for Grape 1 Legacy (fldigi) upload
             writeLog("processing Grape 1 Legacy trigger:" + event.src_path)
-            observation_no = event.src_path.rsplit('/')[-1][1:51]
+            observation_no = event.src_path.rsplit('/')[-1][1:len(event.src_path)] # get entire trigger
+            observation_no = observation_no.rsplit('_#')[0] # get the filename in trigger
+            print("Observation#=" + observation_no)
             writeLog("Observation#=" + observation_no)
-            path =        "/".join(event.src_path.rsplit('/')[:-1]) + '/' + observation_no
+            path =        "/".join(event.src_path.rsplit('/')[:-1]) + '/csvData/' + observation_no
             writeLog("Path generated -> " + path)
             obsSize = get_size(path)
             stationID = observation_no.rsplit('_')[1]
+            # if this is the 8-character node number, remove the leading zero in the number
+            # (This is normal for Grape 1 Legacy stations)
+            if len(stationID) == 8:
+                stationID = stationID[0] + stationID[2:8]
             writeLog("Station#=" + stationID)
+            print("StationID=",stationID)
             instrumentID = event.src_path.rsplit('_#')[1]
             writeLog("Instrument#=" + instrumentID)
             if event.src_path.rsplit('/')[3][0] == 'g':
                trigger = event.src_path.rsplit('/')[3]  # this is non-jailed account
-            else
+            else:
                trigger = event.src_path.rsplit('/')[6] # this is jailed account
             writeLog("trigger=" + trigger)
             # for calling addCSV, arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
             cmd = '/home/bengelke/venv/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
                 " " + instrumentID + " " + trigger
-            writeLog("Adder cmd=" + cmd)
+            writeLog("call to psws_addCSV cmd=" + cmd)
+            print("psws_addCSV cmd:",cmd)
             os.system(cmd)
             # prepare command for plotting
          #   cmd = 'python3 plotfldigi1.py -f ' + path + ' -e ' + event.src_path + \
