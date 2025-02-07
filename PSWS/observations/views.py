@@ -145,7 +145,7 @@ def download_range(request, id=None):
     print(instrument.instrumenttype)
     print(instrument.id)
     
-    if instrument.instrumenttype_id == 3:
+    if instrument.instrumenttype_id == 3 or instrument.instrumenttype_id == 6:
         full_path = fl_path + "/" + filename
         fl = open(full_path, "rb")
         mime_type, _ = mimetypes.guess_type(fl_path)
