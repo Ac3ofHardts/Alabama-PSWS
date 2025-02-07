@@ -41,41 +41,58 @@
 <br>
 
 <style>
-  .map-overlay {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: #fff;
-    margin-right: 20px;
-    font-family: Arial, sans-serif;
-    overflow: auto;
-    border-radius: 3px;
-  }
+    /* Map container styling */
+    .map-container {
+        margin: 20px; /* Margin around the map to keep space from edges */
+        padding-bottom: 400px; /* Additional space from the bottom */
+        height: calc(100vh - 200px); /* Adjusted for header space and bottom padding */
+        position: relative;
+    }
 
-  #legend {
-    padding: 10px;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
-    line-height: 18px;
-    width: 120px;
-  }
+    #map {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px; /* Optional rounded corners for the map */
+    }
 
-  .legend-key {
-    display: inline-block;
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-  }
+    .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: #fff;
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+    }
 
-  #legend div {
-    margin-bottom: 5px;
-  }
+    #legend {
+        padding: 10px;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+        line-height: 18px;
+        width: 120px;
+    }
+
+    .legend-key {
+        display: inline-block;
+        border-radius: 50%;
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+    }
+
+    #legend div {
+        margin-bottom: 5px;
+    }
 </style>
 
-<div id='map' style='position:absolute; top: 220px; width: 1200px; height: 600px;'>
-  <div id="legend" style="position: absolute; bottom: 30px; right: 10px; background-color: white; padding: 10px; border 1px solid black; border-radius: 3px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); z-index: 1;">
-      <h4 style="margin: 0 0 10px; fongt-weight: bold;">Legend<h4>
-  </div>
+<!-- Map container to hold the map and ensure it respects header space -->
+<div class="map-container">
+    <div id="map">
+        <div id="legend" style="position: absolute; bottom: 30px; right: 10px; background-color: white; padding: 10px; border: 1px solid black; border-radius: 3px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); z-index: 1;">
+            <h4 style="margin: 0 0 10px; font-weight: bold;"><a href="/about#legend-info">Legend</a></h4>
+        </div>
+    </div>
 </div>
 
 <script>

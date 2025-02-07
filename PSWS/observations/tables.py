@@ -63,6 +63,13 @@ class ObservationTable(tables.Table):
     instrument = TruncatedTextColumn(accessor=A('instrument.instrument'))
     plotExists = PlotColumn(accessor=A('plotFile'), verbose_name="Plot")
 
+    # Make station a clickable link to its homepage
+    station = tables.LinkColumn(
+        'station_analysis', 
+        args=[A('station.id')], 
+        verbose_name='Station'
+    )
+
     def render_size(self, value):
         converted_size = float(value)
         converted_size = converted_size / 1000000.0
