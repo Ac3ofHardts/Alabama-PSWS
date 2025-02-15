@@ -15,6 +15,10 @@ class ObservationDownloadAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
+        '''
+        Usage: http://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=XXXXXXX&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+        '''
+        
         station_id = request.query_params.get("station_id")
         start_date = request.query_params.get("start_date")
         end_date = request.query_params.get("end_date")
@@ -58,7 +62,7 @@ class ObservationDownloadAPIView(APIView):
                             obs.endDate.date() <= end_dt.date() and file_extension == '.zip'):
                             file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
                             # TEST CASE - replace chirschey with rocky linux username
-                            #file_path = "/home/chirschey/S000028/magData/" + obs.fileName
+                            file_path = "/home/chirschey/S000028/magData/" + obs.fileName
                             print(file_path)
                             if os.path.exists(file_path):
                                 zipf.write(file_path, arcname=obs.fileName)
@@ -78,7 +82,7 @@ class ObservationDownloadAPIView(APIView):
             if (o.startDate.date() >= start_dt.date() and o.endDate.date() <= end_dt.date() and file_extension == '.zip'):
                 file_path = ('/').join(o.path.split('/')[:-1]) + '/' + o.fileName
                 # TEST CASE - replace chirschey with rocky linux username
-                #file_path = "/home/chirschey/S000028/magData/" + o.fileName
+                file_path = "/home/chirschey/S000028/magData/" + o.fileName
                 print(file_path)
             else:
                 return Response({"detail": "Observation file not found."},
