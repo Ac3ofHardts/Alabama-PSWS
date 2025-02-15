@@ -96,13 +96,6 @@ def display_graphs(request):
             # start_converted = utc.localize(datetime.strptime(start, '%Y-%m-%dT%H:%M'))
             # end_converted = start_converted + timedelta(days=0.9)
             if start_converted:
-                # filter observations based on the date and selected stations
-                observations_in_range = Observation.objects.filter(
-                    station_id__in=station_ids,
-                    startDate__gte=start_converted,
-                    endDate__lte=end_converted
-                )
-
                 # Prepare data for plotting
                 datasets = []
                 for id in station_ids:
@@ -125,8 +118,6 @@ def display_graphs(request):
                             if (o.startDate.date()>=start_converted.date()) and (o.endDate.date()<=end_converted.date()) and file_extension=='.zip':
                                 path=('/').join(o.path.split('/')[:-1])+'/'+o.fileName
                                 print('path =', path)
-                                # TEST CASE
-                                # path = '/home/chirschey/S000028/OBS2022-12-09T00_00.zip'
                                 try:
                                     with zipfile.ZipFile(path) as zf:
                                         for file in zf.namelist():
