@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.http import FileResponse
@@ -11,12 +11,13 @@ from stations.models import Station
 from observations.models import Observation
 
 class ObservationDownloadAPIView(APIView):
-    authentication_classes = [SessionAuthentication]  # uses Django's session auth - must be logged in on server
+    authentication_classes = [BasicAuthentication]  # uses Django's basic auth
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         '''
-        Usage: http://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=XXXXXXX&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD
+        Curl Usage: curl -u username -o output.zip "http://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=XXXXXXX&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD"
+        Wget Usage: wget --http-user=username --http-password=password -O output.zip "http://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=XXXXXXX&start_date=YYYY-MM-DD&end_date=YYYY-MM-DD"
         '''
         
         station_id = request.query_params.get("station_id")
@@ -61,9 +62,7 @@ class ObservationDownloadAPIView(APIView):
                         if (obs.startDate.date() >= start_dt.date() and
                             obs.endDate.date() <= end_dt.date() and file_extension == '.zip'):
                             file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
-                            # TEST CASE - replace chirschey with rocky linux username
-                            file_path = "/home/chirschey/S000028/magData/" + obs.fileName
-                            print(file_path)
+                            #print(file_path)
                             if os.path.exists(file_path):
                                 zipf.write(file_path, arcname=obs.fileName)
             except Exception as e:
@@ -81,9 +80,9 @@ class ObservationDownloadAPIView(APIView):
             file_extension = o.fileName[-4:]
             if (o.startDate.date() >= start_dt.date() and o.endDate.date() <= end_dt.date() and file_extension == '.zip'):
                 file_path = ('/').join(o.path.split('/')[:-1]) + '/' + o.fileName
-                # TEST CASE - replace chirschey with rocky linux username
-                file_path = "/home/chirschey/S000028/magData/" + o.fileName
-                print(file_path)
+                # TEST CASE - replace developer with rocky linux username
+                # file_path = "/home/developer/S000028/magData/" + o.fileName
+                # print(file_path)
             else:
                 return Response({"detail": "Observation file not found."},
                                 status=status.HTTP_404_NOT_FOUND)
