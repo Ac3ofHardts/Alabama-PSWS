@@ -19,3 +19,4 @@ pip-requirements.txt
 graphing.log
 PSWS/logs/debug.log
 PSWS/static/PSWS/plots
+output.zip
