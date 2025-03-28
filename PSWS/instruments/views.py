@@ -16,6 +16,8 @@ from .tables import InstrumentTable, FilteredInstrumentsTable
 from .forms import EditInstrumentForm
 
 import os
+import configparser
+import mimetypes
 import logging
 logger = logging.getLogger(__name__)
 
@@ -121,4 +123,46 @@ def update_instrument_view(request, id=id):
             messages.warning(request, "(!) THERE ARE ONE OR MORE OBSERVATIONS UNDER THIS INSTRUMENT. Deleting instrument will delete observation(s).")
         return render(request, 'instrument_update.html', {'form':form, 'instrument': instrument})
 
-
+@login_required
+def download_config(request, id=id):
+    """ Downloads uploader.config file to local computer using website
+    Parameter
+    ---------
+    id : int
+        provides id for the instrument object from which to pull 
+        and download config file
+    Returns
+    -------
+    response : HTTPResponse
+        begins download of target config file to local computer
+        upon request
+    """
+    instrument = get_object_or_404(Instrument, id=id)
+    station = get_object_or_404(Station, id = instrument.station_id)
+    
+    config= configparser.ConfigParser()
+    
+    config["profile"]={}
+    config["profile"]["token_value"]= station.station_pass
+    config["profile"]["grid"]= station.grid
+    config["profile"]["prefix"]= ""
+    config["profile"]["thestationid"]= station.station_id
+    config["profile"]["central_host"]= "pswsnetwork.caps.ua.edu"
+    config["spectrum_settings"]={}
+    config["spectrum_settings"]["obs"] = '""'
+    config["spectrum_settings"]["band"] = "[band you are running in MHz: 2.5, 5.0, 10.0, 15.0, 20.0, or 25.0]"
+    config["spectrum_settings"]["instrumentid"] = str(id)
+    config["spectrum_settings"]["throttle"] = "200K"
+    config["spectrum_settings"]["spectrum_storage"] = "/home/pi/PSWS/Sxfer"
+    
+    config_path= "/home/configtemp/"+ "uploader_"+str(id)+".config"
+    config_file= open(config_path, 'w')
+    config.write(config_file)
+    config_file.close()
+    config_file= open(config_path, 'r')
+    mime_type= mimetypes.guess_type(config_path + "uploader.config")
+    os.remove(config_path)
+    # creates and returns site response triggering img file download
+    response= HttpResponse(config_file, content_type=mime_type)
+    response['Content-Disposition'] = "attachment; filename= uploader.config"
+    return response
