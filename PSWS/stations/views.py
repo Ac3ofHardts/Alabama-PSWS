@@ -12,7 +12,7 @@ from django_tables2 import SingleTableView
 #from stations.calculate_latitude import CalculateLatitude
 #from stations.calculate_longitude import CalculateLongitude
 import maidenhead as mh
-from .tables import StationTable, FilteredStationTable
+from .tables import StationTable, FilteredStationTable, StationUserTable
 from .forms import EditStationForm
 from .tokens import station_activation_token
 
@@ -40,15 +40,25 @@ class MyStationsListView(SingleTableView):
     paginate_by = 4
 
 
+
 @method_decorator(login_required, name='dispatch')
 # Display the list of all registered stations
 class StationListView(SingleTableView):
-    table_class = StationTable
-    queryset = Station.objects.all()
     template_name = 'stations.html'
     paginate_by = 4
+    def get_table_class(self):
+        if(self.request.user.is_superuser):    
+            if self.request.GET.get('swap') == '1':
+                return StationUserTable
+        return StationTable 
 
-#@login_required
+    def get_queryset(self):
+        return Station.objects.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['swap'] = self.request.GET.get('swap') == '1'
+        return context#@login_required
 #Display the list of all registered stations
 #def station_list_view(request):
 #    table = StationTable(Station.objects.all())

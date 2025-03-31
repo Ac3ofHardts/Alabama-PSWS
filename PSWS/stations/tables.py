@@ -16,3 +16,9 @@ class FilteredStationTable(tables.Table):
         model = Station
         template_name = "django_tables2/bootstrap.html"
         fields = ("station_id", "nickname", "grid", "elevation", "antenna_1", "antenna_2", "station_status",)
+class StationUserTable(tables.Table):
+    
+    class Meta:
+        model = Station
+        template_name = "django_tables2/bootstrap.html"
+        fields = ("user", "nickname",)

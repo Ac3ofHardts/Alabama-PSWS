@@ -8,9 +8,11 @@
 <style>
 table {
 	width: 1000px;
-	border: 5px solid black;
+	border
 }
-</style>
+#show_usr_btn {
+	width: 130px;
+}</style>
 <!--
 th {
 	border: 5px solid black;
@@ -36,7 +38,17 @@ tr, td {
 		<button type="submit">Add New Station</button>
 	</form>
 </div>
-
+{% if user.is_superuser %}
+<div style="padding-top: 10px;">
+	<form  method="GET">
+		{% if swap %}
+			<button type='submit' name='swap' value="0">Users</button>
+		{%else%}
+			<button type='submit' name='swap' value="1">Users</button>
+		{%endif %}
+	</form>		
+</div>
+{% endif %}
 <br>
 
 <div>
@@ -62,4 +74,3 @@ tr, td {
 </div>
 
 {% endblock main %}
-
