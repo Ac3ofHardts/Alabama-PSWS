@@ -20,3 +20,15 @@ graphing.log
 PSWS/logs/debug.log
 PSWS/static/PSWS/plots
 output.zip
+PSWS/PSWS/backup_sett.py
+PSWS/logs/
+hamsci_psws/*
+nodelist.csv
+plot_test2.py
+plot_v8.py
+plotenv/*
+requirements2.txt
+triggerManip.log
+venv39/*
+vplt/*
+watchdogTest.log
