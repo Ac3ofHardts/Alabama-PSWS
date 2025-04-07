@@ -102,11 +102,32 @@ class UploadEvent(PatternMatchingEventHandler):
                trigger = event.src_path.rsplit('/')[6] # this is jailed account
             writeLog("trigger=" + trigger)
             # for calling addCSV, arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
-            cmd = '/home/bengelke/venv/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
+#            cmd = '/home/bengelke/venv/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
+#                " " + instrumentID + " " + trigger
+
+            cmd = '/home/N000004/virtualenvs/dev/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
                 " " + instrumentID + " " + trigger
+
+
             writeLog("call to psws_addCSV cmd=" + cmd)
             print("psws_addCSV cmd:",cmd)
             os.system(cmd)
+
+            # Diagnostics & debug
+            '''
+                process = subprocess.Popen(
+                ['/home/bengelke/venv/bin/python3', 'psws_addCSV.py', path, stationID, + \
+                 instrumentID, trigger],
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE, 
+                text=True
+                )
+            stdout, stderr = process.communicate()
+            writeLog("STDOUT:" + stdout)
+            writeLog("STDERR:" + stderr)
+            writeLog('End of call to psws_addCSV')
+            '''
+
             # prepare command for plotting
          #   cmd = 'python3 plotfldigi1.py -f ' + path + ' -e ' + event.src_path + \
           #        ' -p /var/www/html/PSWS/static/PSWS/media'
