@@ -144,7 +144,7 @@ class UploadEvent(PatternMatchingEventHandler):
             freq_list = []
             # get list of center frequencies in this spectrum (often just 1)
             data_dict = dmr.read(start_idx, start_idx + 2, "center_frequencies")
-            #writeLog("Center freq list:")
+            writeLog("Center freq list:")
             for x in list(data_dict)[0:1]:
                 #writeLog("key{}, val{}:".format(x, data_dict[x]))
                 freq_list = data_dict[x]
@@ -328,15 +328,23 @@ if __name__ == "__main__":
      
     path = sys.argv[1] if len(sys.argv) > 1 else '/home'
 
-# directory starting with "d" - upload is in response to a Data Request  (future)
+# directory starting with "d" - upload is in response to a Data Request  (future) DEPRECATED, WDE 2025-04-21
 # directory starting with "c" = upload is from a Continuous Upload (Grape 1 DRF)
 # directory starting with "m" = upload is from magnetometer data
 # directory starting with "g" = upload is from Grape 1 Legacy instrument
 # directory starting with "G" = upload is from Grape 2 instrument (future)
 
-    event_handler = UploadEvent(patterns=["S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*", "N*/g*", 
-        "stations/N*/home/N*/c*", "stations/N*/home/N*/m*", "stations/m*", "stations/N*/m*", "stations/N*/home/N*/m*", 
-        "stations/N*/home/N*/g*", 'abliddle/m_Test' ]) 
+#    event_handler = UploadEvent(patterns=["S*/m*", "N*/c*", "N*/m*", "S*/d*", "S*/c*", "N*/c*", "N*/g*", 
+#        "stations/N*/home/N*/c*", "stations/N*/home/N*/m*", "stations/m*", "stations/N*/m*", "stations/N*/home/N*/m*", 
+#        "stations/N*/home/N*/g*", 'abliddle/m_Test' ]) 
+
+
+    event_handler = UploadEvent(patterns=[ "N*/c*", "N*/m*", "N*/g*", "S*/c*", "S*/m*", "S*/g*", 
+        "stations/N*/home/N*/c*", "stations/N*/home/N*/m*",  "stations/N*/home/N*/g*",
+        "stations/S*/home/S*/c*", "stations/S*/home/S*/m*", "stations/S*/home/S*/g*", 
+        'abliddle/m_Test' ]) 
+
+
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
