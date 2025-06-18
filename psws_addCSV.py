@@ -91,7 +91,7 @@ if len(obs_list) == 0:   # this is a new observation
 # Build command for plotting this fldigi observation; use Task Spooler
   #  cmd = 'ts /home/bengelke/venv/bin/python3 plotfldigi1.py -f ' + path + " -e " + \
   #      trigger + " -p /var/www/html/PSWS/static/PSWS/plots/" + fileName
-    cmd = 'ts /home/bengelke/venv/bin/python3 plotfldigi1.py -f ' + path + " -e " + \
+    cmd = 'ts /home/N000004/virtualenvs/dev/bin/python3  plotfldigi1.py -f ' + path + " -e " + \
         trigger + " -p /var/www/html/PSWS/static/PSWS/plots/" + os.path.splitext(fileName)[0] # remove extension
     print("plot cmd=", cmd)
     writeLog("Plot cmd=" + cmd)

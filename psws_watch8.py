@@ -102,7 +102,7 @@ class UploadEvent(PatternMatchingEventHandler):
                trigger = event.src_path.rsplit('/')[6] # this is jailed account
             writeLog("trigger=" + trigger)
             # for calling addCSV, arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
-            cmd = '/home/bengelke/venv/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
+            cmd = 'ts /home/N000004/virtualenvs/dev/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
                 " " + instrumentID + " " + trigger
             writeLog("call to psws_addCSV cmd=" + cmd)
             print("psws_addCSV cmd:",cmd)
@@ -164,11 +164,8 @@ class UploadEvent(PatternMatchingEventHandler):
             try:
                 writeLog("Trigger graphing  program")
                 # This uses task spooler (ts) to make multiple plot jobs run in a queue
-                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v8.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
-            #    graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
-                # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
-                #graph_command = "/home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots | at -q b -m now & "
-                # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v7.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
+                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v9.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
+                #graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v8.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
 
                 writeLog("Running graph_command ----> " + graph_command)
                 os.system(graph_command)
@@ -324,7 +321,7 @@ class UploadEvent(PatternMatchingEventHandler):
 
 if __name__ == "__main__":
     print("starting watchdog, v8")
-    writeLog("Watchdog triggered")
+    writeLog("Watchdog V8A starting")
      
     path = sys.argv[1] if len(sys.argv) > 1 else '/home'
 
@@ -345,20 +342,24 @@ if __name__ == "__main__":
         'abliddle/m_Test' ]) 
 
 
-    observer = Observer()
-    observer.schedule(event_handler, path, recursive=True)
-    observer.start()
-    print("observer started")
-    writeLog("Starting watchdog, v8")
-    try:
-        while True:
+    while True:  # outer restart loop
+        try:
+            observer = Observer()
+            observer.schedule(event_handler, path, recursive=True)
+            observer.start()
+            print("observer started")
+            writeLog("Starting watchdog observer, v8")
+    
+            while observer.is_alive():
         #    print("waiting")
-            time.sleep(2)
-
-    finally:            
-        print("reached end")
-        observer.stop()
-        observer.join() 
-
+                time.sleep(10)
+        except Exception as e:
+            writeLog(f'WATCHDOG CRASH: {str(e)}\n')
+        finally:            
+            print("reached end")
+          #  writeLog("WATCHDOG HALTED, will restart in 5 sec.")
+            observer.stop()
+            observer.join() 
+            time.sleep(5)
 
 
