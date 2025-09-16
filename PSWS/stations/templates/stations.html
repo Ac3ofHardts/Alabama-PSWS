@@ -42,10 +42,29 @@ tr, td {
 <div style="padding-top: 10px;">
 	<form  method="GET">
 		{% if swap %}
-			<button type='submit' name='swap' value="0">Users</button>
-		{%else%}
-			<button type='submit' name='swap' value="1">Users</button>
-		{%endif %}
+		  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+
+		    <form method="get">
+		      <button type="submit">Users</button>
+		    </form>
+		    <!-- Filter form -->
+		    <form method="get" style="display: flex; gap: 0.5rem; align-items: center;">
+		      <input type="hidden" name="swap" value="1">
+		      {{ filter_form.user }}
+		      <button type="submit">Filter</button>
+		    </form>
+
+		    <!-- Swap back button -->
+		  </div>
+		{% else %}
+		  <!-- Swap to user view -->
+		  <div style="margin-bottom: 1rem;">
+		    <form method="get">
+		      <input type="hidden" name="swap" value="1">
+		      <button type="submit">Users</button>
+		    </form>
+		  </div>
+		{% endif %}
 	</form>		
 </div>
 {% endif %}
