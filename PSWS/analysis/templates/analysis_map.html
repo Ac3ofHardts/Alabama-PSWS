@@ -6,7 +6,7 @@
 	<form id="plotStationsForm" action="/analysis/analysis/" method="POST">
 		{% csrf_token %}
         <label for="start">Start date: </label>
-        <input type="datetime-local" id="start_datetime" name="start_datetime" value="{{ selected_date|default:'2022-12-09T00:00' }}"
+        <input type="datetime-local" id="start_datetime" name="start_datetime" value="{{ selected_date|default:'2025-03-01T00:00' }}"
         min="1988-06-07T00:00" max="2099-06-14T00:00"/>
         <button type="submit" class="button"><span>Plot Stations</span></button>
 	</form>
