@@ -1,4 +1,10 @@
 {% extends "base_stations.html" %}
+@login_required
+def station_instrument_view(request):
+    instruments = Instrument.objects.select_related("station", "instrumenttype", "station__user")
+    table = StationInstrumentTable(instruments)
+    table.paginate(page=request.GET.get("page", 1), per_page=10)
+    return render(request, "station_instruments.html", {"table": table})
 {% load crispy_forms_tags %}
 
 {% block title %}
