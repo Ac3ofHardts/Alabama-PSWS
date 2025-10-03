@@ -83,7 +83,7 @@ def download_file(request, id=None):
             return response
         
         total_path = obs.path
-        zip_path = "/home/ziptemp/" + total_path.rsplit('/')[2] +   \
+        zip_path = "/psws/temp/ziptemp/" + total_path.rsplit('/')[2] +   \
                    "/temp/" + total_path.rsplit('/')[3]
         print("tar file to: " + zip_path)
 
@@ -157,7 +157,7 @@ def download_range(request, id=None):
     #        "/temp/" + filename[:3] + start + "-" + end
 
     zip_name = "Range-" + filename
-    zip_path = "/home/ziptemp/" + zip_name
+    zip_path = "/psws/temp/ziptemp/" + zip_name
     print(zip_path)
 
     shutil.make_archive(zip_path, 'zip', full_path)

@@ -16,6 +16,9 @@ import time
 
 # WDE
 path = '/var/www/html/PSWS'
+
+print("PYTHON PATH:", sys.executable, sys.path)
+
 if path not in sys.path:
   sys.path.append(path)
 path = '/usr/local/lib/python3.6/site-packages'
