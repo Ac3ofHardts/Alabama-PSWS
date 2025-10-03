@@ -1,7 +1,5 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework import status
 from django.http import FileResponse
@@ -12,8 +10,6 @@ from stations.models import Station
 from observations.models import Observation
 
 class ObservationDownloadAPIView(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
     throttle_classes = [AnonRateThrottle]
 
     def get(self, request, format=None):
@@ -38,24 +34,24 @@ class ObservationDownloadAPIView(APIView):
         EXAMPLE CURL COMMANDS:
         
         1. Download by station ID:
-        curl -u username:password -o output.zip \
+        curl -o output.zip \
         "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"
         
         2. Download by geographic region (Alabama):
-        curl -u username:password -o output.zip \
+        curl -o output.zip \
         "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?lat_min=32.0&lat_max=35.0&lon_min=-88.0&lon_max=-84.0&start_date=2024-01-01&end_date=2024-01-31"
         
         3. Download with frequency filter (20m band):
-        curl -u username:password -o output.zip \
+        curl -o output.zip \
         "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&frequency=14.097&start_date=2024-01-01&end_date=2024-01-31"
         
         4. Download with instrument filter:
-        curl -u username:password -o output.zip \
+        curl -o output.zip \
         "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&instrument_id=1&start_date=2024-01-01&end_date=2024-01-31"
         
         WGET EXAMPLES:
         
-        wget --http-user=username --http-password=password -O output.zip \
+        wget -O output.zip \
         "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"
         
         RESPONSE:
