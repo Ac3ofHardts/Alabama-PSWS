@@ -44,6 +44,12 @@ class EditStationForm(forms.ModelForm):
         model = Station
         fields = ('nickname', 'grid', 'elevation', 'antenna_1', 'antenna_2', 'street_address', 'city', 'state', 'postal_code', 'phone_number', 'offlineNotify',)
 
+class StationUserFilterForm(forms.Form):
+    user = forms.CharField(
+        required=False,
+        label="Filter by user",
+        widget=forms.TextInput(attrs={'placeholder': 'Filter by user'})
+    )
 
 # This is redundant with form in instruments area; may be possible to unify.
 

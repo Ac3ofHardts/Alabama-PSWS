@@ -16,3 +16,28 @@ class FilteredStationTable(tables.Table):
         model = Station
         template_name = "django_tables2/bootstrap.html"
         fields = ("station_id", "nickname", "grid", "elevation", "antenna_1", "antenna_2", "station_status",)
+
+
+
+class StationUserTable(tables.Table):
+    user = tables.LinkColumn(
+        "station_instruments",       # matches your urls.py name
+        args=[tables.A("user.id")],   # sends station.id into <int:id>
+        text = lambda record: str(record.user),
+        verbose_name="User"
+    )
+
+    class Meta:
+        model = Station
+        template_name = "django_tables2/bootstrap.html"
+        fields = ("user", "nickname",)
+
+
+class StationInstrumentTable(tables.Table):
+    user = tables.Column(accessor="station.user.username", verbose_name="User")
+    instrument_type = tables.Column(accessor="instrumenttype.instrumentType", verbose_name="Instrument Type")
+
+    class Meta:
+        model = Instrument
+        template_name = "django_tables2/bootstrap.html"
+        fields = ("user", "station", "instrument_type")
