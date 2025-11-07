@@ -16,7 +16,7 @@ class ObservationDownloadAPIView(APIView):
         '''
         Download observations API endpoint with filtering capabilities.
         
-        AUTHENTICATION: Requires valid user credentials (Session or Basic Auth)
+        AUTHENTICATION: No authentication required - publicly accessible with rate limiting
         
         REQUIRED PARAMETERS:
         - start_date: YYYY-MM-DD format (e.g. "2024-01-01")
@@ -35,25 +35,25 @@ class ObservationDownloadAPIView(APIView):
         
         1. Download by station ID:
         curl -o output.zip \
-        "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"
+        "https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"
         
         2. Download by geographic region (Alabama):
         curl -o output.zip \
-        "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?lat_min=32.0&lat_max=35.0&lon_min=-88.0&lon_max=-84.0&start_date=2024-01-01&end_date=2024-01-31"
+        "https://pswsnetwork.eng.ua.edu/observations/downloadapi/?lat_min=32.0&lat_max=35.0&lon_min=-88.0&lon_max=-84.0&start_date=2024-01-01&end_date=2024-01-31"
         
-        3. Download with frequency filter (20m band):
+        3. Download with frequency filter:
         curl -o output.zip \
-        "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&frequency=14.097&start_date=2024-01-01&end_date=2024-01-31"
-        
+        "https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&frequency=10&start_date=2024-01-01&end_date=2024-01-31"
+
         4. Download with instrument filter:
         curl -o output.zip \
-        "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&instrument_id=1&start_date=2024-01-01&end_date=2024-01-31"
-        
+        "https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&instrument_id=1&start_date=2024-01-01&end_date=2024-01-31"
+
         WGET EXAMPLES:
         
         wget -O output.zip \
-        "https://pswsnetwork.caps.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"
-        
+        "https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"
+
         RESPONSE:
         - Single file: Returns the observation file directly
         - Multiple files: Returns a ZIP archive containing all matching observations
@@ -167,12 +167,6 @@ class ObservationDownloadAPIView(APIView):
         
         # FREQUENCY FILTERING: Filter by center frequency if provided
         # Note: This filters on the centerFrequency field value in MHz
-        # Example test cases:
-        # - frequency=14.097 (20m amateur radio band)
-        # - frequency=7.038 (40m amateur radio band) 
-        # - frequency=3.573 (80m amateur radio band)
-        # - frequency=1.838 (160m amateur radio band)
-        # - frequency=28.074 (10m amateur radio band)
         if frequency:
             try:
                 frequency_decimal = float(frequency)
@@ -244,17 +238,17 @@ class ObservationDownloadAPIView(APIView):
             file_extension = obs.fileName[-4:]
             
             # VALIDATION: Check file is within date range and is a ZIP file
-            if (obs.startDate.date() >= start_dt.date() and 
-                obs.endDate.date() <= end_dt.date() and 
-                file_extension == '.zip'):
-                
-                # CONSTRUCT FILE PATH: Build full path to observation file
-                file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
-                print(f"Serving single file: {file_path}")
-                
-            else:
+            if not (obs.startDate.date() >= start_dt.date() and 
+                    obs.endDate.date() <= end_dt.date() and 
+                    file_extension == '.zip'):
                 return Response({"detail": "Observation file not found or invalid."},
                                 status=status.HTTP_404_NOT_FOUND)
+            
+            # CONSTRUCT FILE PATH: Build full path to observation file
+            file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
+            # TEST CASE - replace developer with rocky linux username
+            #file_path = "/home/developer/S000028/magData/" + obs.fileName
+            print(f"Serving single file: {file_path}")
             
             # VALIDATION: Verify file exists on filesystem
             if not os.path.exists(file_path):
