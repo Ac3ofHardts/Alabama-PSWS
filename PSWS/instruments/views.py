@@ -155,12 +155,12 @@ def download_config(request, id=id):
     config["spectrum_settings"]["throttle"] = "200K"
     config["spectrum_settings"]["spectrum_storage"] = "/home/pi/PSWS/Sxfer"
     
-    config_path= "/home/configtemp/"+ "uploader_"+str(id)+".config"
+    config_path= "/tmp/"+ "uploader_"+str(id)+".config"
     config_file= open(config_path, 'w')
     config.write(config_file)
     config_file.close()
     config_file= open(config_path, 'r')
-    mime_type= mimetypes.guess_type(config_path + "uploader.config")
+    mime_type= mimetypes.guess_type(config_path) # + "uploader.config")
     os.remove(config_path)
     # creates and returns site response triggering img file download
     response= HttpResponse(config_file, content_type=mime_type)
