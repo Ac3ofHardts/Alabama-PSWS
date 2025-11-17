@@ -43,7 +43,7 @@ class MyStationsListView(SingleTableView):
 
 
 
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 
 # Display the list of all registered stations
 class StationListView(SingleTableView):

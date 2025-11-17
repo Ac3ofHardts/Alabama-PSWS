@@ -37,6 +37,8 @@ onlineCutoffHours = 24
 possiblyOnlineCutoffHours = 120 #5 days
 retirementCutoffHours = 504
 
+# Activation Log Path
+ACCOUNT_ACTIVATION_LOG_PATH='/var/log/django/'
 
 
 def updateStatus():
@@ -108,7 +110,7 @@ def activate(request, uidb64, token):
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
         ######
-        f = open("/var/www/html/PSWS/logs/account.log", "a")
+        f = open(ACCOUNT_ACTIVATION_LOG_PATH + "account.log", "a")
         f.write(str(user) + "\n")
         f.write(str(token) + "\n")
         f.close()
@@ -116,12 +118,12 @@ def activate(request, uidb64, token):
     except (TypeError, ValueError, OverflowError, User.DoesNotExist) as ex:
         user = None
         ######
-        f = open("/var/www/html/PSWS/logs/account.log", "a")
+        f = open(ACCOUNT_ACTIVATION_LOG_PATH + "account.log", "a")
         f.write(str(ex) + "\n")
         f.close()
         ######
     # checking if the user exists, if the token is valid.
-    f = open("/var/www/html/PSWS/logs/account.log", "a")
+    f = open(ACCOUNT_ACTIVATION_LOG_PATH + "account.log", "a")
     f.write("Account token: " + str(account_activation_token.check_token(user, token)) + "\n")
     f.close()
     if user is not None and account_activation_token.check_token(user, token):
@@ -209,7 +211,7 @@ def station_analysis(request, id=None):
             {'station': station, 'table': table}
                 )
 
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 # Display a list of all registered users
 class UserListView(SingleTableView):
     table_class = UserTable

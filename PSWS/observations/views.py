@@ -264,7 +264,7 @@ def select_download_range(request, id=None):
 #    queryset = Observation.objects.all()
 #    template_name = "observation_list.html"
 
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 # Display a list of all observations in the database
 class ObservationListView(SingleTableMixin, FilterView):
     mapbox_access_token = 'pk.eyJ1Ijoicm9sbHRpZGUiLCJhIjoiY2tueXFmMXhzMGt1MTJ1cDZ4YXkzOXJ3aiJ9.1HmCO6w6W-3r7Ou2HpRaMg'
