@@ -190,6 +190,8 @@ class ObservationDownloadAPIView(APIView):
         observations = list(observations_in_range.all())
 
         print(f"Found {len(observations)} observations matching criteria")
+        for i, obs in enumerate(observations):
+            print(f"  Observation {i+1}: {obs.fileName} | Path: {obs.path} | Start: {obs.startDate.date()} | End: {obs.endDate.date()}")
 
         # MULTIPLE FILES: Create ZIP archive when multiple observations found
         if len(observations) > 1:
@@ -202,51 +204,77 @@ class ObservationDownloadAPIView(APIView):
             zip_path = os.path.join(temp_dir, zip_filename)
             print(f"Creating ZIP archive: {zip_path}")
             
+            files_added = 0
+            files_processed = 0
+            
             try:
-                with zipfile.ZipFile(zip_path, 'w') as zipf:
+                with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                     for obs in observations:
-                        # VALIDATION: Only process ZIP files within date range
-                        file_extension = obs.fileName[-4:]
-                        if (obs.startDate.date() >= start_dt.date() and
-                            obs.endDate.date() <= end_dt.date() and 
-                            file_extension == '.zip'):
+                        files_processed += 1
+                        print(f"Processing observation {files_processed}/{len(observations)}: {obs.fileName}")
+                        
+                        # VALIDATION: Only process ZIP files within date range # Removed since file formats may change?
+                        #file_extension = obs.fileName[-4:]
+                        #if file_extension == '.zip':
                             
                             # CONSTRUCT FILE PATH: Build full path to observation file
-                            file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
-                            print(f"Adding file to ZIP: {file_path}")
+                        file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
+                            # TEST CASE - developer is linux username
+                        #file_path = "/home/developer/S000028/magData/" + obs.fileName
+                        print(f"  File path: {file_path}")
                             
                             # VALIDATION: Check file exists before adding to ZIP
-                            if os.path.exists(file_path):
+                        if os.path.exists(file_path):
+                            try:
                                 zipf.write(file_path, arcname=obs.fileName)
-                            else:
-                                print(f"Warning: File not found: {file_path}")
-                                
+                                files_added += 1
+                                print(f"  ✓ Successfully added to ZIP")
+                            except Exception as add_error:
+                                print(f"  ✗ Error adding file to ZIP: {add_error}")
+                        else:
+                            print(f"  ✗ File not found at path")
+                        #else:
+                        #    print(f"  ✗ File skipped (invalid extension or date range)")
+                            
             except Exception as e:
                 print(f"Error creating ZIP file: {str(e)}")
                 return Response({"detail": f"Failed to generate zip file: {str(e)}"},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            # RETURN ZIP FILE: Send ZIP archive as download
-            return FileResponse(open(zip_path, 'rb'),
+            print(f"ZIP creation completed: {files_added}/{files_processed} files added to archive")
+            
+            # Check if any files were actually added
+            if files_added == 0:
+                return Response({"detail": "No valid observation files found to include in archive"},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            # RETURN ZIP FILE: Send ZIP archive as download with custom headers
+            response = FileResponse(open(zip_path, 'rb'),
                                 as_attachment=True,
                                 filename=zip_filename,
                                 content_type="application/zip")
+            
+            # Add custom headers visible to user
+            response['X-Files-Discovered'] = str(len(observations))
+            response['X-Files-Processed'] = str(files_processed)
+            response['X-Files-Added'] = str(files_added)
+            response['X-Archive-Type'] = 'multiple-files'
+            
+            return response
 
         # SINGLE FILE: Return observation file directly
         else:
             obs = observations[0]
-            file_extension = obs.fileName[-4:]
+            #file_extension = obs.fileName[-4:]
             
-            # VALIDATION: Check file is within date range and is a ZIP file
-            if not (obs.startDate.date() >= start_dt.date() and 
-                    obs.endDate.date() <= end_dt.date() and 
-                    file_extension == '.zip'):
-                return Response({"detail": "Observation file not found or invalid."},
-                                status=status.HTTP_404_NOT_FOUND)
-            
+            # VALIDATION: Check file is within date range and is a ZIP file # Removed since file formats may change?
+            #if not file_extension == '.zip':
+            #    return Response({"detail": "Observation file not found or invalid."},
+            #                    status=status.HTTP_404_NOT_FOUND)
+
             # CONSTRUCT FILE PATH: Build full path to observation file
             file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
-            # TEST CASE - replace developer with rocky linux username
+            # TEST CASE - developer is linux username
             #file_path = "/home/developer/S000028/magData/" + obs.fileName
             print(f"Serving single file: {file_path}")
             
@@ -255,8 +283,16 @@ class ObservationDownloadAPIView(APIView):
                 return Response({"detail": "Observation file not found on filesystem."},
                                 status=status.HTTP_404_NOT_FOUND)
             
-            # RETURN SINGLE FILE: Send observation file as download
-            return FileResponse(open(file_path, 'rb'),
+            # RETURN SINGLE FILE: Send observation file as download with custom headers
+            response = FileResponse(open(file_path, 'rb'),
                                 as_attachment=True,
                                 filename=obs.fileName,
                                 content_type="application/zip")
+            
+            # Add custom headers visible to user
+            response['X-Files-Discovered'] = '1'
+            response['X-Files-Processed'] = '1'
+            response['X-Files-Added'] = '1'
+            response['X-Archive-Type'] = 'single-file'
+            
+            return response
