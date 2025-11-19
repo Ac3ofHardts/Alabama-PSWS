@@ -45,8 +45,6 @@
     height: 12px;
     margin-right: 5px;
   }
-</style>
-<!--
   .api-section {
     margin-top: 20px;
     padding: 15px;
@@ -93,13 +91,41 @@
   
   .api-section ul {
     margin-bottom: 15px;
+    padding-left: 20px;
+    list-style-type: disc;
   }
   
   .api-section li {
+    margin-bottom: 8px;
+    display: list-item;
+    line-height: 1.6;
+  }
+  
+  .api-section ul ul {
+    margin-top: 5px;
     margin-bottom: 5px;
+    padding-left: 20px;
+    list-style-type: circle;
+  }
+  
+  /* Ensure proper list formatting and prevent weird dividers */
+  .api-section ul li:before {
+    content: none !important;
+  }
+  
+  .api-section ul li {
+    border: none !important;
+    padding-left: 0 !important;
+    text-indent: 0 !important;
+  }
+  
+  /* Prevent inline display issues */
+  .api-section ul li {
+    display: list-item !important;
+    float: none !important;
+    width: auto !important;
   }
 </style>
--->
 
 
 <div class="card">
@@ -120,7 +146,6 @@
           	<div class="legend-desc"><span style="background-color: #FF0000;" class="legend-key"></span> <span>Offline: Last upload >5 days ago</span></div>
           	<div class="legend-desc"><span style="background-color: #808080;" class="legend-key"></span> <span>Retired: Last upload >3 weeks ago</span></div>
 		<br>
-		<!--
 		<div class="api-section">
 			<h4 id="api-info" class="card-title">Download API Documentation</h4>
 			<p>The PSWS network provides a comprehensive REST API for downloading observation data with flexible filtering options.</p>
@@ -161,7 +186,7 @@
 			
 			<h6>1. Download by Station ID</h6>
 			<pre><code>curl -o output.zip \
-"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"</code></pre>
+"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2022-12-09&end_date=2022-12-10"</code></pre>
 			
 			<h6>2. Download by Geographic Region (Alabama)</h6>
 			<pre><code>curl -o output.zip \
@@ -169,23 +194,22 @@
 			
 			<h6>3. Download with Frequency Filter (20m Amateur Band)</h6>
 			<pre><code>curl -o output.zip \
-"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&frequency=14.097&start_date=2024-01-01&end_date=2024-01-31"</code></pre>
+"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&frequency=10&start_date=2022-12-09&end_date=2022-12-10"</code></pre>
 			
 			<h6>4. Download with Instrument Filter</h6>
 			<pre><code>curl -o output.zip \
-"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&instrument_id=1&start_date=2024-01-01&end_date=2024-01-31"</code></pre>
+"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&instrument_id=1&start_date=2022-12-09&end_date=2022-12-10"</code></pre>
 			
 			<h6>5. Using wget</h6>
 			<pre><code>wget -O output.zip \
-"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2024-01-01&end_date=2024-01-31"</code></pre>
+"https://pswsnetwork.eng.ua.edu/observations/downloadapi/?station_id=S000028&start_date=2022-12-09&end_date=2022-12-10"</code></pre>
 			
 			<h5>Common Frequency Examples</h5>
 			<ul>
-				<li><strong>14.097 MHz</strong> - 20m amateur radio band</li>
-				<li><strong>7.038 MHz</strong> - 40m amateur radio band</li>
-				<li><strong>3.573 MHz</strong> - 80m amateur radio band</li>
-				<li><strong>1.838 MHz</strong> - 160m amateur radio band</li>
-				<li><strong>28.074 MHz</strong> - 10m amateur radio band</li>
+				<li><strong>10 MHz</strong></li>
+				<li><strong>14.670 MHz</strong></li>
+				<li><strong>5 MHz</strong></li>
+				<li><strong>2.5 MHz</strong></li>
 			</ul>
 			
 			<h5>Geographic Examples</h5>
@@ -212,6 +236,5 @@
 				<li><strong>500 Internal Server Error:</strong> Server error during file processing</li>
 			</ul>
 		</div>
-		-->
 
 {% endblock %}
