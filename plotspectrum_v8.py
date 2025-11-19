@@ -39,7 +39,7 @@ from stations.models 		import *
 from instruments.models       	import *
 from instrumenttypes.models   	import *
 
-plot_output_path= "/home/plots" # for use on pswsnetwork server
+plot_output_path= "/psws/psws/media/plots" # for use on pswsnetwork server
 #plot_output_path = "C:\\temp"  # test
 
 # Retrieve supplied arg(s)
