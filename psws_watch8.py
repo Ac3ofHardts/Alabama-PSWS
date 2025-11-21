@@ -42,6 +42,7 @@ class UploadEvent(PatternMatchingEventHandler):
         super(UploadEvent, self).__init__(patterns=patterns)
 
     def on_created(self, event):
+        print('event')
         if event.src_path.rsplit('/')[-1] == 'm_Test':
             print("Test file seen!")
             writeLog("Test file seen at  " + event.src_path)
@@ -102,7 +103,7 @@ class UploadEvent(PatternMatchingEventHandler):
                trigger = event.src_path.rsplit('/')[6] # this is jailed account
             writeLog("trigger=" + trigger)
             # for calling addCSV, arguments are: (1) path, (2) station_id, (3) instrument, (4) trigger
-            cmd = '/home/bengelke/venv/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
+            cmd = '/opt/venv311/bin/python3 psws_addCSV.py ' + path + " " + stationID + \
                 " " + instrumentID + " " + trigger
             writeLog("call to psws_addCSV cmd=" + cmd)
             print("psws_addCSV cmd:",cmd)
@@ -164,7 +165,7 @@ class UploadEvent(PatternMatchingEventHandler):
             try:
                 writeLog("Trigger graphing  program")
                 # This uses task spooler (ts) to make multiple plot jobs run in a queue
-                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v8.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
+                graph_command = "ts /opt/venv311/bin/python3 /var/www/html/plotspectrum_v8.py -e " + event.src_path + " -p /psws/psws/media/plots" 
             #    graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
                 # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
                 #graph_command = "/home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots | at -q b -m now & "
@@ -205,7 +206,7 @@ class UploadEvent(PatternMatchingEventHandler):
             # Each zipped magnetometer file is of the form OBSYYYY-MM-DDTHH:SS.zip 
             # The date in the zip file name is when the magnetometer data starts, in UTC
 
-            command = "/var/www/html/venv/bin/python3 psws_addMAG.py " + path + " " + \
+            command = "/opt/venv311/bin/python3 psws_addMAG.py " + path + " " + \
                       station_id + " " + instrumentNo + " "  + endDate 
             #freq_list = [] # for magnetometer
             #freq_list.append('0.0') # single frequency
@@ -303,7 +304,7 @@ class UploadEvent(PatternMatchingEventHandler):
         myTimestamp = endDate / dataRate
         endDate =   dt.fromtimestamp(myTimestamp, tz=pytz.UTC).strftime('%Y-%m-%dT%H:%M')
         print("End date:"+endDate)
-        command = "/var/www/html/venv/bin/python3 psws_addOBS.py " + str(dataRate) + " " + str(obsSize) + " " +  \
+        command = "/opt/venv311/python3 psws_addOBS.py " + str(dataRate) + " " + str(obsSize) + " " +  \
                    fileName + " " + datapath + " " + station_id + " " + instrumentNo + " " + \
                    startDate + " " + endDate + " "
         for this_freq in freq_list:
@@ -323,7 +324,7 @@ class UploadEvent(PatternMatchingEventHandler):
 ##############################################################################################################################
 
 if __name__ == "__main__":
-    print("starting watchdog, v8")
+    print("starting watchdog, v10")
     writeLog("Watchdog triggered")
      
     path = sys.argv[1] if len(sys.argv) > 1 else '/home'

@@ -152,6 +152,7 @@ try:
     for key in data_dict.keys():
         freqList = data_dict[key]
         print("frequencies: ", *freqList)
+#        print("frequencies: ", freqList)
 
     data_dict = dmr.read(start_idx, start_idx + 2, "lat")
     for key in data_dict.keys():

@@ -85,7 +85,7 @@ writeLog("start CSV plotter")
 
 # Prepare variables from supplied arguments
 
-plot_output_path= "/home/plots" # for use on pswsnetwork server
+plot_output_path= "/psws/psws/media/plots" # for use on pswsnetwork server
 #plot_output_path = "C:\\temp"  # test
 
 # Retrieve supplied arg(s)

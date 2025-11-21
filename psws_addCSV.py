@@ -21,7 +21,7 @@ import datetime as dz
 
 def writeLog(theMessage):
     timestamp = dt.now(timezone.utc).isoformat()[0:19]
-    f = open("watchdog.log", "a")
+    f = open("/var/log/watchdog/watchdog.log", "a")
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
 
@@ -70,11 +70,12 @@ print("found instrument:",theInstrumentQS)
 # Look to seeif this observation is already in database
 fileName = os.path.basename(path)
 writeLog("fileName=" + fileName)
-obs_list =  Observation.objects.filter(fileName = fileName, station_id=station_id, instrument_id=instrument_id) # doe this OBS already exist?
+obs_list =  Observation.objects.filter(fileName = fileName, station_id=station_id, instrument_id=instrument_id) # does this OBS already exist?
 writeLog("records found=" + str(len(obs_list)))
-print("records found=",len(obs_list))
+print("records found=",len(obs_list),'time stamp:',time_stamp)
 
-stime = dt.strptime(time_stamp, '%Y-%m-%dT%H%M%S' )
+stime = dt.strptime(time_stamp, '%Y-%m-%dT%H%M%S' )   # original code
+#stime = dt.strptime(time_stamp, '%Y-%m-%dT%H:%M' )
 startDateTZ = stime.replace(tzinfo=pytz.utc)
 
 if len(obs_list) == 0:   # this is a new observation
@@ -91,8 +92,8 @@ if len(obs_list) == 0:   # this is a new observation
 # Build command for plotting this fldigi observation; use Task Spooler
   #  cmd = 'ts /home/bengelke/venv/bin/python3 plotfldigi1.py -f ' + path + " -e " + \
   #      trigger + " -p /var/www/html/PSWS/static/PSWS/plots/" + fileName
-    cmd = 'ts /home/bengelke/venv/bin/python3 plotfldigi1.py -f ' + path + " -e " + \
-        trigger + " -p /var/www/html/PSWS/static/PSWS/plots/" + os.path.splitext(fileName)[0] # remove extension
+    cmd = 'ts /opt/venv311/bin/python3 plotfldigi1.py -f ' + path + " -e " + \
+        trigger + " -p /psws/psws/media/plots/" + os.path.splitext(fileName)[0] # remove extension
     print("plot cmd=", cmd)
     writeLog("Plot cmd=" + cmd)
     os.system(cmd)
