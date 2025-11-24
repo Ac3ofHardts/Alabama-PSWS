@@ -11,6 +11,9 @@ from observations.models import Observation
 
 class ObservationDownloadAPIView(APIView):
     throttle_classes = [AnonRateThrottle]
+    
+    # Size threshold for multiple file downloads (in bytes)
+    MAX_MULTI_FILE_SIZE = 500 * 1024 * 1024  # 500 MB
 
     def get(self, request, format=None):
         '''
@@ -193,6 +196,47 @@ class ObservationDownloadAPIView(APIView):
         for i, obs in enumerate(observations):
             print(f"  Observation {i+1}: {obs.fileName} | Path: {obs.path} | Start: {obs.startDate.date()} | End: {obs.endDate.date()}")
 
+        # SIZE VALIDATION: Check total size for multiple files
+        if len(observations) > 1:
+            total_size = 0
+            existing_files_count = 0
+            
+            print(f"Checking total size (threshold: {self.MAX_MULTI_FILE_SIZE / (1024*1024):.0f} MB)...")
+            
+            for obs in observations:
+                # Use database size if available, otherwise check file on disk
+                file_size = 0
+                
+                if hasattr(obs, 'size') and obs.size:
+                    file_size = obs.size
+                    print(f"  {obs.fileName}: {file_size / (1024*1024):.2f} MB (from database)")
+                else:
+                    # Construct file path to check on disk
+                    file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
+                    if os.path.exists(file_path):
+                        file_size = os.path.getsize(file_path)
+                        print(f"  {obs.fileName}: {file_size / (1024*1024):.2f} MB (from disk)")
+                    else:
+                        print(f"  {obs.fileName}: File not found, skipping from size calculation")
+                        continue
+                
+                total_size += file_size
+                existing_files_count += 1
+            
+            print(f"Total size of {existing_files_count} existing files: {total_size / (1024*1024):.2f} MB")
+            
+            # Check if total size exceeds threshold
+            if total_size > self.MAX_MULTI_FILE_SIZE:
+                return Response({
+                    "detail": "Request exceeds maximum file size limit for multiple file downloads.",
+                    "error_info": {
+                        "requested_size_mb": round(total_size / (1024*1024), 2),
+                        "threshold_mb": round(self.MAX_MULTI_FILE_SIZE / (1024*1024), 0),
+                        "files_count": existing_files_count,
+                        "suggestion": "Please use a smaller date range or download individual files."
+                    }
+                }, status=status.HTTP_400_BAD_REQUEST)
+
         # MULTIPLE FILES: Create ZIP archive when multiple observations found
         if len(observations) > 1:
             temp_dir = tempfile.gettempdir()
@@ -213,13 +257,13 @@ class ObservationDownloadAPIView(APIView):
                         files_processed += 1
                         print(f"Processing observation {files_processed}/{len(observations)}: {obs.fileName}")
                         
-                        # VALIDATION: Only process ZIP files within date range # Removed since file formats may change?
+                        # VALIDATION: Only process ZIP files within date range # Removed since some files may not be .zip?
                         #file_extension = obs.fileName[-4:]
                         #if file_extension == '.zip':
                             
-                            # CONSTRUCT FILE PATH: Build full path to observation file
+                        # CONSTRUCT FILE PATH: Build full path to observation file
                         file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
-                            # TEST CASE - developer is linux username
+                        # TEST CASE - developer is linux username
                         #file_path = "/home/developer/S000028/magData/" + obs.fileName
                         print(f"  File path: {file_path}")
                             
@@ -267,11 +311,11 @@ class ObservationDownloadAPIView(APIView):
             obs = observations[0]
             #file_extension = obs.fileName[-4:]
             
-            # VALIDATION: Check file is within date range and is a ZIP file # Removed since file formats may change?
+            # VALIDATION: Check file is within date range and is a ZIP file # Removed since some files may not be .zip?
             #if not file_extension == '.zip':
             #    return Response({"detail": "Observation file not found or invalid."},
             #                    status=status.HTTP_404_NOT_FOUND)
-
+            
             # CONSTRUCT FILE PATH: Build full path to observation file
             file_path = '/'.join(obs.path.split('/')[:-1]) + '/' + obs.fileName
             # TEST CASE - developer is linux username
