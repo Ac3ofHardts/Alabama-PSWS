@@ -8,11 +8,9 @@
 <style>
 table {
 	width: 1000px;
-	border
+	border: 5px solid black;
 }
-#show_usr_btn {
-	width: 130px;
-}</style>
+</style>
 <!--
 th {
 	border: 5px solid black;
@@ -31,49 +29,14 @@ tr, td {
 		<button type="submit">View My Stations</button>
 	</form>
 </div>
-<p>
-Adding of stations temporarily disabled until server upgrade complete
-</p>
-
-<!--div style="padding-top: 10px;">
+<div style="padding-top: 10px;">
     <!-- Add new Station -->
-<!--
 	<form action="{% url 'add_station' %}" method="GET">
 		{% csrf_token %}
 		<button type="submit">Add New Station</button>
 	</form>
--->
 </div>
-{% if user.is_superuser %}
-<div style="padding-top: 10px;">
-	<form  method="GET">
-		{% if swap %}
-		  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
 
-		    <form method="get">
-		      <button type="submit">Users</button>
-		    </form>
-		    <!-- Filter form -->
-		    <form method="get" style="display: flex; gap: 0.5rem; align-items: center;">
-		      <input type="hidden" name="swap" value="1">
-		      {{ filter_form.user }}
-		      <button type="submit">Filter</button>
-		    </form>
-
-		    <!-- Swap back button -->
-		  </div>
-		{% else %}
-		  <!-- Swap to user view -->
-		  <div style="margin-bottom: 1rem;">
-		    <form method="get">
-		      <input type="hidden" name="swap" value="1">
-		      <button type="submit">Users</button>
-		    </form>
-		  </div>
-		{% endif %}
-	</form>		
-</div>
-{% endif %}
 <br>
 
 <div>
@@ -99,3 +62,4 @@ Adding of stations temporarily disabled until server upgrade complete
 </div>
 
 {% endblock main %}
+
