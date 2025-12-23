@@ -4,6 +4,7 @@ from django.contrib.auth import urls
 from django.urls import path
 from . import views
 from .views import UserListView
+from analysis.views import under_construction
 
 urlpatterns = [
     path('', include('django.contrib.auth.urls')),
@@ -23,5 +24,5 @@ urlpatterns = [
     path('user_list/', UserListView.as_view(), name="user_list"),
     path('about/', views.about_view, name="about"),
     path('about1/', views.about1_view, name="about1"),
-    path('station_analysis/<int:id>/', views.station_analysis, name='station_analysis'),
+    path('station_analysis/<int:id>/', under_construction, name='station_analysis'),
 ]

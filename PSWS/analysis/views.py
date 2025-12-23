@@ -23,6 +23,10 @@ possiblyOnlineCutoffHours = 120 #5 days
 #def analysis_view(request):
 #    return render(request, 'analysis.html')
 
+# Under construction view
+def under_construction(request, id=None):
+    return render(request, "under_construction.html")
+
 # Display more detailed information about a station
 def station_analysis(request, id=None):
     station = get_object_or_404(Station, id=id)

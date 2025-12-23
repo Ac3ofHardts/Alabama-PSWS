@@ -6,3 +6,7 @@ TODO:
 	When user is linked as the primary key, how can we make it print username when including it? See station list for example. Would like to show username instead of user id. Or do we need to add name parameters to profile and use that as key?
 
 Refer also to Azure DevOps.
+
+The watchdog program must be stored in /opt/psws to work as a service.
+It is stored heere (/var/www/html) solely to get it stored in github with
+other PSWS system content.
