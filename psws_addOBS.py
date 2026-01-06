@@ -21,7 +21,7 @@ from datetime import datetime as dt
 
 def writeLog(theMessage):
     timestamp = dt.now(timezone.utc).isoformat()[0:19]
-    f = open("/home/bengelke/Documents/watchdog.log", "a")
+    f = open("/var/log/watchdog/watchdog.log", "a")
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
 
@@ -97,7 +97,6 @@ print("cfids:",cfid_list)
 obs_list =  Observation.objects.filter(fileName = fileName, station_id=station_id, instrument_id=instrument_id) # doe this OBS already exist?
 if len(obs_list) == 0:   # this is a new observation
     theObs  = Observation(dataRate=dataRate,size=obsSize,fileName=fileName,path=path, \
-        #      instrument_id=instrument_id, station_id=station_id, startDate=startDateTZ, endDate=endDateTZ)
               startDate=startDateTZ, endDate=endDateTZ, \
               station_id = station_id, instrument_id = instrument_id )
     theObs.save()
@@ -110,19 +109,8 @@ if len(obs_list) == 0:   # this is a new observation
     for this_cfid in cfid_list: # add one or more center frequencies in this datase
         theObs.centerFrequency.add(this_cfid)
         theObs.save()
-              #theObs.centerFrequency.add(cfid) # this creates entry in intersection table
-              #theObs.save()
+
 else:  # this  observation is already in database. update endDate
     obsPtr = obs_list[0].id    # this is id of existing observation
     print("Existing ID:",obsPtr)
-              #theObs = Observation.objects.filter( id = obsPtr)
-              #print("existing obs:",theObs)
     Observation.objects.filter( id = obsPtr ).update(endDate = endDateTZ, size=obsSize)
-
-# Register a heartbeat
-
-#from datetime import datetime, timezone
-
-#station_instance.last_alive = dt.now(timezone.utc)
-# the station_status will update by itself when queried.
-#station_instance.save()

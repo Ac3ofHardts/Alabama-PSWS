@@ -133,7 +133,8 @@ class UploadEvent(PatternMatchingEventHandler):
                 return
             try:
                 writeLog("Trigger graphing  program")
-                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
+                graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v8.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
+            #    graph_command = "ts /home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots" 
                 # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v5.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
                 #graph_command = "/home/N000004/virtualenvs/dev/bin/python3 /var/www/html/plotspectrum_v7.py -e " + event.src_path + " -p /var/www/html/PSWS/static/PSWS/plots | at -q b -m now & "
                 # graph_command = subprocess.Popen(['/home/N000004/virtualenvs/dev/bin/python3', '/var/www/html/plotspectrum_v7.py', '-e', event.src_path, '-p', '/var/www/html/PSWS/static/PSWS/plots'])
@@ -313,5 +314,6 @@ if __name__ == "__main__":
         print("reached end")
         observer.stop()
         observer.join() 
+
 
 

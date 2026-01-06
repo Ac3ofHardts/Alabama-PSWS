@@ -23,3 +23,17 @@ output.zip
 hapiserver
 observations_api.log
 logs
+PSWS/PSWS/backup_sett.py
+PSWS/logs/
+hamsci_psws/*
+nodelist.csv
+plot_test2.py
+plot_v8.py
+plotenv/*
+requirements2.txt
+triggerManip.log
+venv39/*
+vplt/*
+watchdogTest.log
+venv311/*
+PSWS/venv311/*

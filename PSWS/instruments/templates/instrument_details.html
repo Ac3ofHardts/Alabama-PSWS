@@ -25,6 +25,10 @@
         {% csrf_token %}
         <button type="submit">Edit (or delete) this instrument</button>
 </form>
+<form style="padding-top: 10px;" action="{% url 'download_config' id=instrument.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Download Config File</button>
+</form> 
 <form style="padding-top: 10px;" action="{% url 'station_details'   id=instrument.station_id %}" method="GET">
         {% csrf_token %}
         <button type="submit">Back</button>

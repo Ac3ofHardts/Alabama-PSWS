@@ -12,9 +12,11 @@ from django_tables2 import SingleTableView
 #from stations.calculate_latitude import CalculateLatitude
 #from stations.calculate_longitude import CalculateLongitude
 import maidenhead as mh
-from .tables import StationTable, FilteredStationTable
+from .tables import StationTable, FilteredStationTable, StationUserTable, StationInstrumentTable
 from .forms import EditStationForm
 from .tokens import station_activation_token
+from .forms import StationUserFilterForm
+
 
 from instruments.models import Instrument
 from instruments.tables import InstrumentTable
@@ -40,14 +42,49 @@ class MyStationsListView(SingleTableView):
     paginate_by = 4
 
 
-@method_decorator(login_required, name='dispatch')
+
+#@method_decorator(login_required, name='dispatch')
+
 # Display the list of all registered stations
 class StationListView(SingleTableView):
-    table_class = StationTable
-    queryset = Station.objects.all()
     template_name = 'stations.html'
     paginate_by = 4
+    def get_table_class(self):
+        if(self.request.user.is_superuser):    
+            if self.request.GET.get('swap') == '1':
+                return StationUserTable
+        return StationTable 
 
+    def get_queryset(self):
+        qs = Station.objects.all()
+        if self.request.user.is_superuser and self.request.GET.get('swap') == '1':
+            usename = self.request.GET.get('user', "").strip()
+            if usename:
+                qs = qs.filter(user__username__istartswith=usename)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['swap'] = self.request.GET.get('swap') == '1'
+        context['filter_form'] = StationUserFilterForm(self.request.GET)
+        return context
+
+@login_required
+def station_instrument_view(request, id):
+    if not request.user.is_superuser:
+        return redirect('stations')
+    instruments = (
+        Instrument.objects
+        .filter(station__user__id=id)  # only instruments for stations owned by this user
+        .select_related("station", "instrumenttype", "station__user")
+    )
+
+    table = StationInstrumentTable(instruments)
+    table.paginate(page=request.GET.get("page", 1), per_page=10)
+
+    return render(request, "station_instruments.html", {
+        "table": table,
+    })
 #@login_required
 #Display the list of all registered stations
 #def station_list_view(request):

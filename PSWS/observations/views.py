@@ -83,7 +83,7 @@ def download_file(request, id=None):
             return response
         
         total_path = obs.path
-        zip_path = "/home/ziptemp/" + total_path.rsplit('/')[2] +   \
+        zip_path = "/psws/temp/ziptemp/" + total_path.rsplit('/')[2] +   \
                    "/temp/" + total_path.rsplit('/')[3]
         print("tar file to: " + zip_path)
 
@@ -145,7 +145,7 @@ def download_range(request, id=None):
     print(instrument.instrumenttype)
     print(instrument.id)
     
-    if instrument.instrumenttype_id == 3:
+    if instrument.instrumenttype_id == 3 or instrument.instrumenttype_id == 6:
         full_path = fl_path + "/" + filename
         fl = open(full_path, "rb")
         mime_type, _ = mimetypes.guess_type(fl_path)
@@ -157,7 +157,7 @@ def download_range(request, id=None):
     #        "/temp/" + filename[:3] + start + "-" + end
 
     zip_name = "Range-" + filename
-    zip_path = "/home/ziptemp/" + zip_name
+    zip_path = "/psws/temp/ziptemp/" + zip_name
     print(zip_path)
 
     shutil.make_archive(zip_path, 'zip', full_path)
@@ -264,9 +264,10 @@ def select_download_range(request, id=None):
 #    queryset = Observation.objects.all()
 #    template_name = "observation_list.html"
 
-@method_decorator(login_required, name='dispatch')
+#@method_decorator(login_required, name='dispatch')
 # Display a list of all observations in the database
 class ObservationListView(SingleTableMixin, FilterView):
+    mapbox_access_token = 'pk.eyJ1Ijoicm9sbHRpZGUiLCJhIjoiY2tueXFmMXhzMGt1MTJ1cDZ4YXkzOXJ3aiJ9.1HmCO6w6W-3r7Ou2HpRaMg'
     table_class = ObservationTable
     model = Observation
     template_name = "observation_list.html"
