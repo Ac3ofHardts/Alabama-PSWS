@@ -16,7 +16,7 @@ api_logger = logging.getLogger('observations_api')
 api_logger.setLevel(logging.DEBUG)
 
 # Create logs directory if it doesn't exist
-log_dir = '/home/developer/Alabama-PSWS/PSWS/logs'
+log_dir = '/var/www/html/legacy'
 os.makedirs(log_dir, exist_ok=True)
 
 # Create rotating file handler (max 10MB per file, keep 5 backup files)
