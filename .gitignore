@@ -20,3 +20,6 @@ graphing.log
 PSWS/logs/debug.log
 PSWS/static/PSWS/plots
 output.zip
+hapiserver
+observations_api.log
+logs
