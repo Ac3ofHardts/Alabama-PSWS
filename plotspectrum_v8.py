@@ -157,14 +157,16 @@ try:
     data_dict = dmr.read(start_idx, start_idx + 2, "lat")
     for key in data_dict.keys():
         theLatitude = data_dict[key]
-        print("Latitude: ",theLatitude)
+        # SECURITY (CodeQL py/clear-text-logging-sensitive-data, CWE-359): exact station latitude no longer logged
         
     data_dict = dmr.read(start_idx, start_idx + 2, "long")
     for key in data_dict.keys():
         theLongitude = data_dict[key]
-        print("Longitude: ",theLongitude)
+        # SECURITY (CodeQL py/clear-text-logging-sensitive-data, CWE-359): exact station longitude no longer logged
     
     maidenheadGrid = mh.to_maiden(theLatitude, theLongitude)     
+    # Log only the coarse Maidenhead grid square, which is already public in the plot title/filename
+    print("Maidenhead grid: ", maidenheadGrid)
 
 except IOError:
     print("IO Error; metadata not found at " + metadata_dir)
@@ -344,4 +346,3 @@ obs_instance.plotPath = plot_output_path
 obs_instance.save()
 
 plt.close('all')
-
