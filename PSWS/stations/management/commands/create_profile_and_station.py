@@ -144,34 +144,37 @@ class Command(BaseCommand):
 		except Exception as e:
 			self.stdout.write(self.style.ERROR(f"Failed to create jail for station ID: {station_id}. Error: {e}"))
 
+		# SECURITY (CodeQL py/clear-text-storage-sensitive-data, CWE-312/CWE-359):
+		# The generated password is shown ONCE on the administrator's terminal and never written to disk.
+		# Exact coordinates, street address and phone number are already stored in the database, so the
+		# record file keeps only what is needed to identify the account and station.
+		if created:
+			self.stdout.write(self.style.WARNING(
+				"Initial password (shown once, not saved; deliver it securely and ask the user to change it):"))
+			self.stdout.write(password)
+
 		# Prepare output file content
 		output_content = (
 			f"User and Profile Details\n"
 			f"Username: {user.username}\n"
-			f"Password: {password}\n"
 			f"Email: {profile.email}\n"
 			f"Signup Confirmation: {profile.signup_confirmation}\n\n"
 			f"Station Details\n"
 			f"Station ID: {station.station_id}\n"
 			f"Nickname: {station.nickname}\n"
 			f"Maidenhead Grid: {station.grid}\n"
-			f"Latitude: {station.latitude}\n"
-			f"Longitude: {station.longitude}\n"
 			f"Elevation: {station.elevation}\n"
 			f"Antenna 1: {station.antenna_1}\n"
 			f"Antenna 2: {station.antenna_2}\n"
-			f"Street Address: {station.street_address}\n"
 			f"City: {station.city}\n"
 			f"State: {station.state}\n"
-			f"Postal Code: {station.postal_code}\n"
-			f"Phone Number: {station.phone_number}\n"
 			f"Created Date: {station.create_date}\n"
 		)
 
 		# Define the output directory and initial file path
 		output_dir = "/home/user/user_creation_outputs"
 		if not os.path.exists(output_dir):
-			os.makedirs(output_dir)
+			os.makedirs(output_dir, mode=0o700)
 			self.stdout.write(self.style.SUCCESS(f"Created directory {output_dir}"))
 
 		# Check if file exists and increment filename if necessary
@@ -183,8 +186,9 @@ class Command(BaseCommand):
 			counter += 1
 
 		# Write output to the file
-		with open(output_file_path, 'w') as file:
+		# Owner-only permissions (0600): the record still contains the user's email and city/state.
+		fd = os.open(output_file_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+		with os.fdopen(fd, 'w') as file:
 			file.write(output_content)
 
 		self.stdout.write(self.style.SUCCESS(f"Details saved to {output_file_path}"))
-
