@@ -4,7 +4,10 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework import status
 from django.http import FileResponse
 from datetime import datetime
-import tempfile, os, zipfile
+import tempfile, os, re, zipfile
+import logging
+
+logger = logging.getLogger(__name__)
 
 from stations.models import Station
 from observations.models import Observation
@@ -195,13 +198,21 @@ class ObservationDownloadAPIView(APIView):
 
         # MULTIPLE FILES: Create ZIP archive when multiple observations found
         if len(observations) > 1:
-            temp_dir = tempfile.gettempdir()
-            # Create descriptive filename based on search criteria
+            # Create descriptive DOWNLOAD filename based on search criteria.
+            # SECURITY (CodeQL py/path-injection, CWE-22): the download name is only sent in the
+            # Content-Disposition header and is built from validated values: dates re-rendered from
+            # the parsed datetimes, station_id reduced to alphanumerics. It is never used as a path.
+            date_part = f"{start_dt:%Y-%m-%d}_{end_dt:%Y-%m-%d}"
             if station_id:
-                zip_filename = f"observations_{station_id}_{start_date}_{end_date}.zip"
+                safe_station = re.sub(r"[^A-Za-z0-9]", "", station_id)[:16]
+                zip_filename = f"observations_{safe_station}_{date_part}.zip"
             else:
-                zip_filename = f"observations_region_{start_date}_{end_date}.zip"
-            zip_path = os.path.join(temp_dir, zip_filename)
+                zip_filename = f"observations_region_{date_part}.zip"
+            # SECURITY: the on-disk archive gets a unique, unpredictable name from mkstemp(), so no
+            # request data reaches the filesystem path (also avoids predictable /tmp names, CWE-377,
+            # and concurrent requests overwriting each other's archive).
+            zip_fd, zip_path = tempfile.mkstemp(prefix="psws_obs_", suffix=".zip")
+            os.close(zip_fd)
             print(f"Creating ZIP archive: {zip_path}")
             
             files_added = 0
@@ -236,20 +247,28 @@ class ObservationDownloadAPIView(APIView):
                         #else:
                         #    print(f"  ✗ File skipped (invalid extension or date range)")
                             
-            except Exception as e:
-                print(f"Error creating ZIP file: {str(e)}")
-                return Response({"detail": f"Failed to generate zip file: {str(e)}"},
+            except Exception:
+                # SECURITY (CodeQL py/stack-trace-exposure, CWE-209): log the details server-side
+                # and return a generic message instead of the exception text.
+                logger.exception("Error creating ZIP archive %s", zip_path)
+                os.remove(zip_path)
+                return Response({"detail": "Failed to generate zip file."},
                                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             print(f"ZIP creation completed: {files_added}/{files_processed} files added to archive")
             
             # Check if any files were actually added
             if files_added == 0:
+                os.remove(zip_path)
                 return Response({"detail": "No valid observation files found to include in archive"},
                                 status=status.HTTP_404_NOT_FOUND)
 
             # RETURN ZIP FILE: Send ZIP archive as download with custom headers
-            response = FileResponse(open(zip_path, 'rb'),
+            # Open the archive, then unlink it: the open handle keeps the data readable until
+            # FileResponse closes it, and the temp file no longer accumulates in /tmp.
+            zip_handle = open(zip_path, 'rb')
+            os.remove(zip_path)
+            response = FileResponse(zip_handle,
                                 as_attachment=True,
                                 filename=zip_filename,
                                 content_type="application/zip")
