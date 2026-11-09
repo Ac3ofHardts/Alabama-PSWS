@@ -26,6 +26,35 @@ def writeLog(theMessage):
     f.write(timestamp + " " + theMessage + "\n")
     f.close()
 
+
+def safe_extract(tar, dest):
+    """Extract an uploaded tar archive without letting it write outside dest.
+
+    SECURITY (CodeQL py/tarslip, CWE-22): archives are uploaded by remote stations, so a member
+    named "../../etc/cron.d/x", an absolute path, or a symlink/hardlink could otherwise overwrite
+    files anywhere the watcher process can write. Unsafe members are skipped and logged.
+    """
+    dest_root = os.path.realpath(dest)
+    safe_members = []
+    for member in tar.getmembers():
+        if os.path.isabs(member.name) or ".." in member.name.split("/"):
+            writeLog("SECURITY: skipped unsafe tar member (absolute or traversal path): " + repr(member.name))
+            continue
+        if not (member.isfile() or member.isdir()):
+            writeLog("SECURITY: skipped tar member that is not a regular file or directory: " + repr(member.name))
+            continue
+        target = os.path.realpath(os.path.join(dest_root, member.name))
+        if os.path.commonpath([dest_root, target]) != dest_root:
+            writeLog("SECURITY: skipped tar member resolving outside destination: " + repr(member.name))
+            continue
+        safe_members.append(member)
+    if hasattr(tarfile, "data_filter"):
+        # Python 3.12+ (and patched 3.8-3.11): the stdlib 'data' filter also strips setuid bits
+        # and rejects device files, as defense in depth.
+        tar.extractall(path=dest_root, members=safe_members, filter="data")
+    else:
+        tar.extractall(path=dest_root, members=safe_members)
+
 def get_size(start_path):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(start_path):
@@ -257,7 +286,7 @@ class UploadEvent(PatternMatchingEventHandler):
                 size = size + mem.size
 
             #Finish extracting tarfile
-            data.extractall(path=path) #Extracts to the d# directory
+            safe_extract(data, path) #Extracts to the d# directory, rejecting unsafe members
             data.close()
         #Else a C file
         elif uploadType == 'c':
@@ -351,7 +380,4 @@ if __name__ == "__main__":
     finally:            
         print("reached end")
         observer.stop()
-        observer.join() 
-
-
-
+        observer.join()
